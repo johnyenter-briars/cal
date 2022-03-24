@@ -1,5 +1,4 @@
-﻿using CAL.Models;
-using CAL.ViewModels;
+﻿using CAL.ViewModels;
 using CAL.Views;
 using System;
 using System.Collections.Generic;

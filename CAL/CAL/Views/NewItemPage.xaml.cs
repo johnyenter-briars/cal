@@ -1,4 +1,4 @@
-﻿using CAL.Models;
+﻿using CAL.Client.Models;
 using CAL.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -10,7 +10,7 @@ namespace CAL.Views
 {
     public partial class NewItemPage : ContentPage
     {
-        public Item Item { get; set; }
+        public Event Item { get; set; }
 
         public NewItemPage()
         {

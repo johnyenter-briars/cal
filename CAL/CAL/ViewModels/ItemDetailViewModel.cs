@@ -1,5 +1,4 @@
-﻿using CAL.Models;
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using Xamarin.Forms;
@@ -9,24 +8,24 @@ namespace CAL.ViewModels
     [QueryProperty(nameof(ItemId), nameof(ItemId))]
     public class ItemDetailViewModel : BaseViewModel
     {
-        private string itemId;
-        private string text;
-        private string description;
-        public string Id { get; set; }
+        private int itemId;
+        private string name;
+        private DateTime time;
+        public int Id { get; set; }
 
-        public string Text
+        public string Name
         {
-            get => text;
-            set => SetProperty(ref text, value);
+            get => name;
+            set => SetProperty(ref name, value);
         }
 
-        public string Description
+        public DateTime Time
         {
-            get => description;
-            set => SetProperty(ref description, value);
+            get => time;
+            set => SetProperty(ref time, value);
         }
 
-        public string ItemId
+        public int ItemId
         {
             get
             {
@@ -39,14 +38,14 @@ namespace CAL.ViewModels
             }
         }
 
-        public async void LoadItemId(string itemId)
+        public async void LoadItemId(int itemId)
         {
             try
             {
                 var item = await DataStore.GetItemAsync(itemId);
                 Id = item.Id;
-                Text = item.Text;
-                Description = item.Description;
+                Name = item.Name;
+                Time = item.Time;
             }
             catch (Exception)
             {

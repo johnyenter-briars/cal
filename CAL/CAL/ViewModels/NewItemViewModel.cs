@@ -1,4 +1,4 @@
-﻿using CAL.Models;
+﻿using CAL.Client.Models;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -49,11 +49,9 @@ namespace CAL.ViewModels
 
         private async void OnSave()
         {
-            Item newItem = new Item()
+            Event newItem = new Event()
             {
-                Id = Guid.NewGuid().ToString(),
-                Text = Text,
-                Description = Description
+                Id = 4,
             };
 
             await DataStore.AddItemAsync(newItem);

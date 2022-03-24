@@ -13,7 +13,7 @@ namespace CAL
         {
             InitializeComponent();
 
-            DependencyService.Register<MockDataStore>();
+            DependencyService.Register<EventsDataStore>();
             MainPage = new AppShell();
         }
 

@@ -1,4 +1,4 @@
-﻿using CAL.Models;
+﻿using CAL.Client.Models;
 using CAL.Views;
 using System;
 using System.Collections.ObjectModel;
@@ -10,20 +10,20 @@ namespace CAL.ViewModels
 {
     public class ItemsViewModel : BaseViewModel
     {
-        private Item _selectedItem;
+        private Event _selectedItem;
 
-        public ObservableCollection<Item> Items { get; }
+        public ObservableCollection<Event> Items { get; }
         public Command LoadItemsCommand { get; }
         public Command AddItemCommand { get; }
-        public Command<Item> ItemTapped { get; }
+        public Command<Event> ItemTapped { get; }
 
         public ItemsViewModel()
         {
             Title = "Browse";
-            Items = new ObservableCollection<Item>();
+            Items = new ObservableCollection<Event>();
             LoadItemsCommand = new Command(async () => await ExecuteLoadItemsCommand());
 
-            ItemTapped = new Command<Item>(OnItemSelected);
+            ItemTapped = new Command<Event>(OnItemSelected);
 
             AddItemCommand = new Command(OnAddItem);
         }
@@ -57,7 +57,7 @@ namespace CAL.ViewModels
             SelectedItem = null;
         }
 
-        public Item SelectedItem
+        public Event SelectedItem
         {
             get => _selectedItem;
             set
@@ -72,7 +72,7 @@ namespace CAL.ViewModels
             await Shell.Current.GoToAsync(nameof(NewItemPage));
         }
 
-        async void OnItemSelected(Item item)
+        async void OnItemSelected(Event item)
         {
             if (item == null)
                 return;
