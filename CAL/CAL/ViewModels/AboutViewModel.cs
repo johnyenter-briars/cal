@@ -1,4 +1,6 @@
-﻿using System;
+﻿using CAL.Client;
+using System;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using Xamarin.Essentials;
 using Xamarin.Forms;
@@ -10,9 +12,14 @@ namespace CAL.ViewModels
         public AboutViewModel()
         {
             Title = "About";
-            OpenWebCommand = new Command(async () => await Browser.OpenAsync("https://aka.ms/xamarin-quickstart"));
         }
 
-        public ICommand OpenWebCommand { get; }
+        public ICommand OpenWebCommand => new Command(TestCalClient);
+        private async void TestCalClient(object obj)
+        {
+            var calClient = new CalClient();
+
+            var events = await calClient.GetEvents();
+        }
     }
 }
