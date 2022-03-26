@@ -142,4 +142,7 @@
       <Name>CAL</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\icons8_calendar_48.png" />
+  </ItemGroup>
 </Project>

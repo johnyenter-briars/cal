@@ -2,20 +2,22 @@
 using CAL.ViewModels;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
 namespace CAL.Views
 {
-    public partial class NewItemPage : ContentPage
+    public partial class NewEventPage : ContentPage
     {
         public Event Item { get; set; }
-
-        public NewItemPage()
+        public NewEventPage()
         {
             InitializeComponent();
-            BindingContext = new NewItemViewModel();
+            BindingContext = new NewEventViewModel();
         }
     }
 }

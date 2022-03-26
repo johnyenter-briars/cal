@@ -11,17 +11,15 @@ using Xamarin.Forms.Xaml;
 
 namespace CAL.Views
 {
-    public partial class ItemsPage : ContentPage
+    public partial class EventsPage : ContentPage
     {
-        ItemsViewModel _viewModel;
-
-        public ItemsPage()
+        EventsViewModel _viewModel;
+        public EventsPage()
         {
             InitializeComponent();
 
-            BindingContext = _viewModel = new ItemsViewModel();
+            BindingContext = _viewModel = new EventsViewModel();
         }
-
         protected override void OnAppearing()
         {
             base.OnAppearing();

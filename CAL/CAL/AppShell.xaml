@@ -30,9 +30,9 @@
     </Shell.Resources>
 
     <TabBar>
-        <ShellContent Title="Calendar" Icon="icon_about.png" Route="CalendarPage" ContentTemplate="{DataTemplate local:CalendarPage}" />
-        <ShellContent Title="About" Icon="icon_about.png" ContentTemplate="{DataTemplate local:AboutPage}" />
-        <ShellContent Title="Browse" Icon="icon_feed.png" ContentTemplate="{DataTemplate local:ItemsPage}" />
+        <ShellContent Title="Calendar" Icon="icons8_calendar_48.png" Route="CalendarPage" ContentTemplate="{DataTemplate local:CalendarPage}" />
+        <ShellContent Title="Events List" Icon="icon_about.png" ContentTemplate="{DataTemplate local:EventsPage}" />
+        <ShellContent Title="Settings" Icon="icon_feed.png" ContentTemplate="{DataTemplate local:AboutPage}" />
     </TabBar>
 
     <!--

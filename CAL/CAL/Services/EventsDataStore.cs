@@ -8,48 +8,53 @@ namespace CAL.Services
 {
     public class EventsDataStore : IDataStore<Event>
     {
-        readonly List<Event> items;
+        readonly List<Event> events;
 
         public EventsDataStore()
         {
-            items = new List<Event>()
+            events = new List<Event>()
             {
-                new Event { Id = 1, Name = "Sixth item", Time = DateTime.Now }
+                new Event { Id = 1, Name = "Sixth item", Time = DateTime.Now },
+                new Event { Id = 2, Name = "Sixth item", Time = DateTime.Now },
+                new Event { Id = 3, Name = "Sixth item", Time = DateTime.Now },
+                new Event { Id = 4, Name = "Sixth item", Time = DateTime.Now },
+                new Event { Id = 5, Name = "Sixth item", Time = DateTime.Now },
+                new Event { Id = 6, Name = "Sixth item", Time = DateTime.Now },
             };
         }
 
-        public async Task<bool> AddItemAsync(Event item)
+        public async Task<bool> AddEventAsync(Event e)
         {
-            items.Add(item);
+            events.Add(e);
 
             return await Task.FromResult(true);
         }
 
-        public async Task<bool> UpdateItemAsync(Event item)
+        public async Task<bool> UpdateEventAsync(Event e)
         {
-            var oldItem = items.Where((Event arg) => arg.Id == item.Id).FirstOrDefault();
-            items.Remove(oldItem);
-            items.Add(item);
+            var oldItem = events.Where((Event arg) => arg.Id == e.Id).FirstOrDefault();
+            events.Remove(oldItem);
+            events.Add(e);
 
             return await Task.FromResult(true);
         }
 
-        public async Task<bool> DeleteItemAsync(int id)
+        public async Task<bool> DeleteEventsAsync(int id)
         {
-            var oldItem = items.Where((Event arg) => arg.Id == id).FirstOrDefault();
-            items.Remove(oldItem);
+            var oldItem = events.Where((Event arg) => arg.Id == id).FirstOrDefault();
+            events.Remove(oldItem);
 
             return await Task.FromResult(true);
         }
 
-        public async Task<Event> GetItemAsync(int id)
+        public async Task<Event> GetEventAsync(int id)
         {
-            return await Task.FromResult(items.FirstOrDefault(s => s.Id == id));
+            return await Task.FromResult(events.FirstOrDefault(s => s.Id == id));
         }
 
-        public async Task<IEnumerable<Event>> GetItemsAsync(bool forceRefresh = false)
+        public async Task<IEnumerable<Event>> GetEventsAsync(bool forceRefresh = false)
         {
-            return await Task.FromResult(items);
+            return await Task.FromResult(events);
         }
     }
 }

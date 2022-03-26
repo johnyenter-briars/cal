@@ -1,14 +1,15 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
-using System.Threading.Tasks;
+using System.Text;
 using Xamarin.Forms;
 
 namespace CAL.ViewModels
 {
-    [QueryProperty(nameof(ItemId), nameof(ItemId))]
-    public class ItemDetailViewModel : BaseViewModel
+    [QueryProperty(nameof(EventId), nameof(EventId))]
+    public class EventDetailViewModel : BaseViewModel
     {
-        private int itemId;
+        private int eventId;
         private string name;
         private DateTime time;
         public int Id { get; set; }
@@ -25,24 +26,24 @@ namespace CAL.ViewModels
             set => SetProperty(ref time, value);
         }
 
-        public int ItemId
+        public int EventId
         {
             get
             {
-                return itemId;
+                return eventId;
             }
             set
             {
-                itemId = value;
-                LoadItemId(value);
+                eventId = value;
+                LoadEventId(value);
             }
         }
 
-        public async void LoadItemId(int itemId)
+        public async void LoadEventId(int eventId)
         {
             try
             {
-                var item = await DataStore.GetItemAsync(itemId);
+                var item = await DataStore.GetEventAsync(eventId);
                 Id = item.Id;
                 Name = item.Name;
                 Time = item.Time;
