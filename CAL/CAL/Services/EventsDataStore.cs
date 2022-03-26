@@ -1,4 +1,5 @@
-﻿using CAL.Client.Models;
+﻿using CAL.Client;
+using CAL.Client.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,53 +9,56 @@ namespace CAL.Services
 {
     public class EventsDataStore : IDataStore<Event>
     {
-        readonly List<Event> events;
+        IList<Event> events;
 
         public EventsDataStore()
         {
-            events = new List<Event>()
-            {
-                new Event { Id = 1, Name = "Sixth item", Time = DateTime.Now },
-                new Event { Id = 2, Name = "Sixth item", Time = DateTime.Now },
-                new Event { Id = 3, Name = "Sixth item", Time = DateTime.Now },
-                new Event { Id = 4, Name = "Sixth item", Time = DateTime.Now },
-                new Event { Id = 5, Name = "Sixth item", Time = DateTime.Now },
-                new Event { Id = 6, Name = "Sixth item", Time = DateTime.Now },
-            };
         }
 
         public async Task<bool> AddEventAsync(Event e)
         {
-            events.Add(e);
+            var success = await CalClient.CreateEvent(e.ToRequest());
 
-            return await Task.FromResult(true);
+            await FetchEvents();
+
+            return success;
         }
 
         public async Task<bool> UpdateEventAsync(Event e)
         {
-            var oldItem = events.Where((Event arg) => arg.Id == e.Id).FirstOrDefault();
-            events.Remove(oldItem);
-            events.Add(e);
+            throw new NotImplementedException();
+            //var oldItem = events.Where((Event arg) => arg.Id == e.Id).FirstOrDefault();
+            //events.Remove(oldItem);
+            //events.Add(e);
 
-            return await Task.FromResult(true);
+            //return await Task.FromResult(true);
         }
 
         public async Task<bool> DeleteEventsAsync(int id)
         {
-            var oldItem = events.Where((Event arg) => arg.Id == id).FirstOrDefault();
-            events.Remove(oldItem);
+            throw new NotImplementedException();
+            //var oldItem = events.Where((Event arg) => arg.Id == id).FirstOrDefault();
+            //events.Remove(oldItem);
 
-            return await Task.FromResult(true);
+            //return await Task.FromResult(true);
         }
 
         public async Task<Event> GetEventAsync(int id)
         {
+            await FetchEvents();
             return await Task.FromResult(events.FirstOrDefault(s => s.Id == id));
         }
 
         public async Task<IEnumerable<Event>> GetEventsAsync(bool forceRefresh = false)
         {
+            await FetchEvents();
             return await Task.FromResult(events);
+        }
+
+        private async Task FetchEvents()
+        {
+            //TODO: dynamically update based on new data - rather than wipe everything out
+            events = await CalClient.GetEvents();
         }
     }
 }

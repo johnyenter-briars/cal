@@ -50,7 +50,7 @@ namespace CAL.ViewModels
             }
             catch (Exception)
             {
-                Debug.WriteLine("Failed to Load Item");
+                Debug.WriteLine("Failed to Load Event");
             }
         }
     }

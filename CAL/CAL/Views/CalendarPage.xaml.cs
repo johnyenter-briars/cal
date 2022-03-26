@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CAL.ViewModels;
+using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
@@ -14,6 +15,7 @@ namespace CAL.Views
         public CalendarPage()
         {
             InitializeComponent();
+            BindingContext = new CalendarViewModel();
         }
     }
 }

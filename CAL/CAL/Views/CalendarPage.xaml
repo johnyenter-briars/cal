@@ -4,7 +4,7 @@
              x:Class="CAL.Views.CalendarPage"
              xmlns:vm="clr-namespace:CAL.ViewModels"
              xmlns:controls="clr-namespace:Xamarin.Plugin.Calendar.Controls;assembly=Xamarin.Plugin.Calendar"
-             Title="please">
+             Title="{Binding Title}">
     <ContentPage.Resources>
         <ResourceDictionary>
             <Color x:Key="Accent">#96d1ff</Color>

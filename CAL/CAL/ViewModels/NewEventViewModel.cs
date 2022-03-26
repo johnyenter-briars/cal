@@ -21,8 +21,7 @@ namespace CAL.ViewModels
 
         private bool ValidateSave()
         {
-            return !string.IsNullOrWhiteSpace(text)
-                && !string.IsNullOrWhiteSpace(description);
+            return !string.IsNullOrWhiteSpace(text);
         }
 
         public string Text
@@ -51,7 +50,7 @@ namespace CAL.ViewModels
             Event newItem = new Event()
             {
                 Name = text,
-                Id = 4,
+                Time = DateTime.UtcNow,
             };
 
             await DataStore.AddEventAsync(newItem);
