@@ -8,5 +8,7 @@ namespace CAL.Client.Models.Request
 {
     public class CreateEventRequest
     {
+        public string Name { get; set; }
+        public DateTime Time { get; set; }
     }
 }

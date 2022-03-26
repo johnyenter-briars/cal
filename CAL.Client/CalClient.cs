@@ -5,6 +5,8 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace CAL.Client
@@ -20,19 +22,13 @@ namespace CAL.Client
             _httpClient.BaseAddress = new Uri(_serverUrl);
         }
 
-        public async Task<bool> CreateEvent(string name)
+        public async Task<bool> CreateEvent(CreateEventRequest createEventRequest)
         {
-            var request = new StringContent("");
-            var response = await _httpClient.PostAsync("event/" + name, request);
+            var request = new StringContent(JsonConvert.SerializeObject(createEventRequest), Encoding.UTF8, "application/json");
 
-            if (response.IsSuccessStatusCode)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            var response = await _httpClient.PostAsync("event", request);
+
+            return response.IsSuccessStatusCode;
         }
         public async Task<IList<Event>> GetEvents()
         {
