@@ -6,10 +6,10 @@ namespace CAL.Services
 {
     public interface IDataStore<T>
     {
-        Task<bool> AddItemAsync(T item);
-        Task<bool> UpdateItemAsync(T item);
-        Task<bool> DeleteItemAsync(string id);
-        Task<T> GetItemAsync(string id);
-        Task<IEnumerable<T>> GetItemsAsync(bool forceRefresh = false);
+        Task<bool> AddEventAsync(T item);
+        Task<bool> UpdateEventAsync(T item);
+        Task<bool> DeleteEventsAsync(int id);
+        Task<T> GetEventAsync(int id);
+        Task<IEnumerable<T>> GetEventsAsync(bool forceRefresh = false);
     }
 }

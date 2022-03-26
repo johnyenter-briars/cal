@@ -1,18 +1,17 @@
-﻿using CAL.Models;
+﻿using CAL.Client.Models;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using System.Windows.Input;
 using Xamarin.Forms;
 
 namespace CAL.ViewModels
 {
-    public class NewItemViewModel : BaseViewModel
+    public class NewEventViewModel : BaseViewModel
     {
         private string text;
         private string description;
 
-        public NewItemViewModel()
+        public NewEventViewModel()
         {
             SaveCommand = new Command(OnSave, ValidateSave);
             CancelCommand = new Command(OnCancel);
@@ -22,8 +21,8 @@ namespace CAL.ViewModels
 
         private bool ValidateSave()
         {
-            return !String.IsNullOrWhiteSpace(text)
-                && !String.IsNullOrWhiteSpace(description);
+            return !string.IsNullOrWhiteSpace(text)
+                && !string.IsNullOrWhiteSpace(description);
         }
 
         public string Text
@@ -49,14 +48,13 @@ namespace CAL.ViewModels
 
         private async void OnSave()
         {
-            Item newItem = new Item()
+            Event newItem = new Event()
             {
-                Id = Guid.NewGuid().ToString(),
-                Text = Text,
-                Description = Description
+                Name = text,
+                Id = 4,
             };
 
-            await DataStore.AddItemAsync(newItem);
+            await DataStore.AddEventAsync(newItem);
 
             // This will pop the current page off the navigation stack
             await Shell.Current.GoToAsync("..");
