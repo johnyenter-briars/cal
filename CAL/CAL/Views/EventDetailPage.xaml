@@ -5,8 +5,10 @@
              Title="Event Detail View">
 
     <StackLayout Spacing="20" Padding="15">
-        <Label Text="Text:" FontSize="Medium" />
+        <Label Text="Event Name" FontSize="Medium" TextColor="Black" />
         <Label Text="{Binding Name}" FontSize="Small" TextColor="Black"/>
+        <Label Text="Event Time" FontSize="Medium" TextColor="Black"/>
+        <Label Text="{Binding Time}" FontSize="Small" TextColor="Black"/>
     </StackLayout>
     
 </ContentPage>
