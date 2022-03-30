@@ -1,4 +1,5 @@
 ﻿using CAL.Client.Models;
+using CAL.Client.Models.Cal;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -50,7 +51,7 @@ namespace CAL.ViewModels
             Event newItem = new Event()
             {
                 Name = text,
-                Time = DateTime.UtcNow,
+                StartTime = DateTime.UtcNow,
             };
 
             await DataStore.AddEventAsync(newItem);

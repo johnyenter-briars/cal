@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CAL.Client.Models.Request
+namespace CAL.Client.Models.Server.Request
 {
     public class CreateEventRequest
     {
         public string Name { get; set; }
-        public DateTime Time { get; set; }
+        public DateTime StartTime { get; set; }
     }
 }

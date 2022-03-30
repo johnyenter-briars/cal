@@ -1,4 +1,5 @@
 ﻿using CAL.Client.Models;
+using CAL.Client.Models.Cal;
 using CAL.ViewModels;
 using System;
 using System.Collections.Generic;

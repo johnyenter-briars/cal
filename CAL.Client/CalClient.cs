@@ -1,6 +1,7 @@
 ﻿using CAL.Client.Models;
-using CAL.Client.Models.Request;
-using CAL.Client.Models.Response;
+using CAL.Client.Models.Cal;
+using CAL.Client.Models.Server.Request;
+using CAL.Client.Models.Server.Response;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -55,7 +56,7 @@ namespace CAL.Client
         }
         private static bool ValidateRequest(CreateEventRequest request)
         {
-            return request.Time.Kind == DateTimeKind.Utc;
+            return request.StartTime.Kind == DateTimeKind.Utc;
         }
     }
 }
