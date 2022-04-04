@@ -11,14 +11,16 @@ namespace CAL.Services
     public class EventsDataStore : IDataStore<Event>
     {
         IList<Event> events;
+        private readonly ICalClient CalClient;
 
         public EventsDataStore()
         {
+            CalClient = CalClientFactory.GetNewCalClient();
         }
 
         public async Task<bool> AddEventAsync(Event e)
         {
-            var success = await CalClient.CreateEvent(e.ToRequest());
+            var success = await CalClient.CreateEventAsync(e.ToRequest());
 
             await FetchEvents();
 
@@ -59,7 +61,7 @@ namespace CAL.Services
         private async Task FetchEvents()
         {
             //TODO: dynamically update based on new data - rather than wipe everything out
-            events = await CalClient.GetEvents();
+            events = await CalClient.GetEventsAsync();
         }
     }
 }

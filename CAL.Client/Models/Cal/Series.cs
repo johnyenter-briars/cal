@@ -10,7 +10,7 @@ namespace CAL.Client.Models.Cal
 {
     public class Series
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public string Name { get; set; }
         public int RepeatEveryWeek { get; set; }
         public bool RepeatOnMon { get; set; }

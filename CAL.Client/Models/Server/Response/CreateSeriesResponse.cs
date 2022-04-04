@@ -1,12 +1,13 @@
-using CAL.Client.Models.Cal;
+using System;
 
 namespace CAL.Client.Models.Server.Response
 {
-    public class CalUserResponse
+    public class CreateSeriesResponse
     {
-        public CalUser User { get; set; }
         public int StatusCode { get; set; }
         public string Message { get; set; }
+        public Guid? SeriesId { get; set; }
     }
 }
+
 

@@ -10,5 +10,8 @@ namespace CAL.Client.Models.Server.Request
     {
         public string Name { get; set; }
         public DateTime StartTime { get; set; }
+        public DateTime EndTime { get; set; }
+        public Guid CalUserId { get; set; }
+        public Guid? SeriesId { get; set; }
     }
 }
