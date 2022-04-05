@@ -4,7 +4,7 @@
              x:Class="CAL.Views.EventsPage"
              Title="{Binding Title}"
              xmlns:local="clr-namespace:CAL.ViewModels"  
-             xmlns:model="clr-namespace:CAL.Client.Models;assembly=CAL.Client"  
+             xmlns:model="clr-namespace:CAL.Client.Models.Cal;assembly=CAL.Client"  
              x:Name="BrowseItemsPage">
 
     <ContentPage.ToolbarItems>

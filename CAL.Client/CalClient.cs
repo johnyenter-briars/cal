@@ -1,4 +1,5 @@
-﻿using CAL.Client.Models;
+﻿using CAL.Client.Interfaces;
+using CAL.Client.Models;
 using CAL.Client.Models.Cal;
 using CAL.Client.Models.Cal.Request;
 using CAL.Client.Models.Server.Request;
@@ -17,8 +18,8 @@ namespace CAL.Client
 {
     internal class CalClient : ICalClient
     {
-        // private static readonly string _serverUrl = "http://192.168.0.10:8000/api/";
-        private static readonly string _serverUrl = "http://localhost:8000/api/";
+         private static readonly string _serverUrl = "http://192.168.0.7:8000/api/";
+        //private static readonly string _serverUrl = "http://localhost:8000/api/";
         private static readonly HttpClient _httpClient = new HttpClient
         {
             BaseAddress = new Uri(_serverUrl)
@@ -41,7 +42,10 @@ namespace CAL.Client
         {
             if (!ValidateRequest(createEventRequest))
             {
-                return null;
+                return new CreateEventResponse {
+                    StatusCode = 400,
+                    Message = "Bad Request",
+                };
             }
 
             return await PostRequest<CreateEventResponse, CreateEventRequest>(createEventRequest, "event");
@@ -65,7 +69,8 @@ namespace CAL.Client
         private bool ValidateRequest(CreateEventRequest request)
         {
             return request.StartTime.Kind == DateTimeKind.Utc &&
-                    request.EndTime.Kind == DateTimeKind.Utc;
+                    request.EndTime.Kind == DateTimeKind.Utc &&
+                    request.CalUserId != null;
         }
         private async Task<T> GetRequest<T>(string path)
         {
@@ -82,9 +87,8 @@ namespace CAL.Client
             }
         }
 
-        private async Task<T> PostRequest<T, V>(V requestObject, string path)
+        private async Task<T> PostRequest<T, V>(V requestObject, string path) where T : IResponse
         {
-            var idk = JsonConvert.SerializeObject(requestObject, JsonSettings);
             var request = new StringContent(JsonConvert.SerializeObject(requestObject, JsonSettings), Encoding.UTF8, "application/json");
 
             var clientResponse = await _httpClient.PostAsync(path, request);
@@ -97,7 +101,7 @@ namespace CAL.Client
             }
             else 
             {
-                throw new Exception($"Failure to create record");
+                throw new Exception($"Failure to create record: E: {response.GetMessage()}");
             }
         }
     }

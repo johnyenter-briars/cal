@@ -16,6 +16,9 @@ namespace CAL.Client.Models.Cal
             return new CreateEventRequest
             {
                 StartTime = StartTime,
+                EndTime = EndTime,
+                CalUserId = CalUserId,
+                SeriesId = SeriesId,
                 Name = Name,
             };
         }
