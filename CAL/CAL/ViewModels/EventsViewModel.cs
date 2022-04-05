@@ -1,4 +1,5 @@
 ﻿using CAL.Client.Models;
+using CAL.Client.Models.Cal;
 using CAL.Views;
 using System;
 using System.Collections.ObjectModel;
@@ -76,6 +77,8 @@ namespace CAL.ViewModels
         {
             if (e == null)
                 return;
+
+            var idk = $"{nameof(EventDetailPage)}?{nameof(EventDetailViewModel.EventId)}={e.Id}";
 
             // This will push the ItemDetailPage onto the navigation stack
             await Shell.Current.GoToAsync($"{nameof(EventDetailPage)}?{nameof(EventDetailViewModel.EventId)}={e.Id}");

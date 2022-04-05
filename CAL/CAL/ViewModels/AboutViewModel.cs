@@ -13,11 +13,5 @@ namespace CAL.ViewModels
         {
             Title = "About";
         }
-
-        public ICommand OpenWebCommand => new Command(TestCalClient);
-        private async void TestCalClient(object obj)
-        {
-            var events = await CalClient.GetEvents();
-        }
     }
 }

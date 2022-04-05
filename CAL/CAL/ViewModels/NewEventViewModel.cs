@@ -1,4 +1,7 @@
-﻿using CAL.Client.Models;
+﻿using CAL.Client;
+using CAL.Client.Models;
+using CAL.Client.Models.Cal;
+using CAL.Client.Models.Cal.Request;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -47,11 +50,20 @@ namespace CAL.ViewModels
 
         private async void OnSave()
         {
+
+            var newUserResponse = await CalClientFactory.GetNewCalClient().CreateCalUserAsync(new CreateCalUserRequest
+            {
+                FirstName = "Test",
+                LastName = "User",
+            });
+
             Event newItem = new Event()
             {
                 Name = text,
-                Time = DateTime.UtcNow,
-            };
+                StartTime = DateTime.UtcNow,
+                EndTime = DateTime.UtcNow,
+                CalUserId = (Guid)newUserResponse.CalUserId,
+             };
 
             await DataStore.AddEventAsync(newItem);
 

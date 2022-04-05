@@ -1,5 +1,6 @@
 ﻿using CAL.Client;
 using CAL.Client.Models;
+using CAL.Client.Models.Cal;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,18 +11,20 @@ namespace CAL.Services
     public class EventsDataStore : IDataStore<Event>
     {
         IList<Event> events;
+        private readonly ICalClient CalClient;
 
         public EventsDataStore()
         {
+            CalClient = CalClientFactory.GetNewCalClient();
         }
 
         public async Task<bool> AddEventAsync(Event e)
         {
-            var success = await CalClient.CreateEvent(e.ToRequest());
+            var success = await CalClient.CreateEventAsync(e.ToRequest());
 
             await FetchEvents();
 
-            return success;
+            return success.StatusCode == 201;
         }
 
         public async Task<bool> UpdateEventAsync(Event e)
@@ -34,7 +37,7 @@ namespace CAL.Services
             //return await Task.FromResult(true);
         }
 
-        public async Task<bool> DeleteEventsAsync(int id)
+        public async Task<bool> DeleteEventsAsync(Guid id)
         {
             throw new NotImplementedException();
             //var oldItem = events.Where((Event arg) => arg.Id == id).FirstOrDefault();
@@ -43,7 +46,7 @@ namespace CAL.Services
             //return await Task.FromResult(true);
         }
 
-        public async Task<Event> GetEventAsync(int id)
+        public async Task<Event> GetEventAsync(Guid id)
         {
             await FetchEvents();
             return await Task.FromResult(events.FirstOrDefault(s => s.Id == id));
@@ -58,7 +61,7 @@ namespace CAL.Services
         private async Task FetchEvents()
         {
             //TODO: dynamically update based on new data - rather than wipe everything out
-            events = await CalClient.GetEvents();
+            events = (await CalClient.GetEventsAsync()).Events;
         }
     }
 }

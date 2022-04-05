@@ -9,10 +9,10 @@ namespace CAL.ViewModels
     [QueryProperty(nameof(EventId), nameof(EventId))]
     public class EventDetailViewModel : BaseViewModel
     {
-        private int eventId;
+        private string eventId;
         private string name;
         private DateTime time;
-        public int Id { get; set; }
+        public Guid Id { get; set; }
 
         public string Name
         {
@@ -26,7 +26,7 @@ namespace CAL.ViewModels
             set => SetProperty(ref time, value);
         }
 
-        public int EventId
+        public string EventId
         {
             get
             {
@@ -39,14 +39,14 @@ namespace CAL.ViewModels
             }
         }
 
-        public async void LoadEventId(int eventId)
+        public async void LoadEventId(string eventId)
         {
             try
             {
-                var item = await DataStore.GetEventAsync(eventId);
+                var item = await DataStore.GetEventAsync(new Guid(eventId));
                 Id = item.Id;
                 Name = item.Name;
-                Time = item.Time;
+                Time = item.StartTime;
             }
             catch (Exception)
             {
