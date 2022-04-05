@@ -24,7 +24,7 @@ namespace CAL.Services
 
             await FetchEvents();
 
-            return success;
+            return success.StatusCode == 201;
         }
 
         public async Task<bool> UpdateEventAsync(Event e)
@@ -37,7 +37,7 @@ namespace CAL.Services
             //return await Task.FromResult(true);
         }
 
-        public async Task<bool> DeleteEventsAsync(int id)
+        public async Task<bool> DeleteEventsAsync(Guid id)
         {
             throw new NotImplementedException();
             //var oldItem = events.Where((Event arg) => arg.Id == id).FirstOrDefault();
@@ -46,7 +46,7 @@ namespace CAL.Services
             //return await Task.FromResult(true);
         }
 
-        public async Task<Event> GetEventAsync(int id)
+        public async Task<Event> GetEventAsync(Guid id)
         {
             await FetchEvents();
             return await Task.FromResult(events.FirstOrDefault(s => s.Id == id));
@@ -61,7 +61,7 @@ namespace CAL.Services
         private async Task FetchEvents()
         {
             //TODO: dynamically update based on new data - rather than wipe everything out
-            events = await CalClient.GetEventsAsync();
+            events = (await CalClient.GetEventsAsync()).Events;
         }
     }
 }

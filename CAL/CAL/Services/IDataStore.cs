@@ -8,8 +8,8 @@ namespace CAL.Services
     {
         Task<bool> AddEventAsync(T item);
         Task<bool> UpdateEventAsync(T item);
-        Task<bool> DeleteEventsAsync(int id);
-        Task<T> GetEventAsync(int id);
+        Task<bool> DeleteEventsAsync(Guid id);
+        Task<T> GetEventAsync(Guid id);
         Task<IEnumerable<T>> GetEventsAsync(bool forceRefresh = false);
     }
 }
