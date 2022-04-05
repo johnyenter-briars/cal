@@ -5,7 +5,8 @@
              Title="{Binding Title}"
              xmlns:local="clr-namespace:CAL.ViewModels"  
              xmlns:model="clr-namespace:CAL.Client.Models.Cal;assembly=CAL.Client"  
-             x:Name="BrowseItemsPage">
+             x:Name="BrowseItemsPage"
+             BackgroundColor="{StaticResource BackgroundColor}">
 
     <ContentPage.ToolbarItems>
         <ToolbarItem Text="Add" Command="{Binding AddEventCommand}" />
@@ -24,7 +25,7 @@
                         <Label Text="{Binding Name}" 
                             LineBreakMode="NoWrap" 
                             Style="{DynamicResource ListItemTextStyle}" 
-                            TextColor="Black"
+                            TextColor="{StaticResource TextSecondaryColor}"
                             FontSize="16" />
                         <StackLayout.GestureRecognizers>
                             <TapGestureRecognizer 
