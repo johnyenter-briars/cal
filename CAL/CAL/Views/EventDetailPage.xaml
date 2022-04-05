@@ -2,13 +2,15 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="CAL.Views.EventDetailPage"
-             Title="Event Detail View">
+             Title="Event Detail View"
+             BackgroundColor="{StaticResource BackgroundColor}"
+             >
 
     <StackLayout Spacing="20" Padding="15">
-        <Label Text="Event Name" FontSize="Medium" TextColor="Black" />
-        <Label Text="{Binding Name}" FontSize="Small" TextColor="Black"/>
-        <Label Text="Event Time" FontSize="Medium" TextColor="Black"/>
-        <Label Text="{Binding Time}" FontSize="Small" TextColor="Black"/>
+        <Label Text="Event Name" FontSize="Medium" TextColor="{StaticResource TextPrimaryColor}" />
+        <Label Text="{Binding Name}" FontSize="Small" TextColor="{StaticResource TextSecondaryColor}"/>
+        <Label Text="Event Time" FontSize="Medium" TextColor="{StaticResource TextPrimaryColor}"/>
+        <Label Text="{Binding Time}" FontSize="Small" TextColor="{StaticResource TextSecondaryColor}"/>
     </StackLayout>
     
 </ContentPage>
