@@ -22,5 +22,7 @@ namespace CAL.Client.Models.Cal
                 Name = Name,
             };
         }
+
+        public override string ToString() => $"{Name}-{StartTime}-{EndTime}";
     }
 }

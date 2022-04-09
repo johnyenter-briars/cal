@@ -8,6 +8,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -18,8 +19,8 @@ namespace CAL.Client
 {
     internal class CalClient : ICalClient
     {
-         private static readonly string _serverUrl = "http://192.168.0.7:8000/api/";
-        //private static readonly string _serverUrl = "http://localhost:8000/api/";
+        //  private static readonly string _serverUrl = "http://192.168.0.7:8000/api/";
+        private static readonly string _serverUrl = "http://localhost:8000/api/";
         private static readonly HttpClient _httpClient = new HttpClient
         {
             BaseAddress = new Uri(_serverUrl)
@@ -42,7 +43,8 @@ namespace CAL.Client
         {
             if (!ValidateRequest(createEventRequest))
             {
-                return new CreateEventResponse {
+                return new CreateEventResponse
+                {
                     StatusCode = 400,
                     Message = "Bad Request",
                 };
@@ -74,7 +76,9 @@ namespace CAL.Client
         }
         private async Task<T> GetRequest<T>(string path)
         {
+            Console.WriteLine("test");
             var clientResponse = await _httpClient.GetAsync(path);
+            Console.WriteLine("test");
 
             if (clientResponse.IsSuccessStatusCode)
             {
@@ -99,10 +103,21 @@ namespace CAL.Client
             {
                 return response;
             }
-            else 
+            else
             {
                 throw new Exception($"Failure to create record: E: {response.GetMessage()}");
             }
+        }
+
+        public async Task<List<Event>> GetEventsForDayAsync(int dayOfCurrentMonth)
+        {
+            var currentMonth = DateTime.Now.Month;
+
+            var allEvents = (await GetEventsAsync()).Events;
+
+            var selectedEvents = allEvents.Where(e => e.StartTime.Month == currentMonth).ToList();
+
+            return selectedEvents;
         }
     }
 }

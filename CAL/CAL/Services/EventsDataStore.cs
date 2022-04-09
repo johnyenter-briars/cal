@@ -11,7 +11,7 @@ namespace CAL.Services
     public class EventsDataStore : IDataStore<Event>
     {
         IList<Event> events;
-        private readonly ICalClient CalClient;
+        private readonly ICalServerClient CalClient;
 
         public EventsDataStore()
         {
