@@ -2,24 +2,20 @@
 using CAL.Client.Models;
 using CAL.Client.Models.Cal.Request;
 using CAL.Client.Models.Server.Request;
+using CommandLine;
 
-var client = CalClientFactory.GetNewCalClient();
-
-var createUserResponse = await client.CreateCalUserAsync(new CreateCalUserRequest{
-    FirstName = "Test1",
-    LastName = "test2",
-});
-
-var userResponse = await client.GetCalUserAsync(createUserResponse.CalUserId.Value);
-
-var newEventResponse = await client.CreateEventAsync(new CreateEventRequest
+await Parser.Default.ParseArguments<CommandLineOptions>(args).WithParsedAsync<CommandLineOptions>(async options =>
 {
-    Name = "This came from CAL.Client",
-    StartTime = DateTime.UtcNow,
-    EndTime = DateTime.UtcNow,
-    CalUserId = userResponse.User.Id,
+    var client = CalClientFactory.GetNewCalClient();
+
+    var day = options.DayToListEvents;
+
+    if(day is int value)
+    {
+        var events = await client.GetEventsForDayAsync(value);
+        foreach(var e in events)
+        {
+            Console.WriteLine(e);
+        }
+    }
 });
-
-var r2 = await client.GetEventsAsync();
-
-Console.ReadKey();
