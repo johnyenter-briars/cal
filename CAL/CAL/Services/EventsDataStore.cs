@@ -8,10 +8,10 @@ using System.Threading.Tasks;
 
 namespace CAL.Services
 {
-    public class EventsDataStore : IDataStore<Event>
+    public class EventsDataStore : IEventDataStore<Event>
     {
         IList<Event> events;
-        private readonly ICalServerClient CalClient;
+        private readonly ICalClient CalClient;
 
         public EventsDataStore()
         {
@@ -52,9 +52,12 @@ namespace CAL.Services
             return await Task.FromResult(events.FirstOrDefault(s => s.Id == id));
         }
 
-        public async Task<IEnumerable<Event>> GetEventsAsync(bool forceRefresh = false)
+        public async Task<IEnumerable<Event>> GetEventsAsync(bool forceRefresh = true)
         {
-            await FetchEvents();
+            if (forceRefresh)
+            {
+                await FetchEvents();
+            }
             return await Task.FromResult(events);
         }
 
@@ -62,6 +65,16 @@ namespace CAL.Services
         {
             //TODO: dynamically update based on new data - rather than wipe everything out
             events = (await CalClient.GetEventsAsync()).Events;
+        }
+
+        public async Task<IEnumerable<Event>> GetEventsForDayAsync(int day, bool forceRefresh = true)
+        {
+            if (forceRefresh)
+            {
+                await FetchEvents();
+            }
+
+            return events.Where(e => e.StartTime.Day == day);
         }
     }
 }

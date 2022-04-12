@@ -12,7 +12,6 @@ namespace CAL.ViewModels
     public class EventsViewModel : BaseViewModel
     {
         private Event _selectedEvent;
-
         public ObservableCollection<Event> Events { get; }
         public Command LoadEventsCommand { get; }
         public Command AddEventCommand { get; }
