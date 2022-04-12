@@ -19,11 +19,11 @@ namespace CAL.Client
 {
     internal class CalClient : ICalClient
     {
-        //  private static readonly string _serverUrl = "http://192.168.0.7:8000/api/";
-        private static readonly string _serverUrl = "http://localhost:8000/api/";
+        private static readonly string _apiKey = "test";
+        private static readonly string _serverUrl = "http://192.168.0.8:8000/api/";
         private static readonly HttpClient _httpClient = new HttpClient
         {
-            BaseAddress = new Uri(_serverUrl)
+            BaseAddress = new Uri(_serverUrl),
         };
         private static readonly JsonSerializerSettings JsonSettings =
                 new JsonSerializerSettings
@@ -34,6 +34,11 @@ namespace CAL.Client
                     },
                     Formatting = Formatting.Indented
                 };
+
+        public CalClient()
+        {
+            _httpClient.DefaultRequestHeaders.Add("x-api-key", _apiKey);
+        }
 
         public async Task<CreateCalUserResponse> CreateCalUserAsync(CreateCalUserRequest createCalUserRequest)
         {
@@ -76,9 +81,7 @@ namespace CAL.Client
         }
         private async Task<T> GetRequest<T>(string path)
         {
-            Console.WriteLine("test");
             var clientResponse = await _httpClient.GetAsync(path);
-            Console.WriteLine("test");
 
             if (clientResponse.IsSuccessStatusCode)
             {
@@ -108,7 +111,6 @@ namespace CAL.Client
                 throw new Exception($"Failure to create record: E: {response.GetMessage()}");
             }
         }
-
         public async Task<List<Event>> GetEventsForDayAsync(int dayOfCurrentMonth)
         {
             var currentMonth = DateTime.Now.Month;

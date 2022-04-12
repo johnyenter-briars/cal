@@ -17,5 +17,6 @@ namespace CAL.Views
             InitializeComponent();
             BindingContext = new CalendarViewModel();
         }
+
     }
 }
