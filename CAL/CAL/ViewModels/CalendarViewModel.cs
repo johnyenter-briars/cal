@@ -14,10 +14,8 @@ namespace CAL.ViewModels
     internal class CalendarViewModel : BaseViewModel
     {
         public ICommand DayTappedCommand => new Command<DateTime>(async (date) => await DayTapped(date));
-
         public ObservableCollection<Event> Events { get; }
         public EventCollection EventCollection { get; }
-
         public Command<Event> EventTapped { get; }
         public DateTime _selectedDate;
         public DateTime SelectedDate
@@ -40,7 +38,7 @@ namespace CAL.ViewModels
             try
             {
                 Events.Clear();
-                var events = await DataStore.GetEventsAsync();
+                var events = await EventDataStore.GetItemAsync();
                 foreach (var e in events)
                 {
                     Events.Add(e);

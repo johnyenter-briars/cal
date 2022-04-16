@@ -43,7 +43,7 @@ namespace CAL.ViewModels
         {
             try
             {
-                var item = await DataStore.GetEventAsync(new Guid(eventId));
+                var item = await EventDataStore.GetEventAsync(new Guid(eventId));
                 Id = item.Id;
                 Name = item.Name;
                 Time = item.StartTime;
