@@ -32,7 +32,7 @@
     <TabBar>
         <ShellContent Title="Calendar" Icon="icons8_calendar_48.png" Route="CalendarPage" ContentTemplate="{DataTemplate local:CalendarPage}" />
         <ShellContent Title="Events List" Icon="icon_about.png" ContentTemplate="{DataTemplate local:EventsPage}" />
-        <ShellContent Title="Settings" Icon="icon_feed.png" ContentTemplate="{DataTemplate local:AboutPage}" />
+        <ShellContent Title="Settings" Icon="icon_feed.png" ContentTemplate="{DataTemplate local:SettingsPage}" />
     </TabBar>
 
     <!--

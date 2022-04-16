@@ -13,18 +13,17 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace CAL.Client
 {
     internal class CalClient : ICalClient
     {
-        private static readonly string _apiKey = "test";
-        private static readonly string _serverUrl = "http://192.168.0.8:8000/api/";
-        private static readonly HttpClient _httpClient = new HttpClient
-        {
-            BaseAddress = new Uri(_serverUrl),
-        };
+        private string _apiKey = "";
+        private string _hostName = "";
+        private int _port = -1;
+        private static readonly HttpClient _httpClient = new HttpClient();
         private static readonly JsonSerializerSettings JsonSettings =
                 new JsonSerializerSettings
                 {
@@ -34,12 +33,9 @@ namespace CAL.Client
                     },
                     Formatting = Formatting.Indented
                 };
-
         public CalClient()
         {
-            _httpClient.DefaultRequestHeaders.Add("x-api-key", _apiKey);
         }
-
         public async Task<CreateCalUserResponse> CreateCalUserAsync(CreateCalUserRequest createCalUserRequest)
         {
             return await PostRequest<CreateCalUserResponse, CreateCalUserRequest>(createCalUserRequest, "caluser");
@@ -81,7 +77,11 @@ namespace CAL.Client
         }
         private async Task<T> GetRequest<T>(string path)
         {
-            var clientResponse = await _httpClient.GetAsync(path);
+            var request = new HttpRequestMessage(HttpMethod.Get, $"http://{_hostName}:{_port}/api/" + path);
+            request.Headers.Accept.Clear();
+            request.Headers.Add("x-api-key", _apiKey);
+
+            var clientResponse = await _httpClient.SendAsync(request, CancellationToken.None);
 
             if (clientResponse.IsSuccessStatusCode)
             {
@@ -120,6 +120,13 @@ namespace CAL.Client
             var selectedEvents = allEvents.Where(e => e.StartTime.Month == currentMonth).ToList();
 
             return selectedEvents;
+        }
+
+        public void UpdateSettings(string hostname, int port, string apiKey)
+        {
+            _hostName = hostname;
+            _port = port;
+            _apiKey = apiKey;
         }
     }
 }

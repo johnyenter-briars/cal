@@ -35,7 +35,7 @@ namespace CAL.ViewModels
             try
             {
                 Events.Clear();
-                var events = await DataStore.GetEventsAsync(true);
+                var events = await DataStore.GetItemAsync(true);
                 foreach (var e in events)
                 {
                     Events.Add(e);

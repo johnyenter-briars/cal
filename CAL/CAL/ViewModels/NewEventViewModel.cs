@@ -65,7 +65,7 @@ namespace CAL.ViewModels
                 CalUserId = (Guid)newUserResponse.CalUserId,
              };
 
-            await DataStore.AddEventAsync(newItem);
+            await DataStore.AddItemAsync(newItem);
 
             // This will pop the current page off the navigation stack
             await Shell.Current.GoToAsync("..");
