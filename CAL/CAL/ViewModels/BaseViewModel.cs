@@ -11,7 +11,7 @@ namespace CAL.ViewModels
 {
     public class BaseViewModel : INotifyPropertyChanged
     {
-        public IDataStore<Event> DataStore => DependencyService.Get<IDataStore<Event>>();
+        public IDataStore<Event> EventDataStore => DependencyService.Get<IDataStore<Event>>();
 
         bool isBusy = false;
         public bool IsBusy

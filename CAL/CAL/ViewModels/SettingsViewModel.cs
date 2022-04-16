@@ -40,7 +40,7 @@ namespace CAL.ViewModels
             if (int.TryParse(port, out int p))
             {
                 PreferencesManager.SetSettings(hostname, p, apiKey);
-                DataStore.UpdateAuthentication();
+                EventDataStore.UpdateAuthentication();
             }
         }
     }

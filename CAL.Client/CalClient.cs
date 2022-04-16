@@ -96,9 +96,13 @@ namespace CAL.Client
 
         private async Task<T> PostRequest<T, V>(V requestObject, string path) where T : IResponse
         {
-            var request = new StringContent(JsonConvert.SerializeObject(requestObject, JsonSettings), Encoding.UTF8, "application/json");
+            var request = new HttpRequestMessage(HttpMethod.Post, $"http://{_hostName}:{_port}/api/" + path);
+            request.Headers.Accept.Clear();
+            request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            request.Headers.Add("x-api-key", _apiKey);
+            request.Content = new StringContent(JsonConvert.SerializeObject(requestObject, JsonSettings), Encoding.UTF8, "application/json");
 
-            var clientResponse = await _httpClient.PostAsync(path, request);
+            var clientResponse = await _httpClient.SendAsync(request, CancellationToken.None);
 
             var response = JsonConvert.DeserializeObject<T>(await clientResponse.Content.ReadAsStringAsync());
 

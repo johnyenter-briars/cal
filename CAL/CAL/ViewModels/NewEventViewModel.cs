@@ -50,22 +50,15 @@ namespace CAL.ViewModels
 
         private async void OnSave()
         {
-
-            var newUserResponse = await CalClientFactory.GetNewCalClient().CreateCalUserAsync(new CreateCalUserRequest
-            {
-                FirstName = "Test",
-                LastName = "User",
-            });
-
             Event newItem = new Event()
             {
                 Name = text,
                 StartTime = DateTime.UtcNow,
                 EndTime = DateTime.UtcNow,
-                CalUserId = (Guid)newUserResponse.CalUserId,
+                CalUserId = new Guid("a188e597-29f9-4e2f-aa46-e3713d9939da"),
              };
 
-            await DataStore.AddItemAsync(newItem);
+            await EventDataStore.AddItemAsync(newItem);
 
             // This will pop the current page off the navigation stack
             await Shell.Current.GoToAsync("..");
