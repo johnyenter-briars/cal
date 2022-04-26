@@ -104,6 +104,8 @@ namespace CAL.Client
 
             var clientResponse = await _httpClient.SendAsync(request, CancellationToken.None);
 
+            var str = await clientResponse.Content.ReadAsStringAsync();
+
             var response = JsonConvert.DeserializeObject<T>(await clientResponse.Content.ReadAsStringAsync());
 
             if (clientResponse.IsSuccessStatusCode)

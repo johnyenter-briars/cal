@@ -53,6 +53,7 @@ namespace CAL.ViewModels
             Event newItem = new Event()
             {
                 Name = text,
+                Description = description,
                 StartTime = DateTime.UtcNow,
                 EndTime = DateTime.UtcNow,
                 CalUserId = new Guid("a188e597-29f9-4e2f-aa46-e3713d9939da"),
