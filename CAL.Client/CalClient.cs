@@ -38,7 +38,7 @@ namespace CAL.Client
         }
         public async Task<CreateCalUserResponse> CreateCalUserAsync(CreateCalUserRequest createCalUserRequest)
         {
-            return await PostRequest<CreateCalUserResponse, CreateCalUserRequest>(createCalUserRequest, "caluser");
+            return await PostRequest<CreateCalUserRequest, CreateCalUserResponse>(createCalUserRequest, "caluser");
         }
         public async Task<CreateEventResponse> CreateEventAsync(CreateEventRequest createEventRequest)
         {
@@ -51,11 +51,11 @@ namespace CAL.Client
                 };
             }
 
-            return await PostRequest<CreateEventResponse, CreateEventRequest>(createEventRequest, "event");
+            return await PostRequest<CreateEventRequest, CreateEventResponse>(createEventRequest, "event");
         }
         public async Task<CreateSeriesResponse> CreateSeriesAsync(CreateSeriesRequest createSeriesRequest)
         {
-            return await PostRequest<CreateSeriesResponse, CreateSeriesRequest>(createSeriesRequest, "series");
+            return await PostRequest<CreateSeriesRequest, CreateSeriesResponse>(createSeriesRequest, "series");
         }
         public async Task<CalUserResponse> GetCalUserAsync(Guid id)
         {
@@ -75,7 +75,7 @@ namespace CAL.Client
                     request.EndTime.Kind == DateTimeKind.Utc &&
                     request.CalUserId != null;
         }
-        private async Task<T> GetRequest<T>(string path)
+        private async Task<TResponse> GetRequest<TResponse>(string path)
         {
             var request = new HttpRequestMessage(HttpMethod.Get, $"http://{_hostName}:{_port}/api/" + path);
             request.Headers.Accept.Clear();
@@ -85,7 +85,7 @@ namespace CAL.Client
 
             if (clientResponse.IsSuccessStatusCode)
             {
-                var response = JsonConvert.DeserializeObject<T>(await clientResponse.Content.ReadAsStringAsync());
+                var response = JsonConvert.DeserializeObject<TResponse>(await clientResponse.Content.ReadAsStringAsync());
                 return response;
             }
             else
@@ -94,7 +94,7 @@ namespace CAL.Client
             }
         }
 
-        private async Task<T> PostRequest<T, V>(V requestObject, string path) where T : IResponse
+        private async Task<TResponse> PostRequest<TRequest, TResponse>(TRequest requestObject, string path) where TResponse : IResponse
         {
             var request = new HttpRequestMessage(HttpMethod.Post, $"http://{_hostName}:{_port}/api/" + path);
             request.Headers.Accept.Clear();
@@ -104,9 +104,7 @@ namespace CAL.Client
 
             var clientResponse = await _httpClient.SendAsync(request, CancellationToken.None);
 
-            var str = await clientResponse.Content.ReadAsStringAsync();
-
-            var response = JsonConvert.DeserializeObject<T>(await clientResponse.Content.ReadAsStringAsync());
+            var response = JsonConvert.DeserializeObject<TResponse>(await clientResponse.Content.ReadAsStringAsync());
 
             if (clientResponse.IsSuccessStatusCode)
             {

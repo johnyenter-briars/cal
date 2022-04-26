@@ -14,7 +14,7 @@
             <Color x:Key="FrameColor">#FF1f1f1f</Color>
             <Color x:Key="TextPrimaryColor">#B0FFFFFF</Color>
             <Color x:Key="TextSecondaryColor">#eFeFeF</Color>
-            <Color x:Key="TrimColor">#AA336A</Color>
+            <Color x:Key="TrimColor">#5D3FD3</Color>
 
         </ResourceDictionary>
     </Application.Resources>
