@@ -30,19 +30,20 @@ namespace CAL.ViewModels
             Title = "Calendar";
             Events = new ObservableCollection<Event>();
             _selectedDate = DateTime.Now;
-            Task.Run(async () => await ExecuteLoadEventsComand());
+            Task.Run(async () => await ExecuteLoadEventsAsync());
             EventCollection = new EventCollection();
 
             //DayTappedCommand = new Command<DateTime>(DayTapped);
             //EventTappedCommend = new Command<Event>(OnEventSelected);
         }
-        async Task ExecuteLoadEventsComand()
+        private async Task ExecuteLoadEventsAsync()
         {
             IsBusy = true;
 
             try
             {
                 Events.Clear();
+                EventCollection.Clear();
                 var events = await EventDataStore.GetItemsAsync();
                 foreach (var e in events)
                 {
@@ -66,8 +67,9 @@ namespace CAL.ViewModels
                 IsBusy = false;
             }
         }
-        private void DayTapped(DateTime date)
+        private async void DayTapped(DateTime date)
         {
+            await ExecuteLoadEventsAsync();
             //saving this : )
             //var message = $"Received tap event from date: {date}";
             //await App.Current.MainPage.DisplayAlert("DayTapped", message, "Ok");
