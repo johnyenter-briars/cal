@@ -1,4 +1,5 @@
 ﻿using CAL.Client.Models.Cal;
+using CAL.Views;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -13,10 +14,11 @@ namespace CAL.ViewModels
 {
     internal class CalendarViewModel : BaseViewModel
     {
-        public ICommand DayTappedCommand => new Command<DateTime>(async (date) => await DayTapped(date));
+        //public ICommand DayTappedCommand;
+        public Command DayTappedCommand => new Command<DateTime>((date) => DayTapped(date));
+        public Command EventTappedCommend => new Command<Event>(async (e) => await OnEventSelected(e));
         public ObservableCollection<Event> Events { get; }
         public EventCollection EventCollection { get; }
-        public Command<Event> EventTapped { get; }
         public DateTime _selectedDate;
         public DateTime SelectedDate
         {
@@ -30,6 +32,9 @@ namespace CAL.ViewModels
             _selectedDate = DateTime.Now;
             Task.Run(async () => await ExecuteLoadEventsComand());
             EventCollection = new EventCollection();
+
+            //DayTappedCommand = new Command<DateTime>(DayTapped);
+            //EventTappedCommend = new Command<Event>(OnEventSelected);
         }
         async Task ExecuteLoadEventsComand()
         {
@@ -38,11 +43,10 @@ namespace CAL.ViewModels
             try
             {
                 Events.Clear();
-                var events = await EventDataStore.GetItemAsync();
+                var events = await EventDataStore.GetItemsAsync();
                 foreach (var e in events)
                 {
                     Events.Add(e);
-                    var idk = EventCollection.Keys;
                     if (EventCollection.ContainsKey(e.StartTime))
                     {
                         ((List<Event>)EventCollection[e.StartTime]).Add(e);
@@ -62,7 +66,7 @@ namespace CAL.ViewModels
                 IsBusy = false;
             }
         }
-        private async Task DayTapped(DateTime date)
+        private void DayTapped(DateTime date)
         {
             //saving this : )
             //var message = $"Received tap event from date: {date}";
@@ -79,6 +83,14 @@ namespace CAL.ViewModels
             {
                 Events.Add(e);
             }
+        }
+        async Task OnEventSelected(Event e)
+        {
+            if (e == null)
+                return;
+
+            // This will push the ItemDetailPage onto the navigation stack
+            await Shell.Current.GoToAsync($"{nameof(EventDetailPage)}?{nameof(EventDetailViewModel.EventId)}={e.Id}");
         }
     }
 }

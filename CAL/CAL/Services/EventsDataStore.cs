@@ -13,13 +13,11 @@ namespace CAL.Services
     {
         IList<Event> events;
         private readonly ICalClient CalClient;
-
         public EventsDataStore()
         {
             CalClient = CalClientFactory.GetNewCalClient();
             UpdateAuthentication();
         }
-
         public async Task<bool> AddItemAsync(Event e)
         {
             var success = await CalClient.CreateEventAsync(e.ToRequest());
@@ -28,7 +26,6 @@ namespace CAL.Services
 
             return success.StatusCode == 201;
         }
-
         public async Task<bool> UpdateItemAsync(Event e)
         {
             throw new NotImplementedException();
@@ -38,8 +35,7 @@ namespace CAL.Services
 
             //return await Task.FromResult(true);
         }
-
-        public async Task<bool> DeleteItemsAsync(Guid id)
+        public async Task<bool> DeleteItemAsync(Guid id)
         {
             throw new NotImplementedException();
             //var oldItem = events.Where((Event arg) => arg.Id == id).FirstOrDefault();
@@ -47,29 +43,23 @@ namespace CAL.Services
 
             //return await Task.FromResult(true);
         }
-
-        public async Task<Event> GetEventAsync(Guid id)
+        public async Task<Event> GetItemAsync(Guid id)
         {
             await FetchEvents();
             return await Task.FromResult(events.FirstOrDefault(s => s.Id == id));
         }
-
-        public async Task<IEnumerable<Event>> GetItemAsync(bool forceRefresh = true)
+        public async Task<IEnumerable<Event>> GetItemsAsync(bool forceRefresh = true)
         {
             if (forceRefresh)
             {
                 await FetchEvents();
             }
-            return await Task.FromResult(events);
+            return events;
         }
-
         private async Task FetchEvents()
         {
             //TODO: dynamically update based on new data - rather than wipe everything out
             events = (await CalClient.GetEventsAsync()).Events;
-        }
-        private void UpdateAut()
-        {
         }
         public async Task<IEnumerable<Event>> GetEventsForDayAsync(int day, bool forceRefresh = true)
         {
@@ -80,7 +70,6 @@ namespace CAL.Services
 
             return events.Where(e => e.StartTime.Day == day);
         }
-
         public void UpdateAuthentication(bool forceRefresh = true)
         {
             if (forceRefresh)
