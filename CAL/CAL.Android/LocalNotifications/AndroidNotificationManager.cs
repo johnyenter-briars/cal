@@ -88,8 +88,8 @@ namespace CAL.Droid.LocalNotifications
                 .SetContentIntent(pendingIntent)
                 .SetContentTitle(title)
                 .SetContentText(message)
-                .SetLargeIcon(BitmapFactory.DecodeResource(AndroidApp.Context.Resources, Resource.Drawable.xamarin_logo))
-                .SetSmallIcon(Resource.Drawable.xamarin_logo)
+                .SetLargeIcon(BitmapFactory.DecodeResource(AndroidApp.Context.Resources, Resource.Drawable.icons8_calendar_48))
+                .SetSmallIcon(Resource.Drawable.icons8_calendar_48)
                 .SetDefaults((int)NotificationDefaults.Sound | (int)NotificationDefaults.Vibrate);
 
             Notification notification = builder.Build();
