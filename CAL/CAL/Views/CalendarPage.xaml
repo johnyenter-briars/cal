@@ -5,6 +5,7 @@
              xmlns:local="clr-namespace:CAL.ViewModels"  
              xmlns:plugin="clr-namespace:Xamarin.Plugin.Calendar.Controls;assembly=Xamarin.Plugin.Calendar" 
              xmlns:model="clr-namespace:CAL.Client.Models.Cal;assembly=CAL.Client" 
+             xmlns:controls="clr-namespace:CAL.Controls"
              x:DataType="local:CalendarViewModel"
              Title="{Binding Title}">
     <ContentPage.Resources>
@@ -26,8 +27,22 @@
                         VerticalOptions="FillAndExpand"
                         HorizontalOptions="FillAndExpand"
                         CalendarLayout="Month"
-                        DayTappedCommand="{Binding DayTappedCommand}"
-                    />
+                        EventIndicatorType="BottomDot"
+                        DayTappedCommand="{Binding DayTappedCommand}">
+
+                    <plugin:Calendar.HeaderSectionTemplate>
+                        <controls:CalendarHeader />
+                    </plugin:Calendar.HeaderSectionTemplate>
+
+                    <plugin:Calendar.FooterSectionTemplate>
+                        <DataTemplate>
+                            <controls:CalendarFooter />
+                        </DataTemplate>
+                    </plugin:Calendar.FooterSectionTemplate>
+
+
+
+                </plugin:Calendar>
             </ContentView>
             <ContentView Padding="0,0,0,0" VerticalOptions="FillAndExpand">
                 <CollectionView x:Name="EventsDayListView"
