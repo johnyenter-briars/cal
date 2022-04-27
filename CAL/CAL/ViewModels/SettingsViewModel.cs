@@ -21,7 +21,7 @@ namespace CAL.ViewModels
         private string hostname = PreferencesManager.GetHostname();
         public string HostName { get => hostname; set => SetProperty(ref hostname, value); }
         private string port = PreferencesManager.GetPort().ToString();
-        public string Port { get =>  port; set => SetProperty(ref port, value); }
+        public string Port { get => port; set => SetProperty(ref port, value); }
         private Command saveChangesCommand;
         public ICommand SaveChangesCommand
         {

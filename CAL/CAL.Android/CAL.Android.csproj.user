@@ -4,6 +4,7 @@
     <SelectedDevice>Samsung SM-G781U</SelectedDevice>
     <SelectedPlatformGroup>PhysicalDevice</SelectedPlatformGroup>
     <ActiveDebugProfile>Samsung SM-G781U</ActiveDebugProfile>
-    <DefaultDevice>pixel_5_-_api_30</DefaultDevice>
+    <DefaultDevice>galaxy_nexus_-_api_30</DefaultDevice>
+    <AndroidDesignerPreferredTheme>MainTheme</AndroidDesignerPreferredTheme>
   </PropertyGroup>
 </Project>

@@ -14,11 +14,13 @@
         <Label Text="Name" FontSize="Medium" TextColor="{StaticResource TextPrimaryColor}" />
         <Label Text="{Binding Name}" FontSize="Small" TextColor="{StaticResource TextSecondaryColor}"/>
         <Label Text="Description" FontSize="Medium" TextColor="{StaticResource TextPrimaryColor}" />
-        <Label Text="{Binding Description}" FontSize="Small" TextColor="{StaticResource TextSecondaryColor}"/>
+        <Frame BorderColor="LightGray" HasShadow="False" Padding="15" BackgroundColor="{StaticResource BackgroundColor}">
+            <Label Text="{Binding Description}" FontSize="Small" TextColor="{StaticResource TextSecondaryColor}"/>
+        </Frame>
         <Label Text="Starting Time" FontSize="Medium" TextColor="{StaticResource TextPrimaryColor}"/>
         <Label Text="{Binding StartTime}" FontSize="Small" TextColor="{StaticResource TextSecondaryColor}"/>
         <Label Text="Ending Time" FontSize="Medium" TextColor="{StaticResource TextPrimaryColor}"/>
         <Label Text="{Binding EndTime}" FontSize="Small" TextColor="{StaticResource TextSecondaryColor}"/>
     </StackLayout>
-    
+
 </ContentPage>
