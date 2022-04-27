@@ -15,7 +15,7 @@ namespace CAL.Client
 {
     public interface ICalClient
     {
-        void UpdateSettings(string hostname, int port, string apiKey);
+        void UpdateSettings(string hostname, int port, string apiKey, string userId);
         Task<CreateEventResponse> CreateEventAsync(CreateEventRequest createEventRequest);
         Task<CreateCalUserResponse> CreateCalUserAsync(CreateCalUserRequest createCalUserRequest);
         Task<CreateSeriesResponse> CreateSeriesAsync(CreateSeriesRequest createSeriesRequest);

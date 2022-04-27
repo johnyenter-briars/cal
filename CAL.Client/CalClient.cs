@@ -21,6 +21,7 @@ namespace CAL.Client
     internal class CalClient : ICalClient
     {
         private string _apiKey = "";
+        private string _userId = "";
         private string _hostName = "";
         private int _port = -1;
         private static readonly HttpClient _httpClient = new HttpClient();
@@ -80,6 +81,7 @@ namespace CAL.Client
             var request = new HttpRequestMessage(HttpMethod.Get, $"http://{_hostName}:{_port}/api/" + path);
             request.Headers.Accept.Clear();
             request.Headers.Add("x-api-key", _apiKey);
+            request.Headers.Add("x-user-id", _userId);
 
             var clientResponse = await _httpClient.SendAsync(request, CancellationToken.None);
 
@@ -93,13 +95,13 @@ namespace CAL.Client
                 throw new Exception($"Failure to get record {clientResponse.ReasonPhrase}");
             }
         }
-
         private async Task<TResponse> PostRequest<TRequest, TResponse>(TRequest requestObject, string path) where TResponse : IResponse
         {
             var request = new HttpRequestMessage(HttpMethod.Post, $"http://{_hostName}:{_port}/api/" + path);
             request.Headers.Accept.Clear();
             request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             request.Headers.Add("x-api-key", _apiKey);
+            request.Headers.Add("x-user-id", _userId);
             request.Content = new StringContent(JsonConvert.SerializeObject(requestObject, JsonSettings), Encoding.UTF8, "application/json");
 
             var clientResponse = await _httpClient.SendAsync(request, CancellationToken.None);
@@ -125,12 +127,12 @@ namespace CAL.Client
 
             return selectedEvents;
         }
-
-        public void UpdateSettings(string hostname, int port, string apiKey)
+        public void UpdateSettings(string hostname, int port, string apiKey, string userId)
         {
             _hostName = hostname;
             _port = port;
             _apiKey = apiKey;
+            _userId = userId;
         }
     }
 }

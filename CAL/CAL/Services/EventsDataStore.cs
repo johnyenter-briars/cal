@@ -74,7 +74,10 @@ namespace CAL.Services
         {
             if (forceRefresh)
             {
-                CalClient.UpdateSettings(PreferencesManager.GetHostname(), PreferencesManager.GetPort(), PreferencesManager.GetApiKey());
+                CalClient.UpdateSettings(   PreferencesManager.GetHostname(), 
+                                            PreferencesManager.GetPort(), 
+                                            PreferencesManager.GetApiKey(), 
+                                            PreferencesManager.GetUserId());
             }
         }
     }

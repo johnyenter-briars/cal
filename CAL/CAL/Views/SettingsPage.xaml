@@ -53,6 +53,9 @@
                 <Entry x:Name = "ApiKey" Text="{Binding ApiKey}" Placeholder = "API Key"  
                    HeightRequest = "40"  
                         />
+                <Entry x:Name = "UserId" Text="{Binding UserId}" Placeholder = "User Id"  
+                   HeightRequest = "40"  
+                        />
                 <Button x:Name= "saveChangesBtn" Text = "Save Changes"   
                     Command="{Binding SaveChangesCommand}"  
                     HorizontalOptions = "FillAndExpand"/>
