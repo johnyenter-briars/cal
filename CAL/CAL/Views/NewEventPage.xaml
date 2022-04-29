@@ -20,6 +20,12 @@
             <Entry 
                 Text="{Binding Text, Mode=TwoWay}" 
                 FontSize="Medium" />
+            <Label Text="Date" FontSize="Medium" />
+            <DatePicker 
+                Date="{Binding SelectedDate}" 
+                />
+            <Label Text="Time" FontSize="Medium" />
+            <TimePicker Time="{Binding SelectedTime}" />
             <Label Text="Description" FontSize="Medium" />
             <Frame BorderColor="LightGray" HasShadow="False" Padding="15" BackgroundColor="{StaticResource BackgroundColor}">
                 <Editor 

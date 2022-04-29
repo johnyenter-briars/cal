@@ -14,9 +14,9 @@ namespace CAL.ViewModels
 {
     internal class CalendarViewModel : BaseViewModel
     {
-        //public ICommand DayTappedCommand;
         public Command DayTappedCommand => new Command<DateTime>((date) => DayTapped(date));
         public Command EventTappedCommend => new Command<Event>(async (e) => await OnEventSelected(e));
+        public Command AddEventCommand { get; }
         public ObservableCollection<Event> Events { get; }
         public EventCollection EventCollection { get; }
         public DateTime _selectedDate;
@@ -32,6 +32,7 @@ namespace CAL.ViewModels
             _selectedDate = DateTime.Now;
             Task.Run(async () => await ExecuteLoadEventsAsync());
             EventCollection = new EventCollection();
+            AddEventCommand = new Command(OnAddEvent);
 
             //DayTappedCommand = new Command<DateTime>(DayTapped);
             //EventTappedCommend = new Command<Event>(OnEventSelected);
@@ -93,6 +94,11 @@ namespace CAL.ViewModels
 
             // This will push the ItemDetailPage onto the navigation stack
             await Shell.Current.GoToAsync($"{nameof(EventDetailPage)}?{nameof(EventDetailViewModel.EventId)}={e.Id}");
+        }
+        private async void OnAddEvent(object obj)
+        {
+            var unixTimeSeconds = ((DateTimeOffset)SelectedDate).ToUnixTimeSeconds();
+            await Shell.Current.GoToAsync($"{nameof(NewEventPage)}?UnixTimeSeconds={unixTimeSeconds}");
         }
     }
 }
