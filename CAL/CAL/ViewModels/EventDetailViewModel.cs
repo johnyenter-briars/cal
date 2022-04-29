@@ -11,7 +11,9 @@ namespace CAL.ViewModels
     {
         private string eventId;
         private string name;
-        private DateTime time;
+        private string description;
+        private DateTime startTime;
+        private DateTime endTime;
         public Guid Id { get; set; }
 
         public string Name
@@ -19,11 +21,21 @@ namespace CAL.ViewModels
             get => name;
             set => SetProperty(ref name, value);
         }
-
-        public DateTime Time
+        public string Description
         {
-            get => time;
-            set => SetProperty(ref time, value);
+            get => description;
+            set => SetProperty(ref description, value);
+        }
+
+        public DateTime StartTime
+        {
+            get => startTime;
+            set => SetProperty(ref startTime, value);
+        }
+        public DateTime EndTime
+        {
+            get => endTime;
+            set => SetProperty(ref endTime, value);
         }
 
         public string EventId
@@ -43,10 +55,12 @@ namespace CAL.ViewModels
         {
             try
             {
-                var item = await EventDataStore.GetEventAsync(new Guid(eventId));
-                Id = item.Id;
-                Name = item.Name;
-                Time = item.StartTime;
+                var e = await EventDataStore.GetItemAsync(new Guid(eventId));
+                Id = e.Id;
+                Name = e.Name;
+                StartTime = e.StartTime;
+                EndTime = e.EndTime;
+                Description = e.Description;
             }
             catch (Exception)
             {

@@ -58,11 +58,15 @@
     <PackageReference Include="Xamarin.Essentials" Version="1.7.0" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="LocalNotifications\AlarmHandler.cs" />
+    <Compile Include="LocalNotifications\AndroidNotificationManager.cs" />
     <Compile Include="MainActivity.cs" />
     <Compile Include="Resources\Resource.designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <AndroidAsset Include="Assets\font-awesome-5-free-regular.otf" />
+    <AndroidAsset Include="Assets\font-awesome-5-free-solid.otf" />
     <None Include="Resources\AboutResources.txt" />
     <None Include="Assets\AboutAssets.txt" />
     <None Include="Properties\AndroidManifest.xml" />

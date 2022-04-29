@@ -1,4 +1,5 @@
 ﻿using CAL.Client.Models.Cal;
+using CAL.Views;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -13,10 +14,11 @@ namespace CAL.ViewModels
 {
     internal class CalendarViewModel : BaseViewModel
     {
-        public ICommand DayTappedCommand => new Command<DateTime>(async (date) => await DayTapped(date));
+        public Command DayTappedCommand => new Command<DateTime>((date) => DayTapped(date));
+        public Command EventTappedCommend => new Command<Event>(async (e) => await OnEventSelected(e));
+        public Command AddEventCommand { get; }
         public ObservableCollection<Event> Events { get; }
         public EventCollection EventCollection { get; }
-        public Command<Event> EventTapped { get; }
         public DateTime _selectedDate;
         public DateTime SelectedDate
         {
@@ -28,21 +30,25 @@ namespace CAL.ViewModels
             Title = "Calendar";
             Events = new ObservableCollection<Event>();
             _selectedDate = DateTime.Now;
-            Task.Run(async () => await ExecuteLoadEventsComand());
+            Task.Run(async () => await ExecuteLoadEventsAsync());
             EventCollection = new EventCollection();
+            AddEventCommand = new Command(OnAddEvent);
+
+            //DayTappedCommand = new Command<DateTime>(DayTapped);
+            //EventTappedCommend = new Command<Event>(OnEventSelected);
         }
-        async Task ExecuteLoadEventsComand()
+        private async Task ExecuteLoadEventsAsync()
         {
             IsBusy = true;
 
             try
             {
                 Events.Clear();
-                var events = await EventDataStore.GetItemAsync();
+                EventCollection.Clear();
+                var events = await EventDataStore.GetItemsAsync();
                 foreach (var e in events)
                 {
                     Events.Add(e);
-                    var idk = EventCollection.Keys;
                     if (EventCollection.ContainsKey(e.StartTime))
                     {
                         ((List<Event>)EventCollection[e.StartTime]).Add(e);
@@ -62,8 +68,9 @@ namespace CAL.ViewModels
                 IsBusy = false;
             }
         }
-        private async Task DayTapped(DateTime date)
+        private async void DayTapped(DateTime date)
         {
+            await ExecuteLoadEventsAsync();
             //saving this : )
             //var message = $"Received tap event from date: {date}";
             //await App.Current.MainPage.DisplayAlert("DayTapped", message, "Ok");
@@ -79,6 +86,19 @@ namespace CAL.ViewModels
             {
                 Events.Add(e);
             }
+        }
+        async Task OnEventSelected(Event e)
+        {
+            if (e == null)
+                return;
+
+            // This will push the ItemDetailPage onto the navigation stack
+            await Shell.Current.GoToAsync($"{nameof(EventDetailPage)}?{nameof(EventDetailViewModel.EventId)}={e.Id}");
+        }
+        private async void OnAddEvent(object obj)
+        {
+            var unixTimeSeconds = ((DateTimeOffset)SelectedDate).ToUnixTimeSeconds();
+            await Shell.Current.GoToAsync($"{nameof(NewEventPage)}?UnixTimeSeconds={unixTimeSeconds}");
         }
     }
 }

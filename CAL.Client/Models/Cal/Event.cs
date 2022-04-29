@@ -9,6 +9,7 @@ namespace CAL.Client.Models.Cal
         public DateTime StartTime { get; set; }
         public DateTime EndTime { get; set; }
         public string Name { get; set; }
+        public string Description { get; set; }
         public Guid CalUserId { get; set; }
         public Guid? SeriesId { get; set; }
         public CreateEventRequest ToRequest()
@@ -16,6 +17,7 @@ namespace CAL.Client.Models.Cal
             return new CreateEventRequest
             {
                 StartTime = StartTime,
+                Description = Description,
                 EndTime = EndTime,
                 CalUserId = CalUserId,
                 SeriesId = SeriesId,

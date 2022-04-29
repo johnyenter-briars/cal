@@ -5,19 +5,40 @@
              Shell.PresentationMode="ModalAnimated"
              Title="New Event"
              xmlns:ios="clr-namespace:Xamarin.Forms.PlatformConfiguration.iOSSpecific;assembly=Xamarin.Forms.Core"
-             ios:Page.UseSafeArea="true">
+             ios:Page.UseSafeArea="true"
+             BackgroundColor="{StaticResource BackgroundColor}"
+             xmlns:vm="clr-namespace:CAL.ViewModels"
+             >
+    <ContentPage.BindingContext>
+        <vm:NewEventViewModel />
+    </ContentPage.BindingContext>
+
 
     <ContentPage.Content>
         <StackLayout Spacing="3" Padding="15">
-            <Label Text="Text" FontSize="Medium" />
-            <Entry Text="{Binding Text, Mode=TwoWay}" FontSize="Medium" />
+            <Label Text="Test" FontSize="Medium" />
+            <Entry 
+                Text="{Binding Text, Mode=TwoWay}" 
+                FontSize="Medium" />
+            <Label Text="Date" FontSize="Medium" />
+            <DatePicker 
+                Date="{Binding SelectedDate}" 
+                />
+            <Label Text="Time" FontSize="Medium" />
+            <TimePicker Time="{Binding SelectedTime}" />
             <Label Text="Description" FontSize="Medium" />
-            <Editor Text="{Binding Description, Mode=TwoWay}" AutoSize="TextChanges" FontSize="Medium" Margin="0" />
+            <Frame BorderColor="LightGray" HasShadow="False" Padding="15" BackgroundColor="{StaticResource BackgroundColor}">
+                <Editor 
+                    Text="{Binding Description, Mode=TwoWay}" 
+                    AutoSize="TextChanges" 
+                    FontSize="Medium" 
+                    Margin="0" />
+            </Frame>
             <StackLayout Orientation="Horizontal">
                 <Button Text="Cancel" Command="{Binding CancelCommand}" HorizontalOptions="FillAndExpand"></Button>
                 <Button Text="Save" Command="{Binding SaveCommand}" HorizontalOptions="FillAndExpand"></Button>
             </StackLayout>
         </StackLayout>
     </ContentPage.Content>
-    
+
 </ContentPage>

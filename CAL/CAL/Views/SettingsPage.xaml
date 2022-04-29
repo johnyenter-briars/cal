@@ -22,6 +22,26 @@
                 </ContentView>
             </StackLayout>
         </StackLayout>
+        <StackLayout Margin="0,35,0,0"
+             x:Name="stackLayout">
+            <Label Text="Click the button below to create a local notification."
+           TextColor="blue"
+           HorizontalOptions="Center"
+           VerticalOptions="Start" />
+            <Button Text="Create Notification"
+            HorizontalOptions="Center"
+            VerticalOptions="Start"
+            Clicked="OnSendClick" />
+            <Label Text="Click the button below to schedule a local notification for in 10 seconds time."
+           TextColor="Red"
+           HorizontalOptions="Center"
+           VerticalOptions="Start" />
+            <Button Text="Create Notification"
+            HorizontalOptions="Center"
+            VerticalOptions="Start"
+            Clicked="OnScheduleClick" />
+        </StackLayout>
+
         <ScrollView Grid.Row="1">
             <StackLayout Orientation="Vertical" Padding="30,24,30,24" Spacing="10">
                 <Entry x:Name = "IpAddress"  Text="{Binding HostName}"  Placeholder = "IP address"
@@ -31,6 +51,9 @@
                    HeightRequest = "40"  
                         />
                 <Entry x:Name = "ApiKey" Text="{Binding ApiKey}" Placeholder = "API Key"  
+                   HeightRequest = "40"  
+                        />
+                <Entry x:Name = "UserId" Text="{Binding UserId}" Placeholder = "User Id"  
                    HeightRequest = "40"  
                         />
                 <Button x:Name= "saveChangesBtn" Text = "Save Changes"   

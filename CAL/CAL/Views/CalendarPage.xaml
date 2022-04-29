@@ -5,6 +5,7 @@
              xmlns:local="clr-namespace:CAL.ViewModels"  
              xmlns:plugin="clr-namespace:Xamarin.Plugin.Calendar.Controls;assembly=Xamarin.Plugin.Calendar" 
              xmlns:model="clr-namespace:CAL.Client.Models.Cal;assembly=CAL.Client" 
+             xmlns:controls="clr-namespace:CAL.Controls"
              x:DataType="local:CalendarViewModel"
              Title="{Binding Title}">
     <ContentPage.Resources>
@@ -12,6 +13,10 @@
             <Color x:Key="Accent">#96d1ff</Color>
         </ResourceDictionary>
     </ContentPage.Resources>
+
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Add" Command="{Binding AddEventCommand}" />
+    </ContentPage.ToolbarItems>
 
 
     <Grid BackgroundColor="{StaticResource BackgroundColor}">
@@ -26,8 +31,22 @@
                         VerticalOptions="FillAndExpand"
                         HorizontalOptions="FillAndExpand"
                         CalendarLayout="Month"
-                        DayTappedCommand="{Binding DayTappedCommand}"
-                    />
+                        EventIndicatorType="BottomDot"
+                        DayTappedCommand="{Binding DayTappedCommand}">
+
+                    <plugin:Calendar.HeaderSectionTemplate>
+                        <controls:CalendarHeader />
+                    </plugin:Calendar.HeaderSectionTemplate>
+
+                    <plugin:Calendar.FooterSectionTemplate>
+                        <DataTemplate>
+                            <controls:CalendarFooter />
+                        </DataTemplate>
+                    </plugin:Calendar.FooterSectionTemplate>
+
+
+
+                </plugin:Calendar>
             </ContentView>
             <ContentView Padding="0,0,0,0" VerticalOptions="FillAndExpand">
                 <CollectionView x:Name="EventsDayListView"
@@ -40,7 +59,17 @@
                                     LineBreakMode="NoWrap" 
                                     Style="{DynamicResource ListItemTextStyle}" 
                                     TextColor="{StaticResource TextSecondaryColor}"
-                                    FontSize="16" />
+                                    FontSize="16">
+
+                                    <Label.GestureRecognizers>
+                                        <TapGestureRecognizer 
+                                            CommandParameter="{Binding .}"
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type local:CalendarViewModel}}, Path=EventTappedCommend}"		
+                                            />
+                                    </Label.GestureRecognizers>
+
+                                </Label>
+
                             </StackLayout>
                         </DataTemplate>
                     </CollectionView.ItemTemplate>
