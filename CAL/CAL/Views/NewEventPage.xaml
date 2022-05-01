@@ -13,19 +13,24 @@
         <vm:NewEventViewModel />
     </ContentPage.BindingContext>
 
-
     <ContentPage.Content>
         <StackLayout Spacing="3" Padding="15">
             <Label Text="Test" FontSize="Medium" />
             <Entry 
                 Text="{Binding Text, Mode=TwoWay}" 
                 FontSize="Medium" />
-            <Label Text="Date" FontSize="Medium" />
+            <Label Text="Start Date" FontSize="Medium" />
             <DatePicker 
-                Date="{Binding SelectedDate}" 
-                />
-            <Label Text="Time" FontSize="Medium" />
-            <TimePicker Time="{Binding SelectedTime}" />
+                Date="{Binding StartSelectedDate}" />
+            <Label Text="Start Time" FontSize="Medium" />
+            <TimePicker 
+                Time="{Binding StartSelectedTime}" />
+            <Label Text="End Date" FontSize="Medium" />
+            <DatePicker 
+                Date="{Binding EndSelectedDate}" />
+            <Label Text="End Time" FontSize="Medium" />
+            <TimePicker 
+                Time="{Binding EndSelectedTime}" />
             <Label Text="Description" FontSize="Medium" />
             <Frame BorderColor="LightGray" HasShadow="False" Padding="15" BackgroundColor="{StaticResource BackgroundColor}">
                 <Editor 

@@ -58,8 +58,8 @@ namespace CAL.ViewModels
                 var e = await EventDataStore.GetItemAsync(new Guid(eventId));
                 Id = e.Id;
                 Name = e.Name;
-                StartTime = e.StartTime;
-                EndTime = e.EndTime;
+                StartTime = e.StartTime.ToLocalTime();
+                EndTime = e.EndTime.ToLocalTime();
                 Description = e.Description;
             }
             catch (Exception)
