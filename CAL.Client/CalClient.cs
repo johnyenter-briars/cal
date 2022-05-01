@@ -87,8 +87,7 @@ namespace CAL.Client
 
             if (clientResponse.IsSuccessStatusCode)
             {
-                var response = JsonConvert.DeserializeObject<TResponse>(await clientResponse.Content.ReadAsStringAsync());
-                return response;
+                return JsonConvert.DeserializeObject<TResponse>(await clientResponse.Content.ReadAsStringAsync());
             }
             else
             {
