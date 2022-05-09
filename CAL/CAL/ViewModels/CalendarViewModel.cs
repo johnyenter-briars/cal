@@ -26,6 +26,13 @@ namespace CAL.ViewModels
             get { return _selectedDate; }
             set { SetProperty(ref _selectedDate, value); }
         }
+        private DateTime _shownDate = DateTime.Today;
+        public DateTime ShownDate
+        {
+            get => _shownDate;
+            set => SetProperty(ref _shownDate, value);
+        }
+
         public CalendarViewModel()
         {
             Title = "Calendar";
@@ -34,9 +41,6 @@ namespace CAL.ViewModels
             Task.Run(async () => await ExecuteLoadEventsAsync());
             EventCollection = new EventCollection();
             AddEventCommand = new Command(OnAddEvent);
-
-            //DayTappedCommand = new Command<DateTime>(DayTapped);
-            //EventTappedCommend = new Command<Event>(OnEventSelected);
         }
         private async Task ExecuteLoadEventsAsync()
         {
@@ -71,29 +75,12 @@ namespace CAL.ViewModels
         }
         private async void DayTapped(DateTime date)
         {
-            await ExecuteLoadEventsAsync();
-            //saving this : )
-            //var message = $"Received tap event from date: {date}";
-            //await App.Current.MainPage.DisplayAlert("DayTapped", message, "Ok");
-
-            if (!EventCollection.ContainsKey(date))
-            {
-                return;
-            }
-
-            Events.Clear();
-
-            foreach (Event e in EventCollection[date])
-            {
-                Events.Add(e);
-            }
         }
         async Task OnEventSelected(Event e)
         {
             if (e == null)
                 return;
 
-            // This will push the ItemDetailPage onto the navigation stack
             await Shell.Current.GoToAsync($"{nameof(EventDetailPage)}?{nameof(EventDetailViewModel.EventId)}={e.Id}");
         }
         private async void OnAddEvent(object obj)
@@ -104,13 +91,10 @@ namespace CAL.ViewModels
 
         private async Task ExecuteEventSelectedCommand(object item)
         {
-            if (item is Event eventModel)
+            if (item is Event e)
             {
-                var title = $"Selected: {eventModel.Name}";
-                //var message = $"Starts: {eventModel.Starting:HH:mm}{Environment.NewLine}Details: {eventModel.Description}";
-                await App.Current.MainPage.DisplayAlert(title, "idk", "Ok");
+                await Shell.Current.GoToAsync($"{nameof(EventDetailPage)}?{nameof(EventDetailViewModel.EventId)}={e.Id}");
             }
         }
-
     }
 }

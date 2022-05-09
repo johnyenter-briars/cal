@@ -22,8 +22,8 @@
             FontSize="Small"
             LineBreakMode="WordWrap"
             Text="{Binding Description}" />
-        <!--<StackLayout.GestureRecognizers>
+        <StackLayout.GestureRecognizers>
             <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped" />
-        </StackLayout.GestureRecognizers>-->
+        </StackLayout.GestureRecognizers>
     </StackLayout>
 </ContentView>
