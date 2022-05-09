@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:CAL.ViewModels"  
              xmlns:controls="clr-namespace:CAL.Controls"  
              xmlns:model="clr-namespace:CAL.Client.Models.Cal;assembly=CAL.Client"  
-             x:Name="BrowseItemsPage"
+             x:Name="browseItemsPage"
              BackgroundColor="{StaticResource BackgroundColor}">
 
     <ContentPage.ToolbarItems>
@@ -22,7 +22,7 @@
                 SelectionMode="None">
             <CollectionView.ItemTemplate>
                 <DataTemplate>
-                    <controls:CalenderEvent />
+                    <controls:CalenderEvent CalenderEventCommand="{Binding BindingContext.EventSelectedCommand, Source={x:Reference browseItemsPage}}" />
                 </DataTemplate>
             </CollectionView.ItemTemplate>
             <!--
