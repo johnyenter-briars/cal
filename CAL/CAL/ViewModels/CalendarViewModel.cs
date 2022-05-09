@@ -26,12 +26,12 @@ namespace CAL.ViewModels
             get { return _selectedDate; }
             set { SetProperty(ref _selectedDate, value); }
         }
-        private DateTime _shownDate = DateTime.Today;
-        public DateTime ShownDate
-        {
-            get => _shownDate;
-            set => SetProperty(ref _shownDate, value);
-        }
+        //private DateTime _shownDate = DateTime.Today;
+        //public DateTime ShownDate
+        //{
+        //    get => _shownDate;
+        //    set => SetProperty(ref _shownDate, value);
+        //}
 
         public CalendarViewModel()
         {
@@ -75,6 +75,7 @@ namespace CAL.ViewModels
         }
         private async void DayTapped(DateTime date)
         {
+            await ExecuteLoadEventsAsync();
         }
         async Task OnEventSelected(Event e)
         {
@@ -86,7 +87,7 @@ namespace CAL.ViewModels
         private async void OnAddEvent(object obj)
         {
             var unixTimeSeconds = ((DateTimeOffset)SelectedDate).ToUnixTimeSeconds();
-            await Shell.Current.GoToAsync($"{nameof(NewEventPage)}?UnixTimeSeconds={unixTimeSeconds}");
+            await Shell.Current.GoToAsync($"{nameof(NewEventPage)}?{nameof(NewEventViewModel.StartTimeUnixSeconds)}={unixTimeSeconds}");
         }
 
         private async Task ExecuteEventSelectedCommand(object item)

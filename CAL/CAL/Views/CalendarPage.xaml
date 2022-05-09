@@ -34,9 +34,7 @@
                         CalendarLayout="Month"
                         EventIndicatorType="BottomDot"
                         DayTappedCommand="{Binding DayTappedCommand}"
-                        ShownDate="{Binding ShownDate}"
-
-
+                        SelectedDate="{Binding SelectedDate}"
                     >
 
                     <plugin:Calendar.HeaderSectionTemplate>
