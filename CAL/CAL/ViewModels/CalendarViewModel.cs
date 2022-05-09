@@ -17,6 +17,7 @@ namespace CAL.ViewModels
         public Command DayTappedCommand => new Command<DateTime>((date) => DayTapped(date));
         public Command EventTappedCommend => new Command<Event>(async (e) => await OnEventSelected(e));
         public Command AddEventCommand { get; }
+        public ICommand EventSelectedCommand => new Command(async (item) => await ExecuteEventSelectedCommand(item));
         public ObservableCollection<Event> Events { get; }
         public EventCollection EventCollection { get; }
         public DateTime _selectedDate;
@@ -100,5 +101,16 @@ namespace CAL.ViewModels
             var unixTimeSeconds = ((DateTimeOffset)SelectedDate).ToUnixTimeSeconds();
             await Shell.Current.GoToAsync($"{nameof(NewEventPage)}?UnixTimeSeconds={unixTimeSeconds}");
         }
+
+        private async Task ExecuteEventSelectedCommand(object item)
+        {
+            if (item is Event eventModel)
+            {
+                var title = $"Selected: {eventModel.Name}";
+                //var message = $"Starts: {eventModel.Starting:HH:mm}{Environment.NewLine}Details: {eventModel.Description}";
+                await App.Current.MainPage.DisplayAlert(title, "idk", "Ok");
+            }
+        }
+
     }
 }
