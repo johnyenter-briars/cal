@@ -17,6 +17,7 @@ namespace CAL.ViewModels
         public Command DayTappedCommand => new Command<DateTime>((date) => DayTapped(date));
         public Command EventTappedCommend => new Command<Event>(async (e) => await OnEventSelected(e));
         public Command AddEventCommand { get; }
+        public ICommand EventSelectedCommand => new Command(async (item) => await ExecuteEventSelectedCommand(item));
         public ObservableCollection<Event> Events { get; }
         public EventCollection EventCollection { get; }
         public DateTime _selectedDate;
@@ -25,6 +26,13 @@ namespace CAL.ViewModels
             get { return _selectedDate; }
             set { SetProperty(ref _selectedDate, value); }
         }
+        //private DateTime _shownDate = DateTime.Today;
+        //public DateTime ShownDate
+        //{
+        //    get => _shownDate;
+        //    set => SetProperty(ref _shownDate, value);
+        //}
+
         public CalendarViewModel()
         {
             Title = "Calendar";
@@ -33,9 +41,6 @@ namespace CAL.ViewModels
             Task.Run(async () => await ExecuteLoadEventsAsync());
             EventCollection = new EventCollection();
             AddEventCommand = new Command(OnAddEvent);
-
-            //DayTappedCommand = new Command<DateTime>(DayTapped);
-            //EventTappedCommend = new Command<Event>(OnEventSelected);
         }
         private async Task ExecuteLoadEventsAsync()
         {
@@ -71,34 +76,26 @@ namespace CAL.ViewModels
         private async void DayTapped(DateTime date)
         {
             await ExecuteLoadEventsAsync();
-            //saving this : )
-            //var message = $"Received tap event from date: {date}";
-            //await App.Current.MainPage.DisplayAlert("DayTapped", message, "Ok");
-
-            if (!EventCollection.ContainsKey(date))
-            {
-                return;
-            }
-
-            Events.Clear();
-
-            foreach (Event e in EventCollection[date])
-            {
-                Events.Add(e);
-            }
         }
         async Task OnEventSelected(Event e)
         {
             if (e == null)
                 return;
 
-            // This will push the ItemDetailPage onto the navigation stack
             await Shell.Current.GoToAsync($"{nameof(EventDetailPage)}?{nameof(EventDetailViewModel.EventId)}={e.Id}");
         }
         private async void OnAddEvent(object obj)
         {
             var unixTimeSeconds = ((DateTimeOffset)SelectedDate).ToUnixTimeSeconds();
-            await Shell.Current.GoToAsync($"{nameof(NewEventPage)}?UnixTimeSeconds={unixTimeSeconds}");
+            await Shell.Current.GoToAsync($"{nameof(NewEventPage)}?{nameof(NewEventViewModel.StartTimeUnixSeconds)}={unixTimeSeconds}");
+        }
+
+        private async Task ExecuteEventSelectedCommand(object item)
+        {
+            if (item is Event e)
+            {
+                await Shell.Current.GoToAsync($"{nameof(EventDetailPage)}?{nameof(EventDetailViewModel.EventId)}={e.Id}");
+            }
         }
     }
 }

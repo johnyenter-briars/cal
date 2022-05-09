@@ -2,6 +2,7 @@
 using CAL.Client.Models;
 using CAL.Client.Models.Cal;
 using CAL.Client.Models.Cal.Request;
+using CAL.Managers;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -25,20 +26,22 @@ namespace CAL.ViewModels
                 DateTime dateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
                 StartSelectedDate = dateTime.AddSeconds(startTimeUnixSeconds).ToLocalTime();
                 StartSelectedTime = dateTime.TimeOfDay;
+                EndSelectedDate = StartSelectedDate;
+                EndSelectedTime = StartSelectedTime + TimeSpan.FromHours(1);
             }
         }
         private long endTimeUnixSeconds;
-        public long EndTimeUnixSeconds
-        {
-            get => endTimeUnixSeconds;
-            set
-            {
-                endTimeUnixSeconds = value;
-                DateTime dateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
-                EndSelectedDate = dateTime.AddSeconds(endTimeUnixSeconds).ToLocalTime();
-                EndSelectedTime = dateTime.TimeOfDay;
-            }
-        }
+        //public long EndTimeUnixSeconds
+        //{
+        //    get => endTimeUnixSeconds;
+        //    set
+        //    {
+        //        endTimeUnixSeconds = value;
+        //        DateTime dateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
+        //        EndSelectedDate = dateTime.AddSeconds(endTimeUnixSeconds).ToLocalTime();
+        //        EndSelectedTime = dateTime.TimeOfDay;
+        //    }
+        //}
         private TimeSpan _startTime;
         public TimeSpan StartSelectedTime
         {
@@ -80,10 +83,9 @@ namespace CAL.ViewModels
             this.PropertyChanged +=
                 (_, __) => SaveCommand.ChangeCanExecute();
 
-            StartSelectedDate = DateTime.Now;
-            StartSelectedTime = DateTime.Now.TimeOfDay;
-            EndSelectedDate = DateTime.Now;
-            EndSelectedTime = DateTime.Now.TimeOfDay + TimeSpan.FromHours(1);
+            //StartSelectedDate = DateTime.Now;
+            //StartSelectedTime = DateTime.Now.TimeOfDay;
+            //EndSelectedTime = StartSelectedTime + TimeSpan.FromHours(1);
         }
         private bool ValidateSave()
         {
@@ -124,7 +126,7 @@ namespace CAL.ViewModels
                 Description = description,
                 StartTime = startTime.ToUniversalTime(),
                 EndTime = endTime.ToUniversalTime(),
-                CalUserId = new Guid("a188e597-29f9-4e2f-aa46-e3713d9939da"),
+                CalUserId = new Guid(PreferencesManager.GetUserId()),
             };
 
             await EventDataStore.AddItemAsync(newItem);

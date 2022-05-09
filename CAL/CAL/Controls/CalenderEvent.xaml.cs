@@ -1,4 +1,6 @@
-﻿using System.Windows.Input;
+﻿using CAL.Client.Models.Cal;
+using CAL.ViewModels;
+using System.Windows.Input;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -21,10 +23,10 @@ namespace CAL.Controls
             set => SetValue(CalenderEventCommandProperty, value);
         }
 
-        //private void TapGestureRecognizer_Tapped(object sender, System.EventArgs e)
-        //{
-        //    if (BindingContext is AdvancedEventModel eventModel)
-        //        CalenderEventCommand?.Execute(eventModel);
-        //}
+        private void TapGestureRecognizer_Tapped(object sender, System.EventArgs e)
+        {
+            if (BindingContext is Event eventModel)
+                CalenderEventCommand?.Execute(eventModel);
+        }
     }
 }

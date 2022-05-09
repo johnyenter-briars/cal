@@ -7,6 +7,7 @@
              xmlns:model="clr-namespace:CAL.Client.Models.Cal;assembly=CAL.Client" 
              xmlns:controls="clr-namespace:CAL.Controls"
              x:DataType="local:CalendarViewModel"
+             x:Name="calendarPage"
              Title="{Binding Title}">
     <ContentPage.Resources>
         <ResourceDictionary>
@@ -32,7 +33,9 @@
                         HorizontalOptions="FillAndExpand"
                         CalendarLayout="Month"
                         EventIndicatorType="BottomDot"
-                        DayTappedCommand="{Binding DayTappedCommand}">
+                        DayTappedCommand="{Binding DayTappedCommand}"
+                        SelectedDate="{Binding SelectedDate}"
+                    >
 
                     <plugin:Calendar.HeaderSectionTemplate>
                         <controls:CalendarHeader />
@@ -44,10 +47,28 @@
                         </DataTemplate>
                     </plugin:Calendar.FooterSectionTemplate>
 
+                    <plugin:Calendar.EventTemplate>
+                        <DataTemplate>
+                            <controls:CalenderEvent CalenderEventCommand="{Binding BindingContext.EventSelectedCommand, Source={x:Reference calendarPage}}" />
+                        </DataTemplate>
+                    </plugin:Calendar.EventTemplate>
+                    <plugin:Calendar.EmptyTemplate>
+                        <DataTemplate>
+                            <StackLayout>
+                                <Label
+                        Margin="0,5,0,5"
+                        HorizontalTextAlignment="Center"
+                        Text="NO EVENTS FOR THE SELECTED DATE" />
+                            </StackLayout>
+                        </DataTemplate>
+                    </plugin:Calendar.EmptyTemplate>
+
+
 
 
                 </plugin:Calendar>
             </ContentView>
+            <!--
             <ContentView Padding="0,0,0,0" VerticalOptions="FillAndExpand">
                 <CollectionView x:Name="EventsDayListView"
                         ItemsSource="{Binding Events}"
@@ -75,6 +96,7 @@
                     </CollectionView.ItemTemplate>
                 </CollectionView>
             </ContentView>
+            -->
         </StackLayout>
     </Grid>
 </ContentPage>
