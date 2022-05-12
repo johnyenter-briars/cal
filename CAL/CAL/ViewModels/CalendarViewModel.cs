@@ -15,7 +15,6 @@ namespace CAL.ViewModels
     internal class CalendarViewModel : BaseViewModel
     {
         public Command DayTappedCommand => new Command<DateTime>((date) => DayTapped(date));
-        public Command EventTappedCommend => new Command<Event>(async (e) => await OnEventSelected(e));
         public Command AddEventCommand { get; }
         public ICommand EventSelectedCommand => new Command(async (item) => await ExecuteEventSelectedCommand(item));
         public ObservableCollection<Event> Events { get; }
@@ -26,13 +25,6 @@ namespace CAL.ViewModels
             get { return _selectedDate; }
             set { SetProperty(ref _selectedDate, value); }
         }
-        //private DateTime _shownDate = DateTime.Today;
-        //public DateTime ShownDate
-        //{
-        //    get => _shownDate;
-        //    set => SetProperty(ref _shownDate, value);
-        //}
-
         public CalendarViewModel()
         {
             Title = "Calendar";
@@ -77,24 +69,20 @@ namespace CAL.ViewModels
         {
             await ExecuteLoadEventsAsync();
         }
-        async Task OnEventSelected(Event e)
-        {
-            if (e == null)
-                return;
-
-            await Shell.Current.GoToAsync($"{nameof(EventDetailPage)}?{nameof(EventDetailViewModel.EventId)}={e.Id}");
-        }
         private async void OnAddEvent(object obj)
         {
             var unixTimeSeconds = ((DateTimeOffset)SelectedDate).ToUnixTimeSeconds();
             await Shell.Current.GoToAsync($"{nameof(NewEventPage)}?{nameof(NewEventViewModel.StartTimeUnixSeconds)}={unixTimeSeconds}");
         }
-
         private async Task ExecuteEventSelectedCommand(object item)
         {
             if (item is Event e)
             {
-                await Shell.Current.GoToAsync($"{nameof(EventDetailPage)}?{nameof(EventDetailViewModel.EventId)}={e.Id}");
+                var idk = e.Id.ToString();
+                var startAsUtc = e.StartTime.ToUniversalTime();
+                var startUnixTimeSeconds = ((DateTimeOffset)startAsUtc).ToUnixTimeSeconds();
+                var endUnixTimeSeconds = ((DateTimeOffset)e.EndTime).ToUnixTimeSeconds();
+                await Shell.Current.GoToAsync($@"{nameof(NewEventPage)}?{nameof(NewEventViewModel.StartTimeUnixSeconds)}={startUnixTimeSeconds}&{nameof(NewEventViewModel.EndTimeUnixSeconds)}={endUnixTimeSeconds}&{nameof(NewEventViewModel.Id)}={e.Id}&{nameof(NewEventViewModel.Name)}={e.Name}&{nameof(NewEventViewModel.Description)}={e.Description}");
             }
         }
     }

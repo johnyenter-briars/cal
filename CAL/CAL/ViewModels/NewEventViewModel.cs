@@ -11,10 +11,15 @@ using Xamarin.Forms;
 namespace CAL.ViewModels
 {
     [QueryProperty(nameof(StartTimeUnixSeconds), nameof(StartTimeUnixSeconds))]
+    [QueryProperty(nameof(EndTimeUnixSeconds), nameof(EndTimeUnixSeconds))]
+    [QueryProperty(nameof(Id), nameof(Id))]
+    [QueryProperty(nameof(Name), nameof(Name))]
+    [QueryProperty(nameof(Description), nameof(Description))]
     public class NewEventViewModel : BaseViewModel
     {
-        private string text;
+        private string name;
         private string description;
+        private Guid id;
         private long startTimeUnixSeconds;
         public DateTime CurrentDate = DateTime.Now;
         public long StartTimeUnixSeconds
@@ -23,25 +28,23 @@ namespace CAL.ViewModels
             set
             {
                 startTimeUnixSeconds = value;
-                DateTime dateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
-                StartSelectedDate = dateTime.AddSeconds(startTimeUnixSeconds).ToLocalTime();
+                DateTime dateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc).AddSeconds(value);
+                StartSelectedDate = dateTime.ToLocalTime();
                 StartSelectedTime = dateTime.TimeOfDay;
-                EndSelectedDate = StartSelectedDate;
-                EndSelectedTime = StartSelectedTime + TimeSpan.FromHours(1);
             }
         }
         private long endTimeUnixSeconds;
-        //public long EndTimeUnixSeconds
-        //{
-        //    get => endTimeUnixSeconds;
-        //    set
-        //    {
-        //        endTimeUnixSeconds = value;
-        //        DateTime dateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
-        //        EndSelectedDate = dateTime.AddSeconds(endTimeUnixSeconds).ToLocalTime();
-        //        EndSelectedTime = dateTime.TimeOfDay;
-        //    }
-        //}
+        public long EndTimeUnixSeconds
+        {
+            get => endTimeUnixSeconds;
+            set
+            {
+                endTimeUnixSeconds = value;
+                DateTime dateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc).AddSeconds(endTimeUnixSeconds);
+                EndSelectedDate = dateTime.ToLocalTime();
+                EndSelectedTime = dateTime.TimeOfDay;
+            }
+        }
         private TimeSpan _startTime;
         public TimeSpan StartSelectedTime
         {
@@ -89,13 +92,18 @@ namespace CAL.ViewModels
         }
         private bool ValidateSave()
         {
-            return !string.IsNullOrWhiteSpace(text);
+            return !string.IsNullOrWhiteSpace(name);
+        }
+        public string Id
+        {
+            get => id.ToString();
+            set => SetProperty(ref id, new Guid(value));
         }
 
-        public string Text
+        public string Name
         {
-            get => text;
-            set => SetProperty(ref text, value);
+            get => name;
+            set => SetProperty(ref name, value);
         }
 
         public string Description
@@ -120,16 +128,22 @@ namespace CAL.ViewModels
             var endingTimeDatePart = new DateTime(EndSelectedDate.Year, EndSelectedDate.Month, EndSelectedDate.Day, 0, 0, 0);
             var endTime = endingTimeDatePart + EndSelectedTime;
 
-            Event newItem = new Event()
+            if (id != null)
             {
-                Name = text,
-                Description = description,
-                StartTime = startTime.ToUniversalTime(),
-                EndTime = endTime.ToUniversalTime(),
-                CalUserId = new Guid(PreferencesManager.GetUserId()),
-            };
+                Event newItem = new Event()
+                {
+                    Id = id,
+                    Name = name,
+                    Description = description,
+                    StartTime = startTime.ToUniversalTime(),
+                    EndTime = endTime.ToUniversalTime(),
+                    CalUserId = new Guid(PreferencesManager.GetUserId()),
+                };
 
-            await EventDataStore.AddItemAsync(newItem);
+                //await EventDataStore.AddItemAsync(newItem);
+
+            }
+
 
             await Shell.Current.GoToAsync("..");
         }
