@@ -29,8 +29,11 @@ namespace CAL.ViewModels
             {
                 startTimeUnixSeconds = value;
                 DateTime dateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc).AddSeconds(value);
+                var idk1 = dateTime.ToString();
+                var idk2 = dateTime.ToLocalTime().ToString();
+                var idk3 = dateTime.ToLocalTime().TimeOfDay;
                 StartSelectedDate = dateTime.ToLocalTime();
-                StartSelectedTime = dateTime.TimeOfDay;
+                StartSelectedTime = dateTime.ToLocalTime().TimeOfDay;
             }
         }
         private long endTimeUnixSeconds;
@@ -67,6 +70,7 @@ namespace CAL.ViewModels
             get { return _startDate; }
             set
             {
+                var idk = value.Kind;
                 SetProperty(ref _startDate, value);
             }
         }
@@ -85,10 +89,6 @@ namespace CAL.ViewModels
             CancelCommand = new Command(OnCancel);
             this.PropertyChanged +=
                 (_, __) => SaveCommand.ChangeCanExecute();
-
-            //StartSelectedDate = DateTime.Now;
-            //StartSelectedTime = DateTime.Now.TimeOfDay;
-            //EndSelectedTime = StartSelectedTime + TimeSpan.FromHours(1);
         }
         private bool ValidateSave()
         {
@@ -122,26 +122,36 @@ namespace CAL.ViewModels
 
         private async void OnSave()
         {
-            var startingTimeDatePart = new DateTime(StartSelectedDate.Year, StartSelectedDate.Month, StartSelectedDate.Day, 0, 0, 0);
+            var startingTimeDatePart = new DateTime(StartSelectedDate.Year, StartSelectedDate.Month, StartSelectedDate.Day, 0, 0, 0, kind: DateTimeKind.Local);
             var startTime = startingTimeDatePart + StartSelectedTime;
 
             var endingTimeDatePart = new DateTime(EndSelectedDate.Year, EndSelectedDate.Month, EndSelectedDate.Day, 0, 0, 0);
             var endTime = endingTimeDatePart + EndSelectedTime;
 
+            var foo = startTime.Kind;
+
+            var uni = startTime.ToUniversalTime();
+
+            Event newEvent = new Event()
+            {
+                Id = id,
+                Name = name,
+                Description = description,
+                StartTime = startTime.ToUniversalTime(),
+                EndTime = endTime.ToUniversalTime(),
+                CalUserId = new Guid(PreferencesManager.GetUserId()),
+            };
+
+            var idk = newEvent.StartTime.Kind;
+
             if (id != null)
             {
-                Event newItem = new Event()
-                {
-                    Id = id,
-                    Name = name,
-                    Description = description,
-                    StartTime = startTime.ToUniversalTime(),
-                    EndTime = endTime.ToUniversalTime(),
-                    CalUserId = new Guid(PreferencesManager.GetUserId()),
-                };
-
-                //await EventDataStore.AddItemAsync(newItem);
-
+                Console.WriteLine(newEvent);
+                await EventDataStore.UpdateItemAsync(newEvent);
+            }
+            else
+            {
+                await EventDataStore.AddItemAsync(newEvent);
             }
 
 

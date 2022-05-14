@@ -28,12 +28,17 @@ namespace CAL.Services
         }
         public async Task<bool> UpdateItemAsync(Event e)
         {
-            throw new NotImplementedException();
-            //var oldItem = events.Where((Event arg) => arg.Id == e.Id).FirstOrDefault();
-            //events.Remove(oldItem);
-            //events.Add(e);
+            Console.WriteLine(e);
 
-            //return await Task.FromResult(true);
+            var success = await CalClient.UpdateEventAsync(e.ToUpdateRequest());
+
+            await FetchEvents();
+
+            var first = events.FirstOrDefault();
+
+            Console.WriteLine(first);
+
+            return success.StatusCode == 201 || success.StatusCode == 200;
         }
         public async Task<bool> DeleteItemAsync(Guid id)
         {

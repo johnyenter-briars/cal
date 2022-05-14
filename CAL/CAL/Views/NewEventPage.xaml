@@ -24,7 +24,7 @@
                 Date="{Binding StartSelectedDate}" />
             <Label Text="Start Time" FontSize="Medium" />
             <TimePicker 
-                Time="{Binding StartSelectedTime}" />
+                Time="{Binding StartSelectedTime, Mode=TwoWay}" />
             <Label Text="End Date" FontSize="Medium" />
             <DatePicker 
                 Date="{Binding EndSelectedDate}" />

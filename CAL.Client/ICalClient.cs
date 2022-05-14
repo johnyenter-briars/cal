@@ -17,6 +17,7 @@ namespace CAL.Client
     {
         void UpdateSettings(string hostname, int port, string apiKey, string userId);
         Task<CreateEventResponse> CreateEventAsync(CreateEventRequest createEventRequest);
+        Task<UpdateEventResponse> UpdateEventAsync(UpdateEventRequest updateEventRequest);
         Task<CreateCalUserResponse> CreateCalUserAsync(CreateCalUserRequest createCalUserRequest);
         Task<CreateSeriesResponse> CreateSeriesAsync(CreateSeriesRequest createSeriesRequest);
         Task<EventsResponse> GetEventsAsync();

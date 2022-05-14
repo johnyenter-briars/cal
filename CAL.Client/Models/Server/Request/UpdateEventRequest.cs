@@ -7,8 +7,9 @@ using System.Threading.Tasks;
 
 namespace CAL.Client.Models.Server.Request
 {
-    public class CreateEventRequest : IValidatable
+    public class UpdateEventRequest : IValidatable
     {
+        public Guid Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
         public DateTime StartTime { get; set; }

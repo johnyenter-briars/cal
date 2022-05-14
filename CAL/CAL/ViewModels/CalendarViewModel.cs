@@ -78,7 +78,6 @@ namespace CAL.ViewModels
         {
             if (item is Event e)
             {
-                var idk = e.Id.ToString();
                 var startAsUtc = e.StartTime.ToUniversalTime();
                 var startUnixTimeSeconds = ((DateTimeOffset)startAsUtc).ToUnixTimeSeconds();
                 var endUnixTimeSeconds = ((DateTimeOffset)e.EndTime).ToUnixTimeSeconds();
