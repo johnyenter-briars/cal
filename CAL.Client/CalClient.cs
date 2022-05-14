@@ -39,7 +39,7 @@ namespace CAL.Client
         }
         public async Task<CreateCalUserResponse> CreateCalUserAsync(CreateCalUserRequest createCalUserRequest)
         {
-            return await PostRequest<CreateCalUserRequest, CreateCalUserResponse>(createCalUserRequest, "caluser");
+            return await CalServerRequest<CreateCalUserRequest, CreateCalUserResponse>(createCalUserRequest, "caluser", HttpMethod.Post);
         }
         public async Task<CreateEventResponse> CreateEventAsync(CreateEventRequest createEventRequest)
         {
@@ -52,33 +52,46 @@ namespace CAL.Client
                 };
             }
 
-            return await PostRequest<CreateEventRequest, CreateEventResponse>(createEventRequest, "event");
+            return await CalServerRequest<CreateEventRequest, CreateEventResponse>(createEventRequest, "event", HttpMethod.Post);
         }
         public async Task<CreateSeriesResponse> CreateSeriesAsync(CreateSeriesRequest createSeriesRequest)
         {
-            return await PostRequest<CreateSeriesRequest, CreateSeriesResponse>(createSeriesRequest, "series");
+            return await CalServerRequest<CreateSeriesRequest, CreateSeriesResponse>(createSeriesRequest, "series", HttpMethod.Post);
         }
         public async Task<CalUserResponse> GetCalUserAsync(Guid id)
         {
-            return await GetRequest<CalUserResponse>($"caluser/{id}");
+            return await CalServerRequest<CalUserResponse>($"caluser/{id}", HttpMethod.Get);
         }
         public async Task<EventsResponse> GetEventsAsync()
         {
-            return await GetRequest<EventsResponse>($"event");
+            return await CalServerRequest<EventsResponse>($"event", HttpMethod.Get);
         }
         public async Task<SeriesResponse> GetSeriesAsync(Guid id)
         {
-            return await GetRequest<SeriesResponse>($"series/{id}");
+            return await CalServerRequest<SeriesResponse>($"series/{id}", HttpMethod.Get);
         }
-        private bool ValidateRequest(CreateEventRequest request)
+        public async Task<UpdateEventResponse> UpdateEventAsync(UpdateEventRequest updateEventRequest)
+        {
+            if (!ValidateRequest(updateEventRequest))
+            {
+                return new UpdateEventResponse
+                {
+                    StatusCode = 400,
+                    Message = "Bad Request",
+                };
+            }
+
+            return await CalServerRequest<UpdateEventRequest, UpdateEventResponse>(updateEventRequest, "event", HttpMethod.Put);
+        }
+        private bool ValidateRequest(IValidatable request)
         {
             return request.StartTime.Kind == DateTimeKind.Utc &&
                     request.EndTime.Kind == DateTimeKind.Utc &&
                     request.CalUserId != null;
         }
-        private async Task<TResponse> GetRequest<TResponse>(string path)
+        private async Task<TResponse> CalServerRequest<TResponse>(string path, HttpMethod httpMethod)
         {
-            var request = new HttpRequestMessage(HttpMethod.Get, $"http://{_hostName}:{_port}/api/" + path);
+            var request = new HttpRequestMessage(httpMethod, $"http://{_hostName}:{_port}/api/" + path);
             request.Headers.Accept.Clear();
             request.Headers.Add("x-api-key", _apiKey);
             request.Headers.Add("x-user-id", _userId);
@@ -94,28 +107,66 @@ namespace CAL.Client
                 throw new Exception($"Failure to get record {clientResponse.ReasonPhrase}");
             }
         }
-        private async Task<TResponse> PostRequest<TRequest, TResponse>(TRequest requestObject, string path) where TResponse : IResponse
+        private async Task<TResponse> CalServerRequest<TRequest, TResponse>(TRequest requestObject, string path, HttpMethod httpMethod) where TResponse : IResponse
         {
-            var request = new HttpRequestMessage(HttpMethod.Post, $"http://{_hostName}:{_port}/api/" + path);
+            var request = new HttpRequestMessage(httpMethod, $"http://{_hostName}:{_port}/api/" + path);
             request.Headers.Accept.Clear();
-            request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             request.Headers.Add("x-api-key", _apiKey);
             request.Headers.Add("x-user-id", _userId);
+
             request.Content = new StringContent(JsonConvert.SerializeObject(requestObject, JsonSettings), Encoding.UTF8, "application/json");
 
             var clientResponse = await _httpClient.SendAsync(request, CancellationToken.None);
 
-            var response = JsonConvert.DeserializeObject<TResponse>(await clientResponse.Content.ReadAsStringAsync());
-
             if (clientResponse.IsSuccessStatusCode)
             {
-                return response;
+                return JsonConvert.DeserializeObject<TResponse>(await clientResponse.Content.ReadAsStringAsync());
             }
             else
             {
-                throw new Exception($"Failure to create record: E: {response.GetMessage()}");
+                throw new Exception($"Failure to get record {clientResponse.ReasonPhrase}");
             }
         }
+        //private async Task<TResponse> GetRequest<TResponse>(string path)
+        //{
+        //    var request = new HttpRequestMessage(HttpMethod.Get, $"http://{_hostName}:{_port}/api/" + path);
+        //    request.Headers.Accept.Clear();
+        //    request.Headers.Add("x-api-key", _apiKey);
+        //    request.Headers.Add("x-user-id", _userId);
+
+        //    var clientResponse = await _httpClient.SendAsync(request, CancellationToken.None);
+
+        //    if (clientResponse.IsSuccessStatusCode)
+        //    {
+        //        return JsonConvert.DeserializeObject<TResponse>(await clientResponse.Content.ReadAsStringAsync());
+        //    }
+        //    else
+        //    {
+        //        throw new Exception($"Failure to get record {clientResponse.ReasonPhrase}");
+        //    }
+        //}
+        //private async Task<TResponse> PostRequest<TRequest, TResponse>(TRequest requestObject, string path) where TResponse : IResponse
+        //{
+        //    var request = new HttpRequestMessage(HttpMethod.Post, $"http://{_hostName}:{_port}/api/" + path);
+        //    request.Headers.Accept.Clear();
+        //    request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+        //    request.Headers.Add("x-api-key", _apiKey);
+        //    request.Headers.Add("x-user-id", _userId);
+        //    request.Content = new StringContent(JsonConvert.SerializeObject(requestObject, JsonSettings), Encoding.UTF8, "application/json");
+
+        //    var clientResponse = await _httpClient.SendAsync(request, CancellationToken.None);
+
+        //    var response = JsonConvert.DeserializeObject<TResponse>(await clientResponse.Content.ReadAsStringAsync());
+
+        //    if (clientResponse.IsSuccessStatusCode)
+        //    {
+        //        return response;
+        //    }
+        //    else
+        //    {
+        //        throw new Exception($"Failure to create record: E: {response.GetMessage()}");
+        //    }
+        //}
         public async Task<List<Event>> GetEventsForDayAsync(int dayOfCurrentMonth)
         {
             var currentMonth = DateTime.Now.Month;
@@ -133,5 +184,6 @@ namespace CAL.Client
             _apiKey = apiKey;
             _userId = userId;
         }
+
     }
 }

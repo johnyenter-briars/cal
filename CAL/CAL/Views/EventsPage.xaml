@@ -4,8 +4,9 @@
              x:Class="CAL.Views.EventsPage"
              Title="{Binding Title}"
              xmlns:local="clr-namespace:CAL.ViewModels"  
+             xmlns:controls="clr-namespace:CAL.Controls"  
              xmlns:model="clr-namespace:CAL.Client.Models.Cal;assembly=CAL.Client"  
-             x:Name="BrowseItemsPage"
+             x:Name="browseItemsPage"
              BackgroundColor="{StaticResource BackgroundColor}">
 
     <ContentPage.ToolbarItems>
@@ -19,6 +20,12 @@
         <CollectionView x:Name="EventsListView"
                 ItemsSource="{Binding Events}"
                 SelectionMode="None">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <controls:CalenderEvent CalenderEventCommand="{Binding BindingContext.EventSelectedCommand, Source={x:Reference browseItemsPage}}" />
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+            <!--
             <CollectionView.ItemTemplate>
                 <DataTemplate>
                     <StackLayout Padding="10" x:DataType="model:Event">
@@ -37,6 +44,7 @@
                     </StackLayout>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
+            -->
         </CollectionView>
     </RefreshView>
 </ContentPage>
