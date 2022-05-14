@@ -56,14 +56,16 @@ namespace CAL.ViewModels
 
         private async void OnAddEvent(object obj)
         {
-            await Shell.Current.GoToAsync(nameof(NewEventPage));
+            await Shell.Current.GoToAsync(nameof(EditEventPage));
         }
 
         private async Task ExecuteEventSelectedCommand(object item)
         {
             if (item is Event e)
             {
-                await Shell.Current.GoToAsync($"{nameof(EventDetailPage)}?{nameof(EventDetailViewModel.EventId)}={e.Id}");
+                var startUnixTimeSeconds = ((DateTimeOffset)e.StartTime.ToUniversalTime()).ToUnixTimeSeconds();
+                var endUnixTimeSeconds = ((DateTimeOffset)e.EndTime.ToUniversalTime()).ToUnixTimeSeconds();
+                await Shell.Current.GoToAsync($@"{nameof(EditEventPage)}?{nameof(EditEventViewModel.StartTimeUnixSeconds)}={startUnixTimeSeconds}&{nameof(EditEventViewModel.EndTimeUnixSeconds)}={endUnixTimeSeconds}&{nameof(EditEventViewModel.Id)}={e.Id}&{nameof(EditEventViewModel.Name)}={e.Name}&{nameof(EditEventViewModel.Description)}={e.Description}");
             }
         }
     }

@@ -72,16 +72,15 @@ namespace CAL.ViewModels
         private async void OnAddEvent(object obj)
         {
             var unixTimeSeconds = ((DateTimeOffset)SelectedDate).ToUnixTimeSeconds();
-            await Shell.Current.GoToAsync($"{nameof(NewEventPage)}?{nameof(NewEventViewModel.StartTimeUnixSeconds)}={unixTimeSeconds}");
+            await Shell.Current.GoToAsync($"{nameof(EditEventPage)}?{nameof(EditEventViewModel.StartTimeUnixSeconds)}={unixTimeSeconds}");
         }
         private async Task ExecuteEventSelectedCommand(object item)
         {
             if (item is Event e)
             {
-                var startAsUtc = e.StartTime.ToUniversalTime();
-                var startUnixTimeSeconds = ((DateTimeOffset)startAsUtc).ToUnixTimeSeconds();
-                var endUnixTimeSeconds = ((DateTimeOffset)e.EndTime).ToUnixTimeSeconds();
-                await Shell.Current.GoToAsync($@"{nameof(NewEventPage)}?{nameof(NewEventViewModel.StartTimeUnixSeconds)}={startUnixTimeSeconds}&{nameof(NewEventViewModel.EndTimeUnixSeconds)}={endUnixTimeSeconds}&{nameof(NewEventViewModel.Id)}={e.Id}&{nameof(NewEventViewModel.Name)}={e.Name}&{nameof(NewEventViewModel.Description)}={e.Description}");
+                var startUnixTimeSeconds = ((DateTimeOffset)e.StartTime.ToUniversalTime()).ToUnixTimeSeconds();
+                var endUnixTimeSeconds = ((DateTimeOffset)e.EndTime.ToUniversalTime()).ToUnixTimeSeconds();
+                await Shell.Current.GoToAsync($@"{nameof(EditEventPage)}?{nameof(EditEventViewModel.StartTimeUnixSeconds)}={startUnixTimeSeconds}&{nameof(EditEventViewModel.EndTimeUnixSeconds)}={endUnixTimeSeconds}&{nameof(EditEventViewModel.Id)}={e.Id}&{nameof(EditEventViewModel.Name)}={e.Name}&{nameof(EditEventViewModel.Description)}={e.Description}");
             }
         }
     }

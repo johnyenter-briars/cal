@@ -12,7 +12,7 @@ namespace CAL
         {
             InitializeComponent();
             Routing.RegisterRoute(nameof(EventDetailPage), typeof(EventDetailPage));
-            Routing.RegisterRoute(nameof(NewEventPage), typeof(NewEventPage));
+            Routing.RegisterRoute(nameof(EditEventPage), typeof(EditEventPage));
         }
 
     }

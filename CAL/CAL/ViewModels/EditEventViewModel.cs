@@ -15,7 +15,7 @@ namespace CAL.ViewModels
     [QueryProperty(nameof(Id), nameof(Id))]
     [QueryProperty(nameof(Name), nameof(Name))]
     [QueryProperty(nameof(Description), nameof(Description))]
-    public class NewEventViewModel : BaseViewModel
+    public class EditEventViewModel : BaseViewModel
     {
         private string name;
         private string description;
@@ -79,7 +79,7 @@ namespace CAL.ViewModels
                 SetProperty(ref _endDate, value);
             }
         }
-        public NewEventViewModel()
+        public EditEventViewModel()
         {
             SaveCommand = new Command(OnSave, ValidateSave);
             CancelCommand = new Command(OnCancel);

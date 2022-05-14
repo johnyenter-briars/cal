@@ -12,13 +12,13 @@ using Xamarin.Forms.Xaml;
 
 namespace CAL.Views
 {
-    public partial class NewEventPage : ContentPage
+    public partial class EditEventPage : ContentPage
     {
         public Event Item { get; set; }
-        public NewEventPage()
+        public EditEventPage()
         {
             InitializeComponent();
-            BindingContext = new NewEventViewModel();
+            BindingContext = new EditEventViewModel();
         }
     }
 }
