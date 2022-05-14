@@ -100,8 +100,6 @@ namespace CAL.Client
 
             if (clientResponse.IsSuccessStatusCode)
             {
-                var idk =  await clientResponse.Content.ReadAsStringAsync();
-                var imsad = JsonConvert.DeserializeObject<TResponse>(await clientResponse.Content.ReadAsStringAsync());
                 return JsonConvert.DeserializeObject<TResponse>(await clientResponse.Content.ReadAsStringAsync());
             }
             else
@@ -115,8 +113,6 @@ namespace CAL.Client
             request.Headers.Accept.Clear();
             request.Headers.Add("x-api-key", _apiKey);
             request.Headers.Add("x-user-id", _userId);
-
-            var idk = JsonConvert.SerializeObject(requestObject, JsonSettings);
 
             request.Content = new StringContent(JsonConvert.SerializeObject(requestObject, JsonSettings), Encoding.UTF8, "application/json");
 

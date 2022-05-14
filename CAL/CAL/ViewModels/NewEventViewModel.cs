@@ -29,9 +29,6 @@ namespace CAL.ViewModels
             {
                 startTimeUnixSeconds = value;
                 DateTime dateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc).AddSeconds(value);
-                var idk1 = dateTime.ToString();
-                var idk2 = dateTime.ToLocalTime().ToString();
-                var idk3 = dateTime.ToLocalTime().TimeOfDay;
                 StartSelectedDate = dateTime.ToLocalTime();
                 StartSelectedTime = dateTime.ToLocalTime().TimeOfDay;
             }
@@ -45,7 +42,7 @@ namespace CAL.ViewModels
                 endTimeUnixSeconds = value;
                 DateTime dateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc).AddSeconds(endTimeUnixSeconds);
                 EndSelectedDate = dateTime.ToLocalTime();
-                EndSelectedTime = dateTime.TimeOfDay;
+                EndSelectedTime = dateTime.ToLocalTime().TimeOfDay;
             }
         }
         private TimeSpan _startTime;
@@ -70,7 +67,6 @@ namespace CAL.ViewModels
             get { return _startDate; }
             set
             {
-                var idk = value.Kind;
                 SetProperty(ref _startDate, value);
             }
         }
@@ -128,10 +124,6 @@ namespace CAL.ViewModels
             var endingTimeDatePart = new DateTime(EndSelectedDate.Year, EndSelectedDate.Month, EndSelectedDate.Day, 0, 0, 0);
             var endTime = endingTimeDatePart + EndSelectedTime;
 
-            var foo = startTime.Kind;
-
-            var uni = startTime.ToUniversalTime();
-
             Event newEvent = new Event()
             {
                 Id = id,
@@ -142,11 +134,8 @@ namespace CAL.ViewModels
                 CalUserId = new Guid(PreferencesManager.GetUserId()),
             };
 
-            var idk = newEvent.StartTime.Kind;
-
             if (id != null)
             {
-                Console.WriteLine(newEvent);
                 await EventDataStore.UpdateItemAsync(newEvent);
             }
             else

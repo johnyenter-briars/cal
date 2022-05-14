@@ -32,6 +32,10 @@ namespace CAL.Client.Models.Cal
         {
             get
             {
+                if (endTime.Kind != DateTimeKind.Local)
+                {
+                    throw new InvalidOperationException("End time is not Local kind!");
+                }
                 return endTime;
             }
             set
