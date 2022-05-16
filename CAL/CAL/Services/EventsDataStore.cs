@@ -4,6 +4,7 @@ using CAL.Client.Models.Cal;
 using CAL.Managers;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -17,6 +18,7 @@ namespace CAL.Services
         {
             CalClient = CalClientFactory.GetNewCalClient();
             UpdateAuthentication();
+            ObservableCollection<Event> eventsObservable = new ObservableCollection<Event>();
         }
         public async Task<bool> AddItemAsync(Event e)
         {
@@ -57,6 +59,7 @@ namespace CAL.Services
         {
             if (forceRefresh)
             {
+                UpdateAuthentication();
                 await FetchEvents();
             }
             return events;

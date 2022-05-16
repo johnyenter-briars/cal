@@ -2,8 +2,10 @@
 using CAL.Client.Models.Cal;
 using CAL.Views;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Xamarin.Forms;
@@ -17,27 +19,35 @@ namespace CAL.ViewModels
         public Command AddEventCommand { get; }
         public ICommand EventSelectedCommand => new Command(async (item) => await ExecuteEventSelectedCommand(item));
 
-        public EventsViewModel ()
+        public EventsViewModel()
         {
             Title = "Events";
-            Events = new ObservableCollection<Event>();
+            Events = EventsObservable;
             LoadEventsCommand = new Command(async () => await ExecuteLoadEventsComand());
 
             AddEventCommand = new Command(OnAddEvent);
+
         }
 
+        async Task<IEnumerable<Event>> GetNewData()
+        {
+            var events = await EventDataStore.GetItemsAsync();
+
+            return events;
+        }
         async Task ExecuteLoadEventsComand()
         {
             IsBusy = true;
 
             try
             {
-                Events.Clear();
-                var events = await EventDataStore.GetItemsAsync(true);
-                foreach (var e in events)
-                {
-                    Events.Add(e);
-                }
+                await EventsObservable.RefreshEvents();
+                //Events.Clear();
+                //var events = await EventDataStore.GetItemsAsync(true);
+                //foreach (var e in events)
+                //{
+                //    Events.Add(e);
+                //}
             }
             catch (Exception ex)
             {
