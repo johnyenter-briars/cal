@@ -14,7 +14,6 @@ namespace CAL
             InitializeComponent();
 
             DependencyService.Register<EventsDataStore>();
-            DependencyService.Register<EventsObservable>();
             MainPage = new AppShell();
         }
 

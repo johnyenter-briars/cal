@@ -6,39 +6,47 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace CAL.Services
 {
-    public class EventsDataStore : IDataStore<Event>
+    public class EventsDataStore : ObservableCollection<Event>,  IDataStore<Event>
     {
-        IList<Event> events;
+        IList<Event> events = new List<Event>();
         private readonly ICalClient CalClient;
         public EventsDataStore()
         {
             CalClient = CalClientFactory.GetNewCalClient();
             UpdateAuthentication();
-            ObservableCollection<Event> eventsObservable = new ObservableCollection<Event>();
+
+            Thread t = new Thread(async () =>
+            {
+                while (true)
+                {
+                    await FetchItems();
+                    await Task.Delay(10000);
+                }
+            })
+            {
+                IsBackground = true
+            };
+
+            t.Start();
         }
         public async Task<bool> AddItemAsync(Event e)
         {
             var success = await CalClient.CreateEventAsync(e.ToRequest());
 
-            await FetchEvents();
+            await FetchItems();
 
             return success.StatusCode == 201;
         }
         public async Task<bool> UpdateItemAsync(Event e)
         {
-            Console.WriteLine(e);
-
             var success = await CalClient.UpdateEventAsync(e.ToUpdateRequest());
 
-            await FetchEvents();
-
-            var first = events.FirstOrDefault();
-
-            Console.WriteLine(first);
+            await FetchItems();
 
             return success.StatusCode == 201 || success.StatusCode == 200;
         }
@@ -52,7 +60,7 @@ namespace CAL.Services
         }
         public async Task<Event> GetItemAsync(Guid id)
         {
-            await FetchEvents();
+            await FetchItems();
             return await Task.FromResult(events.FirstOrDefault(s => s.Id == id));
         }
         public async Task<IEnumerable<Event>> GetItemsAsync(bool forceRefresh = true)
@@ -60,20 +68,25 @@ namespace CAL.Services
             if (forceRefresh)
             {
                 UpdateAuthentication();
-                await FetchEvents();
+                await FetchItems();
             }
             return events;
         }
-        private async Task FetchEvents()
+        private async Task FetchItems()
         {
-            //TODO: dynamically update based on new data - rather than wipe everything out
-            events = (await CalClient.GetEventsAsync()).Events;
+            var newEvents = (await CalClient.GetEventsAsync()).Events;
+            Clear();
+            foreach (var e in newEvents)
+            {
+                Add(e);
+                events.Add(e);
+            }
         }
         public async Task<IEnumerable<Event>> GetEventsForDayAsync(int day, bool forceRefresh = true)
         {
             if (forceRefresh)
             {
-                await FetchEvents();
+                await FetchItems();
             }
 
             return events.Where(e => e.StartTime.Day == day);
@@ -87,6 +100,10 @@ namespace CAL.Services
                                             PreferencesManager.GetApiKey(), 
                                             PreferencesManager.GetUserId());
             }
+        }
+        public ObservableCollection<Event> GetAsObservable()
+        {
+            return this;
         }
     }
 }

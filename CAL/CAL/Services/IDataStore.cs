@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 
 namespace CAL.Services
@@ -12,5 +13,6 @@ namespace CAL.Services
         Task<T> GetItemAsync(Guid id);
         Task<IEnumerable<T>> GetItemsAsync(bool forceRefresh = true);
         void UpdateAuthentication(bool forceRefresh = true);
+        ObservableCollection<T> GetAsObservable();
     }
 }

@@ -22,7 +22,7 @@ namespace CAL.ViewModels
         public EventsViewModel()
         {
             Title = "Events";
-            Events = EventsObservable;
+            Events = EventDataStore.GetAsObservable();
             LoadEventsCommand = new Command(async () => await ExecuteLoadEventsComand());
 
             AddEventCommand = new Command(OnAddEvent);
@@ -41,13 +41,7 @@ namespace CAL.ViewModels
 
             try
             {
-                await EventsObservable.RefreshEvents();
-                //Events.Clear();
-                //var events = await EventDataStore.GetItemsAsync(true);
-                //foreach (var e in events)
-                //{
-                //    Events.Add(e);
-                //}
+                await EventDataStore.GetItemsAsync(true);
             }
             catch (Exception ex)
             {
