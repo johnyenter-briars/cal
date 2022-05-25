@@ -20,25 +20,25 @@ namespace CAL.Services
             CalClient = CalClientFactory.GetNewCalClient();
             UpdateAuthentication();
 
-            Thread t = new Thread(async () =>
-            {
-                while (true)
-                {
-                    await FetchItems();
-                    await Task.Delay(10000);
-                }
-            })
-            {
-                IsBackground = true
-            };
+            //Thread t = new Thread(async () =>
+            //{
+            //    while (true)
+            //    {
+            //        await FetchItems();
+            //        await Task.Delay(10000);
+            //    }
+            //})
+            //{
+            //    IsBackground = true
+            //};
 
-            t.Start();
+            //t.Start();
         }
         public async Task<bool> AddItemAsync(Event e)
         {
             var success = await CalClient.CreateEventAsync(e.ToRequest());
 
-            await FetchItems();
+            await RefreshItemsAsync();
 
             return success.StatusCode == 201;
         }
@@ -46,21 +46,17 @@ namespace CAL.Services
         {
             var success = await CalClient.UpdateEventAsync(e.ToUpdateRequest());
 
-            await FetchItems();
+            await RefreshItemsAsync();
 
             return success.StatusCode == 201 || success.StatusCode == 200;
         }
         public async Task<bool> DeleteItemAsync(Guid id)
         {
             throw new NotImplementedException();
-            //var oldItem = events.Where((Event arg) => arg.Id == id).FirstOrDefault();
-            //events.Remove(oldItem);
-
-            //return await Task.FromResult(true);
         }
         public async Task<Event> GetItemAsync(Guid id)
         {
-            await FetchItems();
+            await RefreshItemsAsync();
             return await Task.FromResult(events.FirstOrDefault(s => s.Id == id));
         }
         public async Task<IEnumerable<Event>> GetItemsAsync(bool forceRefresh = true)
@@ -68,11 +64,11 @@ namespace CAL.Services
             if (forceRefresh)
             {
                 UpdateAuthentication();
-                await FetchItems();
+                await RefreshItemsAsync();
             }
             return events;
         }
-        private async Task FetchItems()
+        public async Task RefreshItemsAsync()
         {
             var newEvents = (await CalClient.GetEventsAsync()).Events;
             Clear();
@@ -86,7 +82,7 @@ namespace CAL.Services
         {
             if (forceRefresh)
             {
-                await FetchItems();
+                await RefreshItemsAsync();
             }
 
             return events.Where(e => e.StartTime.Day == day);

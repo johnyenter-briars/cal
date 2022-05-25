@@ -4,21 +4,15 @@
              x:Class="CAL.Views.CalendarPage"
              xmlns:local="clr-namespace:CAL.ViewModels"  
              xmlns:plugin="clr-namespace:Xamarin.Plugin.Calendar.Controls;assembly=Xamarin.Plugin.Calendar" 
-             xmlns:model="clr-namespace:CAL.Client.Models.Cal;assembly=CAL.Client" 
              xmlns:controls="clr-namespace:CAL.Controls"
              x:DataType="local:CalendarViewModel"
              x:Name="calendarPage"
              Title="{Binding Title}">
-    <ContentPage.Resources>
-        <ResourceDictionary>
-            <Color x:Key="Accent">#96d1ff</Color>
-        </ResourceDictionary>
-    </ContentPage.Resources>
 
     <ContentPage.ToolbarItems>
         <ToolbarItem Text="Add" Command="{Binding AddEventCommand}" />
+        <ToolbarItem Text="Refresh" Command="{Binding RefreshEventsCommand}" />
     </ContentPage.ToolbarItems>
-
 
     <Grid BackgroundColor="{StaticResource BackgroundColor}">
         <Grid.RowDefinitions>
@@ -33,7 +27,6 @@
                         HorizontalOptions="FillAndExpand"
                         CalendarLayout="Month"
                         EventIndicatorType="BottomDot"
-                        DayTappedCommand="{Binding DayTappedCommand}"
                         SelectedDate="{Binding SelectedDate}"
                     >
 
@@ -62,41 +55,8 @@
                             </StackLayout>
                         </DataTemplate>
                     </plugin:Calendar.EmptyTemplate>
-
-
-
-
                 </plugin:Calendar>
             </ContentView>
-            <!--
-            <ContentView Padding="0,0,0,0" VerticalOptions="FillAndExpand">
-                <CollectionView x:Name="EventsDayListView"
-                        ItemsSource="{Binding Events}"
-                        SelectionMode="None">
-                    <CollectionView.ItemTemplate>
-                        <DataTemplate>
-                            <StackLayout Padding="10" x:DataType="model:Event">
-                                <Label Text="{Binding Name}" 
-                                    LineBreakMode="NoWrap" 
-                                    Style="{DynamicResource ListItemTextStyle}" 
-                                    TextColor="{StaticResource TextSecondaryColor}"
-                                    FontSize="16">
-
-                                    <Label.GestureRecognizers>
-                                        <TapGestureRecognizer 
-                                            CommandParameter="{Binding .}"
-                                            Command="{Binding Source={RelativeSource AncestorType={x:Type local:CalendarViewModel}}, Path=EventTappedCommend}"		
-                                            />
-                                    </Label.GestureRecognizers>
-
-                                </Label>
-
-                            </StackLayout>
-                        </DataTemplate>
-                    </CollectionView.ItemTemplate>
-                </CollectionView>
-            </ContentView>
-            -->
         </StackLayout>
     </Grid>
 </ContentPage>
