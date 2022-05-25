@@ -33,7 +33,6 @@
                         HorizontalOptions="FillAndExpand"
                         CalendarLayout="Month"
                         EventIndicatorType="BottomDot"
-                        DayTappedCommand="{Binding DayTappedCommand}"
                         SelectedDate="{Binding SelectedDate}"
                     >
 

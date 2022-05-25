@@ -3,6 +3,7 @@ using CAL.Views;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,7 +15,6 @@ namespace CAL.ViewModels
 {
     internal class CalendarViewModel : BaseViewModel
     {
-        public Command DayTappedCommand => new Command<DateTime>((date) => DayTapped(date));
         public Command AddEventCommand { get; }
         public ICommand EventSelectedCommand => new Command(async (item) => await ExecuteEventSelectedCommand(item));
         public ObservableCollection<Event> Events { get; }
@@ -28,47 +28,117 @@ namespace CAL.ViewModels
         public CalendarViewModel()
         {
             Title = "Calendar";
-            Events = new ObservableCollection<Event>();
             _selectedDate = DateTime.Now;
-            Task.Run(async () => await ExecuteLoadEventsAsync());
-            EventCollection = new EventCollection();
-            AddEventCommand = new Command(OnAddEvent);
-        }
-        private async Task ExecuteLoadEventsAsync()
-        {
-            IsBusy = true;
+            //Task.Run(async () => await ExecuteLoadEventsAsync());
 
-            try
+            EventCollection = new EventCollection();
+
+            AddEventCommand = new Command(OnAddEvent);
+
+            Events = EventDataStore.GetAsObservable();
+
+
+            Action<List<Event>> actionOnCollectionChange = (List<Event> events) =>
             {
-                Events.Clear();
-                EventCollection.Clear();
-                var events = await EventDataStore.GetItemsAsync();
-                foreach (var e in events)
+                try
                 {
-                    Events.Add(e);
-                    if (EventCollection.ContainsKey(e.StartTime))
+                    foreach (var e in events)
                     {
-                        ((List<Event>)EventCollection[e.StartTime]).Add(e);
+                        if (EventCollection.ContainsKey(e.StartTime))
+                        {
+                            ((List<Event>)EventCollection[e.StartTime]).Add(e);
+                        }
+                        else
+                        {
+                            EventCollection.Add(e.StartTime, new List<Event> { e });
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(ex);
+                }
+                finally
+                {
+                    IsBusy = false;
+                }
+            };
+
+            //EventDataStore..AddOnCollectionChangedAction(actionOnCollectionChange);
+
+            EventDataStore.GetAsObservable().CollectionChanged += CalendarViewModel_CollectionChanged;
+        }
+
+        private void CalendarViewModel_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (e.Action == NotifyCollectionChangedAction.Add)
+            {
+                //System.Collections.Specialized.ReadOnlyList x;
+                var newItems = e.NewItems;
+
+                foreach (Event ev in newItems)
+                {
+                    if (EventCollection.ContainsKey(ev.StartTime))
+                    {
+                        var listOfEvents = ((List<Event>)EventCollection[ev.StartTime]);
+
+                        if (!listOfEvents.Contains(ev))
+                        {
+                            listOfEvents.Add(ev);
+                        }
                     }
                     else
                     {
-                        EventCollection.Add(e.StartTime, new List<Event> { e });
+                        EventCollection.Add(ev.StartTime, new List<Event> { ev });
                     }
                 }
+
             }
-            catch (Exception ex)
+            if (e.Action == NotifyCollectionChangedAction.Replace)
             {
-                Debug.WriteLine(ex);
+                //your code
             }
-            finally
+            if (e.Action == NotifyCollectionChangedAction.Remove)
             {
-                IsBusy = false;
+                //your code
+            }
+            if (e.Action == NotifyCollectionChangedAction.Move)
+            {
+                //your code
             }
         }
-        private async void DayTapped(DateTime date)
-        {
-            await ExecuteLoadEventsAsync();
-        }
+
+        //private async Task ExecuteLoadEventsAsync()
+        //{
+        //    IsBusy = true;
+
+        //    try
+        //    {
+        //        Events.Clear();
+        //        EventCollection.Clear();
+        //        var events = await EventDataStore.GetItemsAsync();
+        //        foreach (var e in events)
+        //        {
+        //            Events.Add(e);
+        //            if (EventCollection.ContainsKey(e.StartTime))
+        //            {
+        //                ((List<Event>)EventCollection[e.StartTime]).Add(e);
+        //            }
+        //            else
+        //            {
+        //                EventCollection.Add(e.StartTime, new List<Event> { e });
+        //            }
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Debug.WriteLine(ex);
+        //    }
+        //    finally
+        //    {
+        //        IsBusy = false;
+        //    }
+        //}
         private async void OnAddEvent(object obj)
         {
             var unixTimeSeconds = ((DateTimeOffset)SelectedDate).ToUnixTimeSeconds();

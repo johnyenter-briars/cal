@@ -24,6 +24,7 @@ namespace CAL.Services
             {
                 while (true)
                 {
+                    UpdateAuthentication();
                     await FetchItems();
                     await Task.Delay(10000);
                 }
@@ -79,7 +80,6 @@ namespace CAL.Services
             foreach (var e in newEvents)
             {
                 Add(e);
-                events.Add(e);
             }
         }
         public async Task<IEnumerable<Event>> GetEventsForDayAsync(int day, bool forceRefresh = true)
