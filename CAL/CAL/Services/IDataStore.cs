@@ -13,6 +13,7 @@ namespace CAL.Services
         Task<T> GetItemAsync(Guid id);
         Task<IEnumerable<T>> GetItemsAsync(bool forceRefresh = true);
         void UpdateAuthentication(bool forceRefresh = true);
+        Task RefreshItemsAsync();
         ObservableCollection<T> GetAsObservable();
     }
 }

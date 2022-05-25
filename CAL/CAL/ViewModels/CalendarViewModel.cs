@@ -14,8 +14,9 @@ namespace CAL.ViewModels
 {
     internal class CalendarViewModel : BaseViewModel
     {
-        public Command DayTappedCommand => new Command<DateTime>((date) => DayTapped(date));
-        public Command AddEventCommand { get; }
+        //public Command DayTappedCommand => new Command<DateTime>((date) => DayTapped(date));
+        public Command AddEventCommand => new Command(OnAddEvent);
+        public Command RefreshEventsCommand => new Command(Refresh);
         public ICommand EventSelectedCommand => new Command(async (item) => await ExecuteEventSelectedCommand(item));
         public ObservableCollection<Event> Events { get; }
         public EventCollection EventCollection { get; }
@@ -28,11 +29,10 @@ namespace CAL.ViewModels
         public CalendarViewModel()
         {
             Title = "Calendar";
-            Events = new ObservableCollection<Event>();
+            Events = EventDataStore.GetAsObservable();
             _selectedDate = DateTime.Now;
             Task.Run(async () => await ExecuteLoadEventsAsync());
             EventCollection = new EventCollection();
-            AddEventCommand = new Command(OnAddEvent);
         }
         private async Task ExecuteLoadEventsAsync()
         {
@@ -40,15 +40,17 @@ namespace CAL.ViewModels
 
             try
             {
-                Events.Clear();
-                EventCollection.Clear();
                 var events = await EventDataStore.GetItemsAsync();
                 foreach (var e in events)
                 {
-                    Events.Add(e);
                     if (EventCollection.ContainsKey(e.StartTime))
                     {
-                        ((List<Event>)EventCollection[e.StartTime]).Add(e);
+                        var listOfEvents = ((List<Event>)EventCollection[e.StartTime]);
+
+                        if (!listOfEvents.Contains(e))
+                        {
+                            listOfEvents.Add(e);
+                        }
                     }
                     else
                     {
@@ -65,14 +67,19 @@ namespace CAL.ViewModels
                 IsBusy = false;
             }
         }
-        private async void DayTapped(DateTime date)
-        {
-            await ExecuteLoadEventsAsync();
-        }
+        //private async void DayTapped(DateTime date)
+        //{
+        //    await ExecuteLoadEventsAsync();
+        //}
         private async void OnAddEvent(object obj)
         {
             var unixTimeSeconds = ((DateTimeOffset)SelectedDate).ToUnixTimeSeconds();
             await Shell.Current.GoToAsync($"{nameof(EditEventPage)}?{nameof(EditEventViewModel.StartTimeUnixSeconds)}={unixTimeSeconds}");
+        }
+        private async void Refresh()
+        {
+            await EventDataStore.RefreshItemsAsync();
+            await ExecuteLoadEventsAsync();
         }
         private async Task ExecuteEventSelectedCommand(object item)
         {

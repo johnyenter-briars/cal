@@ -79,5 +79,20 @@ namespace CAL.Client.Models.Cal
         }
 
         public override string ToString() => $"{Name}-LOCAL START: {StartTime}- UTC START: {StartTime.ToUniversalTime()}-{EndTime}";
+        public override bool Equals(object obj)
+        {
+            if (obj is Event e)
+            {
+                return e.Id == Id;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
     }
 }
