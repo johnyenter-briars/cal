@@ -121,7 +121,7 @@ namespace CAL.ViewModels
             var startingTimeDatePart = new DateTime(StartSelectedDate.Year, StartSelectedDate.Month, StartSelectedDate.Day, 0, 0, 0, kind: DateTimeKind.Local);
             var startTime = startingTimeDatePart + StartSelectedTime;
 
-            var endingTimeDatePart = new DateTime(EndSelectedDate.Year, EndSelectedDate.Month, EndSelectedDate.Day, 0, 0, 0);
+            var endingTimeDatePart = new DateTime(EndSelectedDate.Year, EndSelectedDate.Month, EndSelectedDate.Day, 0, 0, 0, kind: DateTimeKind.Local);
             var endTime = endingTimeDatePart + EndSelectedTime;
 
             Event newEvent = new Event()
@@ -142,7 +142,6 @@ namespace CAL.ViewModels
             {
                 await EventDataStore.AddItemAsync(newEvent);
             }
-
 
             await Shell.Current.GoToAsync("..");
         }

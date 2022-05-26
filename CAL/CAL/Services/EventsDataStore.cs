@@ -13,7 +13,7 @@ namespace CAL.Services
 {
     public class EventsDataStore : ObservableCollection<Event>,  IDataStore<Event>
     {
-        IList<Event> events = new List<Event>();
+        //IList<Event> events = new List<Event>();
         private readonly ICalClient CalClient;
         public EventsDataStore()
         {
@@ -57,7 +57,7 @@ namespace CAL.Services
         public async Task<Event> GetItemAsync(Guid id)
         {
             await RefreshItemsAsync();
-            return await Task.FromResult(events.FirstOrDefault(s => s.Id == id));
+            return await Task.FromResult(this.ToList().FirstOrDefault(s => s.Id == id));
         }
         public async Task<IEnumerable<Event>> GetItemsAsync(bool forceRefresh = true)
         {
@@ -66,7 +66,7 @@ namespace CAL.Services
                 UpdateAuthentication();
                 await RefreshItemsAsync();
             }
-            return events;
+            return this.ToList();
         }
         public async Task RefreshItemsAsync()
         {
@@ -75,7 +75,7 @@ namespace CAL.Services
             foreach (var e in newEvents)
             {
                 Add(e);
-                events.Add(e);
+                //events.Add(e);
             }
         }
         public async Task<IEnumerable<Event>> GetEventsForDayAsync(int day, bool forceRefresh = true)
@@ -85,7 +85,7 @@ namespace CAL.Services
                 await RefreshItemsAsync();
             }
 
-            return events.Where(e => e.StartTime.Day == day);
+            return this.ToList().Where(e => e.StartTime.Day == day);
         }
         public void UpdateAuthentication(bool forceRefresh = true)
         {

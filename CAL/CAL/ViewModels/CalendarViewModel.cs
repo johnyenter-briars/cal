@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -43,12 +44,19 @@ namespace CAL.ViewModels
                 var events = await EventDataStore.GetItemsAsync();
                 foreach (var e in events)
                 {
+                    if (e.Name == "a")
+                    {
+                        var x = 5;
+                    }
                     if (EventCollection.ContainsKey(e.StartTime))
                     {
                         var listOfEvents = ((List<Event>)EventCollection[e.StartTime]);
 
-                        if (!listOfEvents.Contains(e))
+                        var eventWithSameId = listOfEvents.Where(temp => e.ShouldReplace(temp)).SingleOrDefault();
+
+                        if (eventWithSameId != null)
                         {
+                            listOfEvents.Remove(eventWithSameId);
                             listOfEvents.Add(e);
                         }
                     }
@@ -69,8 +77,6 @@ namespace CAL.ViewModels
         }
         private async void OnAddEvent()
         {
-            //var startUnixTimeSeconds = ((DateTimeOffset)e.StartTime.ToUniversalTime()).ToUnixTimeSeconds();
-            //var endUnixTimeSeconds = ((DateTimeOffset)e.EndTime.ToUniversalTime()).ToUnixTimeSeconds();
             var startUnixTimeSeconds = ((DateTimeOffset)SelectedDate).ToUnixTimeSeconds();
             var endUnixTimeSeconds = ((DateTimeOffset)SelectedDate.AddHours(1)).ToUnixTimeSeconds();
             await Shell.Current.GoToAsync($@"{nameof(EditEventPage)}?{nameof(EditEventViewModel.StartTimeUnixSeconds)}={startUnixTimeSeconds}&{nameof(EditEventViewModel.EndTimeUnixSeconds)}={endUnixTimeSeconds}");
