@@ -67,14 +67,13 @@ namespace CAL.ViewModels
                 IsBusy = false;
             }
         }
-        //private async void DayTapped(DateTime date)
-        //{
-        //    await ExecuteLoadEventsAsync();
-        //}
-        private async void OnAddEvent(object obj)
+        private async void OnAddEvent()
         {
-            var unixTimeSeconds = ((DateTimeOffset)SelectedDate).ToUnixTimeSeconds();
-            await Shell.Current.GoToAsync($"{nameof(EditEventPage)}?{nameof(EditEventViewModel.StartTimeUnixSeconds)}={unixTimeSeconds}");
+            //var startUnixTimeSeconds = ((DateTimeOffset)e.StartTime.ToUniversalTime()).ToUnixTimeSeconds();
+            //var endUnixTimeSeconds = ((DateTimeOffset)e.EndTime.ToUniversalTime()).ToUnixTimeSeconds();
+            var startUnixTimeSeconds = ((DateTimeOffset)SelectedDate).ToUnixTimeSeconds();
+            var endUnixTimeSeconds = ((DateTimeOffset)SelectedDate.AddHours(1)).ToUnixTimeSeconds();
+            await Shell.Current.GoToAsync($@"{nameof(EditEventPage)}?{nameof(EditEventViewModel.StartTimeUnixSeconds)}={startUnixTimeSeconds}&{nameof(EditEventViewModel.EndTimeUnixSeconds)}={endUnixTimeSeconds}");
         }
         private async void Refresh()
         {
