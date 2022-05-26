@@ -79,16 +79,32 @@ namespace CAL.Client.Models.Cal
         }
 
         public override string ToString() => $"{Name}-LOCAL START: {StartTime}- UTC START: {StartTime.ToUniversalTime()}-{EndTime}";
-        public override bool Equals(object obj)
+        //public override bool Equals(object obj)
+        //{
+        //    if (obj is Event e)
+        //    {
+        //        return  e.Id == Id &&
+        //                e.StartTime == StartTime &&
+        //                e.EndTime == EndTime &&
+        //                e.Description == Description &&
+        //                e.SeriesId == SeriesId
+        //            ;
+        //    }
+        //    else
+        //    {
+        //        return false;
+        //    }
+        //}
+        public bool ShouldReplace(Event e)
         {
-            if (obj is Event e)
-            {
-                return e.Id == Id;
-            }
-            else
-            {
-                return false;
-            }
+            return e.Id == Id &&
+                    (
+                        e.StartTime != StartTime ||
+                        e.EndTime != EndTime ||
+                        e.Description != Description ||
+                        e.SeriesId != SeriesId
+                    );
+
         }
         public override int GetHashCode()
         {
