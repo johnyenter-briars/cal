@@ -37,7 +37,7 @@ namespace CAL.ViewModels
         async Task ExecuteLoadEventsComand()
         {
             IsBusy = true;
-            //await EventDataStore.RefreshItemsAsync();
+            await EventDataStore.RefreshItemsAsync();
             IsBusy = false;
         }
 
