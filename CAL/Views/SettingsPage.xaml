@@ -43,18 +43,29 @@
 
         <ScrollView Grid.Row="1">
             <StackLayout Orientation="Vertical" Padding="30,24,30,24" Spacing="10">
-                <Entry x:Name = "IpAddress"  Text="{Binding HostName}"  Placeholder = "IP address"
-                   HeightRequest = "40"  
+                <Frame BorderColor="LightGray" HasShadow="False" Padding="5" BackgroundColor="Black">
+                    <Entry 
+                    x:Name = "IpAddress"  
+                    Text="{Binding HostName}"  
+                    Placeholder = "IP address"
+                    HeightRequest = "40"  
                    />
-                <Entry x:Name = "Port" Text="{Binding Port}" Placeholder = "port"  
+                </Frame>
+                <Frame BorderColor="LightGray" HasShadow="False" Padding="5" BackgroundColor="Black">
+                    <Entry x:Name = "Port" Text="{Binding Port}" Placeholder = "port"  
                    HeightRequest = "40"  
                         />
-                <Entry x:Name = "ApiKey" Text="{Binding ApiKey}" Placeholder = "API Key"  
+                </Frame>
+                <Frame BorderColor="LightGray" HasShadow="False" Padding="5" BackgroundColor="Black">
+                    <Entry x:Name = "ApiKey" Text="{Binding ApiKey}" Placeholder = "API Key"  
                    HeightRequest = "40"  
                         />
-                <Entry x:Name = "UserId" Text="{Binding UserId}" Placeholder = "User Id"  
+                </Frame>
+                <Frame BorderColor="LightGray" HasShadow="False" Padding="5" BackgroundColor="Black">
+                    <Entry x:Name = "UserId" Text="{Binding UserId}" Placeholder = "User Id"  
                    HeightRequest = "40"  
                         />
+                </Frame>
                 <Button x:Name= "saveChangesBtn" Text = "Save Changes"   
                     Command="{Binding SaveChangesCommand}"  
                     HorizontalOptions = "FillAndExpand"/>
