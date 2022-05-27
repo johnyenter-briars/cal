@@ -1,11 +1,15 @@
-﻿namespace CAL;
+﻿using CAL.Services;
+
+namespace CAL;
 
 public partial class App : Application
 {
-	public App()
-	{
-		InitializeComponent();
+    public App()
+    {
+        InitializeComponent();
 
-		MainPage = new AppShell();
-	}
+        DependencyService.Register<EventsDataStore>();
+
+        MainPage = new AppShell();
+    }
 }
