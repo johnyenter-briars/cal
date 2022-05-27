@@ -1,0 +1,63 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="CAL.Views.CalendarPage"
+             xmlns:local="clr-namespace:CAL.ViewModels"  
+             xmlns:controls="clr-namespace:CAL.Controls"
+             x:DataType="local:CalendarViewModel"
+             x:Name="calendarPage"
+             Title="{Binding Title}">
+
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Add" Command="{Binding AddEventCommand}" />
+        <ToolbarItem Text="Refresh" Command="{Binding RefreshEventsCommand}" />
+    </ContentPage.ToolbarItems>
+
+    <Grid BackgroundColor="{StaticResource BackgroundColor}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <StackLayout VerticalOptions="FillAndExpand" HorizontalOptions="Fill">
+            <ContentView Padding="0,0,0,0" VerticalOptions="FillAndExpand">
+                <!--
+                <plugin:Calendar
+                        Events="{Binding EventCollection}"
+                        VerticalOptions="FillAndExpand"
+                        HorizontalOptions="FillAndExpand"
+                        CalendarLayout="Month"
+                        EventIndicatorType="BottomDot"
+                        SelectedDate="{Binding SelectedDate}"
+                    >
+
+                    <plugin:Calendar.HeaderSectionTemplate>
+                        <controls:CalendarHeader />
+                    </plugin:Calendar.HeaderSectionTemplate>
+
+                    <plugin:Calendar.FooterSectionTemplate>
+                        <DataTemplate>
+                            <controls:CalendarFooter />
+                        </DataTemplate>
+                    </plugin:Calendar.FooterSectionTemplate>
+
+                    <plugin:Calendar.EventTemplate>
+                        <DataTemplate>
+                            <controls:CalenderEvent CalenderEventCommand="{Binding BindingContext.EventSelectedCommand, Source={x:Reference calendarPage}}" />
+                        </DataTemplate>
+                    </plugin:Calendar.EventTemplate>
+                    <plugin:Calendar.EmptyTemplate>
+                        <DataTemplate>
+                            <StackLayout>
+                                <Label
+                        Margin="0,5,0,5"
+                        HorizontalTextAlignment="Center"
+                        Text="NO EVENTS FOR THE SELECTED DATE" />
+                            </StackLayout>
+                        </DataTemplate>
+                    </plugin:Calendar.EmptyTemplate>
+                </plugin:Calendar>
+               -->
+            </ContentView>
+        </StackLayout>
+    </Grid>
+</ContentPage>
