@@ -7,7 +7,7 @@ CAL provides a multitude of methods for calendar management across different int
 ## Project Breakdown
 | Project      | Description |
 | ----------- | ----------- |
-| CAL      | Xamarin cross platform app       |
+| CAL      | MAUI cross platform app       |
 | CAL.Client   | .NET standard 2.0 class library for handing shared business logic for connecting to cal-server        |
 | CAL.CLI      | CLI for interfacing with cal-server       |
 

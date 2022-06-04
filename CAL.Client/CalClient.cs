@@ -85,6 +85,7 @@ namespace CAL.Client
         }
         private bool ValidateRequest(IValidatable request)
         {
+            request.CalUserId = null;
             return request.StartTime.Kind == DateTimeKind.Utc &&
                     request.EndTime.Kind == DateTimeKind.Utc &&
                     request.CalUserId != null;
