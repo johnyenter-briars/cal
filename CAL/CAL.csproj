@@ -15,7 +15,7 @@
 		<ApplicationTitle>CAL</ApplicationTitle>
 
 		<!-- App Identifier -->
-		<ApplicationId>com.companyname.cal</ApplicationId>
+		<ApplicationId>com.jyb.cal</ApplicationId>
 		<ApplicationIdGuid>72094193-98BB-4961-BB29-8D5AEAEE4E8E</ApplicationIdGuid>
 
 		<!-- Versions -->
