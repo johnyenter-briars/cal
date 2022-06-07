@@ -6,6 +6,7 @@
              xmlns:controls="clr-namespace:CAL.Controls"
              x:DataType="local:CalendarViewModel"
              x:Name="calendarPage"
+             xmlns:xc="clr-namespace:XCalendar.Maui.Views;assembly=XCalendar.Maui"
              Title="{Binding Title}">
 
     <ContentPage.ToolbarItems>
@@ -20,6 +21,28 @@
         </Grid.RowDefinitions>
         <StackLayout VerticalOptions="FillAndExpand" HorizontalOptions="Fill">
             <ContentView Padding="0,0,0,0" VerticalOptions="FillAndExpand">
+                <xc:CalendarView
+                    DayNameTextColor="Blue"
+                    BackgroundColor="Black"
+                    >
+                    <xc:CalendarView.DayTemplate>
+                        <DataTemplate>
+                            <ContentView>
+                                <xc:CalendarDayView
+                                    TextColor="Red"
+                                    CalendarView="{Binding ., Source={x:Reference MainCalendarView}}"
+                                    InvalidTextColor="HotPink"
+                                    SelectedTextColor="Orange"
+                                    TodayBorderColor="Green"
+                                    TodayTextColor="White"
+                                    >
+
+                                </xc:CalendarDayView>
+                            </ContentView>
+                        </DataTemplate>
+                    </xc:CalendarView.DayTemplate>
+
+                </xc:CalendarView>
                 <!--
                 <plugin:Calendar
                         Events="{Binding EventCollection}"

@@ -86,8 +86,7 @@ namespace CAL.Client
         private bool ValidateRequest(IValidatable request)
         {
             return request.StartTime.Kind == DateTimeKind.Utc &&
-                    request.EndTime.Kind == DateTimeKind.Utc &&
-                    request.CalUserId != null;
+                    request.EndTime.Kind == DateTimeKind.Utc;
         }
         private async Task<TResponse> CalServerRequest<TResponse>(string path, HttpMethod httpMethod)
         {
