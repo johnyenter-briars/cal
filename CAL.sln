@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CAL", "CAL\CAL.csproj", "{A
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CAL.Client", "CAL.Client\CAL.Client.csproj", "{E2D44D52-0140-41FB-9D56-4C7D5FC97931}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CAL.CLI", "CAL.CLI\CAL.CLI.csproj", "{CFC13A06-2517-4EC9-81DD-2AE1106A7869}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -23,6 +25,10 @@ Global
 		{E2D44D52-0140-41FB-9D56-4C7D5FC97931}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E2D44D52-0140-41FB-9D56-4C7D5FC97931}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E2D44D52-0140-41FB-9D56-4C7D5FC97931}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CFC13A06-2517-4EC9-81DD-2AE1106A7869}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CFC13A06-2517-4EC9-81DD-2AE1106A7869}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CFC13A06-2517-4EC9-81DD-2AE1106A7869}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CFC13A06-2517-4EC9-81DD-2AE1106A7869}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
