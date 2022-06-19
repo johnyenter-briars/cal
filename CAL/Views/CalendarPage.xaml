@@ -1,4 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
+<!--
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="CAL.Views.CalendarPage"
@@ -6,13 +7,45 @@
              xmlns:controls="clr-namespace:CAL.Controls"
              x:DataType="local:CalendarViewModel"
              x:Name="calendarPage"
+             xmlns:xcConverters="clr-namespace:XCalendar.Maui.Converters;assembly=XCalendar.Maui"
              xmlns:xc="clr-namespace:XCalendar.Maui.Views;assembly=XCalendar.Maui"
+             xmlns:model="clr-namespace:CAL.Client.Models.Cal;assembly=CAL.Client"  
+             xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              Title="{Binding Title}">
+-->
+<ContentPage
+             x:Class="CAL.Views.CalendarPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:CAL.ViewModels"  
+    xmlns:xc="clr-namespace:XCalendar.Maui.Views;assembly=XCalendar.Maui"
+    xmlns:xcConverters="clr-namespace:XCalendar.Maui.Converters;assembly=XCalendar.Maui"
+    xmlns:xcModels="clr-namespace:XCalendar.Core.Models;assembly=XCalendar.Core"
+    xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             xmlns:model="clr-namespace:CAL.Client.Models.Cal;assembly=CAL.Client"  
+    x:Name="This"
+    Title="Event Calendar"
+    x:DataType="local:CalendarViewModel"
+    
+    >
+
 
     <ContentPage.ToolbarItems>
         <ToolbarItem Text="Add" Command="{Binding AddEventCommand}" />
         <ToolbarItem Text="Refresh" Command="{Binding RefreshEventsCommand}" />
     </ContentPage.ToolbarItems>
+
+
+    <!--
+
+    <ContentPage.Resources>
+        <xcConverters:StringCharLimitConverter x:Key="StringCharLimitConverter"/>
+        <mct:VariableMultiValueConverter x:Key="AllTrueConverter" ConditionType="All"/>
+        <mct:InvertedBoolConverter x:Key="InvertedBoolConverter"/>
+    </ContentPage.Resources>
+
+    -->
+
 
     <Grid BackgroundColor="{StaticResource BackgroundColor}">
         <Grid.RowDefinitions>
@@ -36,6 +69,60 @@
                                     TodayBorderColor="Green"
                                     TodayTextColor="White"
                                     >
+
+
+                                    <xc:CalendarDayView.ControlTemplate>
+                                        <ControlTemplate>
+                                            <!--Using a Grid to stack views on the z axis-->
+                                            <Grid RowSpacing="2" BindingContext="{Binding BindingContext, Source={RelativeSource TemplatedParent}}">
+
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="1.5*"/>
+                                                    <RowDefinition/>
+                                                </Grid.RowDefinitions>
+
+                                                <!--ContentPresenter displays the default content for the control-->
+                                                <ContentPresenter
+                                                Grid.Row="0"
+                                                Grid.RowSpan="2"
+                                                VerticalOptions="Center"/>
+
+                                                <!--  TemplatedParent refers to the view that the ControlTemplate resides in  -->
+                                                <HorizontalStackLayout
+                                                Grid.Row="1"
+                                                HorizontalOptions="Center"
+                                                Spacing="2.5"
+                                                BindableLayout.ItemsSource="{Binding Events}">
+
+                                                    <!--I want the event indicators to only be visible when the DateTime is in the currently navigated month-->
+                                                    <HorizontalStackLayout.IsVisible>
+                                                        <MultiBinding>
+                                                            <!--TemplatedParent refers to the view that the ControlTemplate resides in-->
+                                                            <Binding Path="IsCurrentMonth" Source="{RelativeSource TemplatedParent}"/>
+                                                            <Binding
+                                                            Path="IsInvalid"
+                                                            Source="{RelativeSource TemplatedParent}"/>
+                                                        </MultiBinding>
+                                                    </HorizontalStackLayout.IsVisible>
+
+                                                    <BindableLayout.ItemTemplate>
+                                                        <DataTemplate x:DataType="model:Event">
+                                                            <BoxView
+                                                            CornerRadius="100"
+                                                            HeightRequest="7"
+                                                            HorizontalOptions="CenterAndExpand"
+                                                            VerticalOptions="Center"
+                                                            WidthRequest="7"
+                                                            Color="Red"/>
+                                                        </DataTemplate>
+                                                    </BindableLayout.ItemTemplate>
+
+                                                </HorizontalStackLayout>
+
+                                            </Grid>
+                                        </ControlTemplate>
+                                    </xc:CalendarDayView.ControlTemplate>
+
 
                                 </xc:CalendarDayView>
                             </ContentView>
