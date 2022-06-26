@@ -13,6 +13,7 @@ namespace CAL.Client.Models.Cal.Request
         public bool RepeatOnFri { get; set; }
         public bool RepeatOnSat { get; set; }
         public bool RepeatOnSun { get; set; }
+        public DateTime StartsOn { get; set; }
         public DateTime EndsOn { get; set; }
     }
 }

@@ -16,6 +16,7 @@ namespace CAL.ViewModels
     internal class CalendarViewModel : BaseViewModel
     {
         public Command AddEventCommand => new Command(OnAddEvent);
+        public Command AddSeriesCommand => new Command(OnAddSeries);
         public Command RefreshEventsCommand => new Command(Refresh);
         public ICommand EventSelectedCommand => new Command(async (item) => await ExecuteEventSelectedCommand(item));
         public ObservableCollection<Event> Events { get; }
@@ -43,10 +44,6 @@ namespace CAL.ViewModels
                 var events = await EventDataStore.GetItemsAsync();
                 foreach (var e in events)
                 {
-                    if (e.Name == "a")
-                    {
-                        var x = 5;
-                    }
                     if (EventCollection.ContainsKey(e.StartTime))
                     {
                         var listOfEvents = ((List<Event>)EventCollection[e.StartTime]);
@@ -79,6 +76,12 @@ namespace CAL.ViewModels
             var startUnixTimeSeconds = ((DateTimeOffset)SelectedDate).ToUnixTimeSeconds();
             var endUnixTimeSeconds = ((DateTimeOffset)SelectedDate.AddHours(1)).ToUnixTimeSeconds();
             await Shell.Current.GoToAsync($@"{nameof(EditEventPage)}?{nameof(EditEventViewModel.StartTimeUnixSeconds)}={startUnixTimeSeconds}&{nameof(EditEventViewModel.EndTimeUnixSeconds)}={endUnixTimeSeconds}");
+        }
+        private async void OnAddSeries()
+        {
+            var startUnixTimeSeconds = ((DateTimeOffset)SelectedDate).ToUnixTimeSeconds();
+            var endUnixTimeSeconds = ((DateTimeOffset)SelectedDate.AddHours(1)).ToUnixTimeSeconds();
+            await Shell.Current.GoToAsync($@"{nameof(EditSeriesPage)}?{nameof(EditSeriesViewModel.StartTimeUnixSeconds)}={startUnixTimeSeconds}&{nameof(EditSeriesViewModel.EndTimeUnixSeconds)}={endUnixTimeSeconds}");
         }
         private async void Refresh()
         {

@@ -139,6 +139,5 @@ namespace CAL.Client
             _apiKey = apiKey;
             _userId = userId;
         }
-
     }
 }

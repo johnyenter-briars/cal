@@ -11,9 +11,8 @@ namespace CAL
         public AppShell()
         {
             InitializeComponent();
-            Routing.RegisterRoute(nameof(EventDetailPage), typeof(EventDetailPage));
+            Routing.RegisterRoute(nameof(EditSeriesPage), typeof(EditSeriesPage));
             Routing.RegisterRoute(nameof(EditEventPage), typeof(EditEventPage));
         }
-
     }
 }
