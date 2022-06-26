@@ -15,7 +15,6 @@ namespace CAL.ViewModels
 {
     internal class CalendarViewModel : BaseViewModel
     {
-        //public Command DayTappedCommand => new Command<DateTime>((date) => DayTapped(date));
         public Command AddEventCommand => new Command(OnAddEvent);
         public Command RefreshEventsCommand => new Command(Refresh);
         public ICommand EventSelectedCommand => new Command(async (item) => await ExecuteEventSelectedCommand(item));

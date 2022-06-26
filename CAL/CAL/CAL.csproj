@@ -6,6 +6,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Renderers\**" />
+    <EmbeddedResource Remove="Renderers\**" />
+    <None Remove="Renderers\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Xamarin.Forms" Version="5.0.0.2196" />  
     <PackageReference Include="Xamarin.Essentials" Version="1.7.0" />  
     <PackageReference Include="Xamarin.Plugin.Calendar" Version="2.0.9699" />
@@ -37,9 +43,5 @@
     <EmbeddedResource Update="Views\EditEventPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Renderers\" />
   </ItemGroup>
 </Project>
