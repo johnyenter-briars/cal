@@ -18,7 +18,7 @@ using System.Threading.Tasks;
 
 namespace CAL.Client
 {
-    internal class CalClient : ICalClient
+    public class CalClient : ICalClient
     {
         private string _apiKey = "";
         private string _userId = "";
@@ -56,7 +56,26 @@ namespace CAL.Client
         }
         public async Task<CreateSeriesResponse> CreateSeriesAsync(CreateSeriesRequest createSeriesRequest)
         {
-            return await CalServerRequest<CreateSeriesRequest, CreateSeriesResponse>(createSeriesRequest, "series", HttpMethod.Post);
+            var createSeriesResponse = await CalServerRequest<CreateSeriesRequest, CreateSeriesResponse>(createSeriesRequest, "series", HttpMethod.Post);
+
+            //create events at each interval
+
+            var startsOn = createSeriesRequest.StartsOn;
+            var endsOn = createSeriesRequest.EndsOn;
+
+            if (createSeriesRequest.RepeatOnThurs)
+            {
+                var dateToAddEvent = GetNextWeekday(startsOn, DayOfWeek.Thursday);
+                while(dateToAddEvent < endsOn)
+                {
+
+                    dateToAddEvent = GetNextWeekday(dateToAddEvent, DayOfWeek.Thursday);
+
+
+                }
+            }
+
+            return createSeriesResponse;
         }
         public async Task<CalUserResponse> GetCalUserAsync(Guid id)
         {
@@ -119,7 +138,7 @@ namespace CAL.Client
             }
             else
             {
-                throw new Exception($"Failure to complete action. Reason phrase: {clientResponse.ReasonPhrase}, Raw response: {await clientResponse.Content.ReadAsStringAsync()}");
+                throw new ApplicationException($"Failure to complete action. Reason phrase: {clientResponse.ReasonPhrase}, Raw response: {await clientResponse.Content.ReadAsStringAsync()}");
             }
         }
         public async Task<List<Event>> GetEventsForDayAsync(int dayOfCurrentMonth)
@@ -138,6 +157,13 @@ namespace CAL.Client
             _port = port;
             _apiKey = apiKey;
             _userId = userId;
+        }
+        //https://stackoverflow.com/questions/6346119/compute-the-datetime-of-an-upcoming-weekday
+        private static DateTime GetNextWeekday(DateTime start, DayOfWeek day)
+        {
+            // The (... + 7) % 7 ensures we end up with a value in the range [0, 6]
+            int daysToAdd = ((int)day - (int)start.DayOfWeek + 7) % 7;
+            return start.AddDays(daysToAdd);
         }
     }
 }

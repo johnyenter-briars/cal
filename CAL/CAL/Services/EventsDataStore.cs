@@ -1,6 +1,8 @@
 ﻿using CAL.Client;
 using CAL.Client.Models;
 using CAL.Client.Models.Cal;
+using CAL.Client.Models.Cal.Request;
+using CAL.Client.Models.Server.Response;
 using CAL.Managers;
 using System;
 using System.Collections.Generic;
@@ -86,6 +88,12 @@ namespace CAL.Services
             }
 
             return this.ToList().Where(e => e.StartTime.Day == day);
+        }
+        public async Task<bool> CreateSeriesAsync(CreateSeriesRequest createSeriesRequest)
+        {
+            var idk =  await CalClient.CreateSeriesAsync(createSeriesRequest);
+
+            return true;
         }
         public void UpdateAuthentication(bool forceRefresh = true)
         {

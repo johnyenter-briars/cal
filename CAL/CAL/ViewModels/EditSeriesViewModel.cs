@@ -88,7 +88,8 @@ namespace CAL.ViewModels
         }
         private bool ValidateSave()
         {
-            return !string.IsNullOrWhiteSpace(name);
+            //return !string.IsNullOrWhiteSpace(name);
+            return true;
         }
         public string Id
         {
@@ -134,14 +135,17 @@ namespace CAL.ViewModels
             //    CalUserId = new Guid(PreferencesManager.GetUserId()),
             //};
 
-            //if (id != null)
-            //{
-            //    await EventDataStore.UpdateItemAsync(newEvent);
-            //}
-            //else
-            //{
-            //    await EventDataStore.AddItemAsync(newEvent);
-            //}
+            var request = new CreateSeriesRequest { };
+
+            request.Name = "test";
+            request.Description = "please";
+            request.RepeatOnThurs = true;
+            request.RepeatEveryWeek = 2;
+            request.StartsOn = new DateTime(2022, 6, 29);
+            request.EndsOn = new DateTime(2022, 10, 29);
+            request.SubEventStartTime = new TimeSpan(SubEventsStartTime.Hours, SubEventsStartTime.Minutes, SubEventsStartTime.Seconds);
+
+            await EventDataStore.CreateSeriesAsync(request);
 
             await Shell.Current.GoToAsync("..");
         }
