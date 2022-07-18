@@ -14,7 +14,7 @@ namespace CAL.Client
 {
     public static class CalClientFactory
     {
-        public static ICalClient GetNewCalClient()
+        public static CalClient GetNewCalClient()
         {
             return new CalClient();
         } 

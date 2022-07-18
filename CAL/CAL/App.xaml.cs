@@ -1,4 +1,5 @@
-﻿using CAL.Services;
+﻿using CAL.Client;
+using CAL.Services;
 using CAL.Views;
 using System;
 using Xamarin.Forms;
@@ -14,6 +15,7 @@ namespace CAL
             InitializeComponent();
 
             DependencyService.Register<EventsDataStore>();
+            DependencyService.Register<ICalClient, CalClient>();
             MainPage = new AppShell();
         }
 
