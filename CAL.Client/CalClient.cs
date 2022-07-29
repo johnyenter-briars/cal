@@ -24,7 +24,10 @@ namespace CAL.Client
         private string _userId = "";
         private string _hostName = "";
         private int _port = -1;
-        private static readonly HttpClient _httpClient = new HttpClient();
+        private static readonly HttpClient _httpClient = new HttpClient
+        {
+            Timeout = new TimeSpan(0, 0, 10),
+        };
         private static readonly JsonSerializerSettings JsonSettings =
                 new JsonSerializerSettings
                 {
@@ -34,6 +37,9 @@ namespace CAL.Client
                     },
                     Formatting = Formatting.Indented
                 };
+
+        public static HttpClient HttpClient => _httpClient;
+
         public CalClient()
         {
         }
@@ -66,7 +72,7 @@ namespace CAL.Client
             if (createSeriesRequest.RepeatOnThurs)
             {
                 var dateToAddEvent = GetNextWeekday(startsOn, DayOfWeek.Thursday);
-                while(dateToAddEvent < endsOn)
+                while (dateToAddEvent < endsOn)
                 {
 
                     dateToAddEvent = GetNextWeekday(dateToAddEvent, DayOfWeek.Thursday);
@@ -130,7 +136,7 @@ namespace CAL.Client
         }
         private async Task<TResponse> SendRequest<TResponse>(HttpRequestMessage request)
         {
-            var clientResponse = await _httpClient.SendAsync(request, CancellationToken.None);
+            var clientResponse = await HttpClient.SendAsync(request, CancellationToken.None);
 
             if (clientResponse.IsSuccessStatusCode)
             {
@@ -138,7 +144,7 @@ namespace CAL.Client
             }
             else
             {
-                throw new ApplicationException($"Failure to complete action. Reason phrase: {clientResponse.ReasonPhrase}, Raw response: {await clientResponse.Content.ReadAsStringAsync()}");
+                throw new Exception($"Failure to complete action. Reason phrase: {clientResponse.ReasonPhrase}, Raw response: {await clientResponse.Content.ReadAsStringAsync()}");
             }
         }
         public async Task<List<Event>> GetEventsForDayAsync(int dayOfCurrentMonth)

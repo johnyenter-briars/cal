@@ -135,15 +135,16 @@ namespace CAL.ViewModels
             //    CalUserId = new Guid(PreferencesManager.GetUserId()),
             //};
 
-            var request = new CreateSeriesRequest { };
-
-            request.Name = "test";
-            request.Description = "please";
-            request.RepeatOnThurs = true;
-            request.RepeatEveryWeek = 2;
-            request.StartsOn = new DateTime(2022, 6, 29);
-            request.EndsOn = new DateTime(2022, 10, 29);
-            request.SubEventStartTime = new TimeSpan(SubEventsStartTime.Hours, SubEventsStartTime.Minutes, SubEventsStartTime.Seconds);
+            var request = new CreateSeriesRequest
+            {
+                Name = "test",
+                Description = "please",
+                RepeatOnThurs = true,
+                RepeatEveryWeek = 2,
+                StartsOn = new DateTime(2022, 6, 29),
+                EndsOn = new DateTime(2022, 10, 29),
+                EventStartTime = new TimeSpan(SubEventsStartTime.Hours, SubEventsStartTime.Minutes, SubEventsStartTime.Seconds)
+            };
 
             await EventDataStore.CreateSeriesAsync(request);
 
