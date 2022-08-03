@@ -141,8 +141,8 @@ namespace CAL.ViewModels
                 Description = "please",
                 RepeatOnThurs = true,
                 RepeatEveryWeek = 2,
-                StartsOn = new DateTime(2022, 6, 29),
-                EndsOn = new DateTime(2022, 10, 29),
+                StartsOn = new DateTime(2022, 6, 29, 0, 0, 0, DateTimeKind.Utc),
+                EndsOn = new DateTime(2022, 10, 29, 0, 0, 0, DateTimeKind.Utc),
                 EventStartTime = new TimeSpan(SubEventsStartTime.Hours, SubEventsStartTime.Minutes, SubEventsStartTime.Seconds)
             };
 
