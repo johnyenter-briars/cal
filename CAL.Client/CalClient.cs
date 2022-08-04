@@ -64,21 +64,26 @@ namespace CAL.Client
         {
             var createSeriesResponse = await CalServerRequest<CreateSeriesRequest, CreateSeriesResponse>(createSeriesRequest, "series", HttpMethod.Post);
 
-            //create events at each interval
-
             var startsOn = createSeriesRequest.StartsOn;
             var endsOn = createSeriesRequest.EndsOn;
 
-            if (createSeriesRequest.RepeatOnThurs)
+            if (ShouldAddOnToday(createSeriesRequest, startsOn.DayOfWeek))
             {
-                var dateToAddEvent = GetNextWeekday(startsOn, DayOfWeek.Thursday);
-                while (dateToAddEvent < endsOn)
+                var createEventResponse = await CreateEventAsync(createSeriesRequest.CreateSubEventRequest(startsOn, (Guid)createSeriesResponse.SeriesId));
+            }
+
+            var currentDay = startsOn;
+            while (true)
+            {
+                var dayToAdd = GetNextDayToAdd(createSeriesRequest, currentDay);
+                currentDay = dayToAdd;
+
+                if (dayToAdd > endsOn)
                 {
-
-                    dateToAddEvent = GetNextWeekday(dateToAddEvent, DayOfWeek.Thursday);
-
-
+                    break;
                 }
+
+                var createEventResponse = await CreateEventAsync(createSeriesRequest.CreateSubEventRequest(dayToAdd, (Guid)createSeriesResponse.SeriesId));
             }
 
             return createSeriesResponse;
@@ -144,7 +149,8 @@ namespace CAL.Client
             }
             else
             {
-                throw new Exception($"Failure to complete action. Reason phrase: {clientResponse.ReasonPhrase}, Raw response: {await clientResponse.Content.ReadAsStringAsync()}");
+                var message = $"Failure to complete action. Reason phrase: {clientResponse.ReasonPhrase}, Raw response: {await clientResponse.Content.ReadAsStringAsync()}";
+                throw new Exception(message);
             }
         }
         public async Task<List<Event>> GetEventsForDayAsync(int dayOfCurrentMonth)
@@ -169,7 +175,64 @@ namespace CAL.Client
         {
             // The (... + 7) % 7 ensures we end up with a value in the range [0, 6]
             int daysToAdd = ((int)day - (int)start.DayOfWeek + 7) % 7;
+            if (daysToAdd == 0)
+            {
+                daysToAdd = 7;
+            }
             return start.AddDays(daysToAdd);
+        }
+        private bool ShouldAddOnToday(CreateSeriesRequest request, DayOfWeek dayOfWeek)
+        {
+            if (request.RepeatOnMon && dayOfWeek == DayOfWeek.Monday)
+            {
+                return true;
+            }
+
+            if (request.RepeatOnTues && dayOfWeek == DayOfWeek.Tuesday)
+            {
+                return true;
+            }
+
+            if (request.RepeatOnWed && dayOfWeek == DayOfWeek.Wednesday)
+            {
+                return true;
+            }
+
+            if (request.RepeatOnThurs && dayOfWeek == DayOfWeek.Thursday)
+            {
+                return true;
+            }
+
+            if (request.RepeatOnFri && dayOfWeek == DayOfWeek.Friday)
+            {
+                return true;
+            }
+
+            if (request.RepeatOnSat && dayOfWeek == DayOfWeek.Saturday)
+            {
+                return true;
+            }
+
+            if (request.RepeatOnSun && dayOfWeek == DayOfWeek.Sunday)
+            {
+                return true;
+            }
+
+            return false;
+        }
+        private DateTime GetNextDayToAdd(CreateSeriesRequest request, DateTime currentDay)
+        {
+            var daysOfWeek = new[] { DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Wednesday, DayOfWeek.Thursday, DayOfWeek.Friday, DayOfWeek.Saturday, DayOfWeek.Sunday };
+
+            foreach (var dayOfWeek in daysOfWeek)
+            {
+                if (ShouldAddOnToday(request, dayOfWeek))
+                {
+                    return GetNextWeekday(currentDay, dayOfWeek);
+                }
+            }
+
+            throw new ApplicationException("We should never get here");
         }
     }
 }

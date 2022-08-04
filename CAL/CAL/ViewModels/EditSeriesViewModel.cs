@@ -141,9 +141,12 @@ namespace CAL.ViewModels
                 Description = "please",
                 RepeatOnThurs = true,
                 RepeatEveryWeek = 2,
-                StartsOn = new DateTime(2022, 6, 29, 0, 0, 0, DateTimeKind.Utc),
-                EndsOn = new DateTime(2022, 10, 29, 0, 0, 0, DateTimeKind.Utc),
-                EventStartTime = new TimeSpan(SubEventsStartTime.Hours, SubEventsStartTime.Minutes, SubEventsStartTime.Seconds)
+                StartsOn = new DateTime(2022, 8, 4, 0, 0, 0, DateTimeKind.Utc),
+                EndsOn = new DateTime(2022, 8, 30, 0, 0, 0, DateTimeKind.Utc),
+                //EventStartTime = new TimeSpan(SubEventsStartTime.Hours, SubEventsStartTime.Minutes, SubEventsStartTime.Seconds),
+                EventStartTime = new TimeSpan(3, 0, 0),
+                EventEndTime = new TimeSpan(7, 0, 0),
+                CalUserId = new Guid(PreferencesManager.GetUserId()),
             };
 
             await EventDataStore.CreateSeriesAsync(request);

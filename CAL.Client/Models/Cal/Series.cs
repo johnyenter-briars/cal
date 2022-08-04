@@ -22,6 +22,7 @@ namespace CAL.Client.Models.Cal
         public bool RepeatOnSun { get; set; }
         public DateTime StartsOn { get; set; }
         public DateTime EndsOn { get; set; }
+        public Guid CalUserId { get; set; }
         public CreateSeriesRequest ToRequest()
         {
             return new CreateSeriesRequest 
