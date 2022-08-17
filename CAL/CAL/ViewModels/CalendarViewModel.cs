@@ -19,21 +19,55 @@ namespace CAL.ViewModels
         public Command AddSeriesCommand => new Command(OnAddSeries);
         public Command RefreshEventsCommand => new Command(Refresh);
         public ICommand EventSelectedCommand => new Command(async (item) => await ExecuteEventSelectedCommand(item));
-        public ObservableCollection<Event> Events { get; }
-        public EventCollection EventCollection { get; }
+        public ICommand SelectCalendarCommand => new Command(async (item) => await SelectCalendar(item));
+        public string SelectedCalendar { get; set; }
+        public EventCollection EventCollection { get; set; } = new EventCollection();
         public DateTime _selectedDate;
+        public Guid CurrentlySelectedCalendarId { get; set; } 
         public DateTime SelectedDate
         {
             get { return _selectedDate; }
             set { SetProperty(ref _selectedDate, value); }
         }
-        public CalendarViewModel()
+        //public Dictionary<string, EventCollection> Calendars = new Dictionary<string, EventCollection>();
+        public CalendarViewModel(Guid defaultCalendarId)
         {
+            CurrentlySelectedCalendarId = defaultCalendarId;
             Title = "Calendar";
-            Events = EventDataStore.GetAsObservable();
             _selectedDate = DateTime.Now;
             Task.Run(async () => await ExecuteLoadEventsAsync());
-            EventCollection = new EventCollection();
+        }
+        private async Task SelectCalendar(object calendarId)
+        {
+            if (calendarId is Guid id)
+            {
+                CurrentlySelectedCalendarId = id;
+                var events = (await EventDataStore.GetItemsAsync()).Where(e => e.CalendarId == id).ToList();
+                await LoadEventCollection(events, EventCollection);
+            }
+        }
+        private async Task LoadEventCollection(IList<Event> events, EventCollection eventCollection)
+        {
+            eventCollection.Clear();
+            foreach (var e in events)
+            {
+                if (eventCollection.ContainsKey(e.StartTime))
+                {
+                    var listOfEvents = ((List<Event>)eventCollection[e.StartTime]);
+
+                    var eventWithSameId = listOfEvents.Where(temp => e.ShouldReplace(temp)).SingleOrDefault();
+
+                    if (eventWithSameId != null)
+                    {
+                        listOfEvents.Remove(eventWithSameId);
+                        listOfEvents.Add(e);
+                    }
+                }
+                else
+                {
+                    eventCollection.Add(e.StartTime, new List<Event> { e });
+                }
+            }
         }
         private async Task ExecuteLoadEventsAsync()
         {
@@ -41,26 +75,28 @@ namespace CAL.ViewModels
 
             try
             {
-                var events = await EventDataStore.GetItemsAsync();
-                foreach (var e in events)
-                {
-                    if (EventCollection.ContainsKey(e.StartTime))
-                    {
-                        var listOfEvents = ((List<Event>)EventCollection[e.StartTime]);
+                //var events = await EventDataStore.GetItemsAsync();
+                //foreach (var e in events)
+                //{
+                //    if (EventCollection.ContainsKey(e.StartTime))
+                //    {
+                //        var listOfEvents = ((List<Event>)EventCollection[e.StartTime]);
 
-                        var eventWithSameId = listOfEvents.Where(temp => e.ShouldReplace(temp)).SingleOrDefault();
+                //        var eventWithSameId = listOfEvents.Where(temp => e.ShouldReplace(temp)).SingleOrDefault();
 
-                        if (eventWithSameId != null)
-                        {
-                            listOfEvents.Remove(eventWithSameId);
-                            listOfEvents.Add(e);
-                        }
-                    }
-                    else
-                    {
-                        EventCollection.Add(e.StartTime, new List<Event> { e });
-                    }
-                }
+                //        if (eventWithSameId != null)
+                //        {
+                //            listOfEvents.Remove(eventWithSameId);
+                //            listOfEvents.Add(e);
+                //        }
+                //    }
+                //    else
+                //    {
+                //        EventCollection.Add(e.StartTime, new List<Event> { e });
+                //    }
+                //}
+                var events = (await EventDataStore.GetItemsAsync()).Where(e => e.CalendarId == CurrentlySelectedCalendarId).ToList();
+                await LoadEventCollection(events, EventCollection);
             }
             catch (Exception ex)
             {

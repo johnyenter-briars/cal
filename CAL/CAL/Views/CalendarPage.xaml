@@ -10,8 +10,8 @@
              Title="{Binding Title}">
 
     <ContentPage.ToolbarItems>
-        <ToolbarItem Text="Add Series" Command="{Binding AddSeriesCommand}" />
-        <ToolbarItem Text="Add Event" Command="{Binding AddEventCommand}" />
+        <ToolbarItem Text="+Series" Command="{Binding AddSeriesCommand}" />
+        <ToolbarItem Text="+Event" Command="{Binding AddEventCommand}" />
         <ToolbarItem Text="Refresh" Command="{Binding RefreshEventsCommand}" />
     </ContentPage.ToolbarItems>
 

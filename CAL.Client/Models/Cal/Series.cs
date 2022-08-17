@@ -23,6 +23,7 @@ namespace CAL.Client.Models.Cal
         public DateTime StartsOn { get; set; }
         public DateTime EndsOn { get; set; }
         public Guid CalUserId { get; set; }
+        public Guid CalendarId { get; set; }
         public CreateSeriesRequest ToRequest()
         {
             return new CreateSeriesRequest 

@@ -10,6 +10,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Xamarin.Forms;
 
 namespace CAL.Services
 {
@@ -19,8 +20,8 @@ namespace CAL.Services
         private readonly ICalClient CalClient;
         public EventsDataStore()
         {
-            CalClient = CalClientFactory.GetNewCalClient();
-            UpdateAuthentication();
+            CalClient = DependencyService.Get<ICalClient>();
+            //UpdateAuthentication();
 
             //Thread t = new Thread(async () =>
             //{

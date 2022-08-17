@@ -163,12 +163,13 @@ namespace CAL.Client
 
             return selectedEvents;
         }
-        public void UpdateSettings(string hostname, int port, string apiKey, string userId)
+        public ICalClient UpdateSettings(string hostname, int port, string apiKey, string userId)
         {
             _hostName = hostname;
             _port = port;
             _apiKey = apiKey;
             _userId = userId;
+            return this;
         }
         //https://stackoverflow.com/questions/6346119/compute-the-datetime-of-an-upcoming-weekday
         private static DateTime GetNextWeekday(DateTime start, DayOfWeek day)
@@ -233,6 +234,25 @@ namespace CAL.Client
             }
 
             throw new ApplicationException("We should never get here");
+        }
+
+        public async Task<CreateCalendarResponse> CreateCalendarAsync(CreateCalendarRequest createCalendarRequest)
+        {
+            if (!ValidateRequest(createCalendarRequest))
+            {
+                return new CreateCalendarResponse
+                {
+                    StatusCode = 400,
+                    Message = "Bad Request",
+                };
+            }
+
+            return await CalServerRequest<CreateCalendarRequest, CreateCalendarResponse>(createCalendarRequest, "calendar", HttpMethod.Post);
+        }
+
+        public async Task<CalendarsResponse> GetCalendarsForUserAsync(Guid calUserId)
+        {
+            return await CalServerRequest<CalendarsResponse>($"calendar/user/{calUserId}", HttpMethod.Get);
         }
     }
 }

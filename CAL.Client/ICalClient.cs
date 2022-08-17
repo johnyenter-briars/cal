@@ -15,11 +15,13 @@ namespace CAL.Client
 {
     public interface ICalClient
     {
-        void UpdateSettings(string hostname, int port, string apiKey, string userId);
+        ICalClient UpdateSettings(string hostname, int port, string apiKey, string userId);
         Task<CreateEventResponse> CreateEventAsync(CreateEventRequest createEventRequest);
+        Task<CreateCalendarResponse> CreateCalendarAsync(CreateCalendarRequest createCalendarRequest);
         Task<UpdateEventResponse> UpdateEventAsync(UpdateEventRequest updateEventRequest);
         Task<CreateCalUserResponse> CreateCalUserAsync(CreateCalUserRequest createCalUserRequest);
         Task<CreateSeriesResponse> CreateSeriesAsync(CreateSeriesRequest createSeriesRequest);
+        Task<CalendarsResponse> GetCalendarsForUserAsync(Guid calUserId);
         Task<EventsResponse> GetEventsAsync();
         Task<CalUserResponse> GetCalUserAsync(Guid id);
         Task<SeriesResponse> GetSeriesAsync(Guid id);

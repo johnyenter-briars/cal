@@ -1,4 +1,5 @@
 ﻿using CAL.Client;
+using CAL.Managers;
 using CAL.Services;
 using CAL.Views;
 using System;
@@ -15,7 +16,13 @@ namespace CAL
             InitializeComponent();
 
             DependencyService.Register<EventsDataStore>();
-            DependencyService.Register<ICalClient, CalClient>();
+            DependencyService.RegisterSingleton(CalClientFactory.GetNewCalClient().
+                    UpdateSettings(PreferencesManager.GetHostname(),
+                                    PreferencesManager.GetPort(),
+                                    PreferencesManager.GetApiKey(),
+                                    PreferencesManager.GetUserId())
+                    );
+
             MainPage = new AppShell();
         }
 

@@ -52,6 +52,7 @@ namespace CAL.Client.Models.Cal
         public string Description { get; set; }
         public Guid CalUserId { get; set; }
         public Guid? SeriesId { get; set; }
+        public Guid CalendarId { get; set; }
         public CreateEventRequest ToRequest()
         {
             return new CreateEventRequest
