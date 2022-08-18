@@ -11,9 +11,21 @@ namespace CAL.Client.Models.Server.Request
     {
         public string Name { get; set; }
         public string Description { get; set; }
-        public DateTime StartTime { get; set; }
-        public DateTime EndTime { get; set; }
         public Guid CalUserId { get; set; }
-        public Guid? SeriesId { get; set; }
+        public string Color { get; set; }
+        private List<string> availableColors = new List<string> { 
+            "blue", 
+            "red", 
+            "green",
+            "yellow",
+            "purple",
+            "orange",
+            "pink",
+        };
+
+        public bool Validate()
+        {
+            return availableColors.Contains(Color);
+        }
     }
 }

@@ -78,7 +78,6 @@ namespace CAL.Services
             foreach (var e in newEvents)
             {
                 Add(e);
-                //events.Add(e);
             }
         }
         public async Task<IEnumerable<Event>> GetEventsForDayAsync(int day, bool forceRefresh = true)

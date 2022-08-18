@@ -1,9 +1,5 @@
 ﻿using CAL.Client.Interfaces;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CAL.Client.Models.Server.Request
 {
@@ -15,5 +11,12 @@ namespace CAL.Client.Models.Server.Request
         public DateTime EndTime { get; set; }
         public Guid CalUserId { get; set; }
         public Guid? SeriesId { get; set; }
+
+        public bool Validate()
+        {
+            return StartTime.Kind == DateTimeKind.Utc &&
+                    EndTime.Kind == DateTimeKind.Utc &&
+                    CalUserId != null;
+        }
     }
 }

@@ -23,7 +23,7 @@
         <StackLayout VerticalOptions="FillAndExpand" HorizontalOptions="Fill">
             <ContentView Padding="0,0,0,0" VerticalOptions="FillAndExpand">
                 <plugin:Calendar
-                        Events="{Binding EventCollection}"
+                        Events="{Binding Events}"
                         VerticalOptions="FillAndExpand"
                         HorizontalOptions="FillAndExpand"
                         CalendarLayout="Month"

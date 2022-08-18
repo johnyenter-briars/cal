@@ -16,5 +16,12 @@ namespace CAL.Client.Models.Server.Request
         public DateTime EndTime { get; set; }
         public Guid CalUserId { get; set; }
         public Guid? SeriesId { get; set; }
+
+        public bool Validate()
+        {
+            return StartTime.Kind == DateTimeKind.Utc &&
+                    EndTime.Kind == DateTimeKind.Utc &&
+                    CalUserId != null;
+        }
     }
 }
