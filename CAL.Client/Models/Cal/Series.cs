@@ -1,5 +1,7 @@
+using CAL.Client.Converters;
 using CAL.Client.Models.Cal.Request;
 using CAL.Client.Models.Server.Request;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +14,7 @@ namespace CAL.Client.Models.Cal
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
+        public string Description { get; set; }
         public int RepeatEveryWeek { get; set; }
         public bool RepeatOnMon { get; set; }
         public bool RepeatOnTues { get; set; }
@@ -22,6 +25,12 @@ namespace CAL.Client.Models.Cal
         public bool RepeatOnSun { get; set; }
         public DateTime StartsOn { get; set; }
         public DateTime EndsOn { get; set; }
+        [JsonConverter(typeof(TimespanConverter))]
+        [JsonProperty(TypeNameHandling = TypeNameHandling.All)]
+        public TimeSpan EventStartTime { get; set; } 
+        [JsonConverter(typeof(TimespanConverter))]
+        [JsonProperty(TypeNameHandling = TypeNameHandling.All)]
+        public TimeSpan EventEndTime { get; set; } 
         public Guid CalUserId { get; set; }
         public Guid CalendarId { get; set; }
         public CreateSeriesRequest ToRequest()

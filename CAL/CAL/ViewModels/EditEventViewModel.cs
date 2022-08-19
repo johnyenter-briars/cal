@@ -15,8 +15,21 @@ namespace CAL.ViewModels
     [QueryProperty(nameof(Id), nameof(Id))]
     [QueryProperty(nameof(Name), nameof(Name))]
     [QueryProperty(nameof(Description), nameof(Description))]
+    [QueryProperty(nameof(CurrentlySelectedCalendar), nameof(CurrentlySelectedCalendar))]
     public class EditEventViewModel : BaseViewModel
     {
+        public string CurrentlySelectedCalendar
+        {
+            get
+            {
+                return _currentlySelectedCalendar.ToString();
+            }
+            set
+            {
+                _currentlySelectedCalendar = Guid.Parse(value);
+            }
+        }
+        private Guid _currentlySelectedCalendar;
         private string name;
         private string description;
         private Guid id;
@@ -132,6 +145,7 @@ namespace CAL.ViewModels
                 StartTime = startTime.ToUniversalTime(),
                 EndTime = endTime.ToUniversalTime(),
                 CalUserId = new Guid(PreferencesManager.GetUserId()),
+                CalendarId = _currentlySelectedCalendar,
             };
 
             if (id != null)

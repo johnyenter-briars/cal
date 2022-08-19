@@ -14,40 +14,77 @@
     </ContentPage.BindingContext>
 
     <ContentPage.Content>
-        <StackLayout Spacing="3" Padding="15">
-            <Label Text="Name" FontSize="Medium" />
-            <Entry 
+        <ScrollView>
+            <StackLayout Spacing="3" Padding="15">
+                <Label Text="Name" FontSize="Medium" />
+                <Entry 
                 Text="{Binding Name, Mode=TwoWay}" 
                 FontSize="Medium" />
-            <Label Text="Series Start Date" FontSize="Medium" />
-            <DatePicker 
+                <Label Text="Series Start Date" FontSize="Medium" />
+                <DatePicker 
                 Date="{Binding SeriesStartsOnSelectedDate}" />
 
-            <Label Text="Series End Date" FontSize="Medium" />
-            <DatePicker 
-                Date="{Binding SeriesStartsOnSelectedDate}" />
+                <Label Text="Series End Date" FontSize="Medium" />
+                <DatePicker 
+                Date="{Binding SeriesEndsOnSelectedDate}" />
 
-            <Label Text="Event Start Time" FontSize="Medium" />
-            <TimePicker 
+                <Label Text="Event Start Time" FontSize="Medium" />
+                <TimePicker 
                 Time="{Binding SubEventsStartTime, Mode=TwoWay}" />
 
-            <Label Text="Event End Time" FontSize="Medium" />
-            <TimePicker 
+                <Label Text="Event End Time" FontSize="Medium" />
+                <TimePicker 
                 Time="{Binding SubEventEndTime}" />
 
-            <Label Text="Description" FontSize="Medium" />
-            <Frame BorderColor="LightGray" HasShadow="False" Padding="15" BackgroundColor="{StaticResource BackgroundColor}">
-                <Editor 
+                <Label Text="Description" FontSize="Medium" />
+                <Frame BorderColor="LightGray" HasShadow="False" Padding="15" BackgroundColor="{StaticResource BackgroundColor}">
+                    <Editor 
                     Text="{Binding Description, Mode=TwoWay}" 
                     AutoSize="TextChanges" 
                     FontSize="Medium" 
                     Margin="0" />
-            </Frame>
-            <StackLayout Orientation="Horizontal">
-                <Button Text="Cancel" Command="{Binding CancelCommand}" HorizontalOptions="FillAndExpand"></Button>
-                <Button Text="Save" Command="{Binding SaveCommand}" HorizontalOptions="FillAndExpand"></Button>
+                </Frame>
+                <StackLayout Orientation="Horizontal">
+                    <Label Text="Reoccurs on Mon" FontSize="Medium" />
+                    <CheckBox IsChecked="{Binding RepeatOnMon }"></CheckBox>
+                </StackLayout>
+                <StackLayout Orientation="Horizontal">
+                    <Label Text="Reoccurs on Tues" FontSize="Medium" />
+                    <CheckBox IsChecked="{Binding RepeatOnTues }"></CheckBox>
+                </StackLayout>
+                <StackLayout Orientation="Horizontal">
+                    <Label Text="Reoccurs on Wed" FontSize="Medium" />
+                    <CheckBox IsChecked="{Binding RepeatOnWed }"></CheckBox>
+                </StackLayout>
+                <StackLayout Orientation="Horizontal">
+                    <Label Text="Reoccurs on Thurs" FontSize="Medium" />
+                    <CheckBox IsChecked="{Binding RepeatOnThurs }"></CheckBox>
+                </StackLayout>
+                <StackLayout Orientation="Horizontal">
+                    <Label Text="Reoccurs on Fri" FontSize="Medium" />
+                    <CheckBox IsChecked="{Binding RepeatOnFri }"></CheckBox>
+                </StackLayout>
+                <StackLayout Orientation="Horizontal">
+                    <Label Text="Reoccurs on Sat" FontSize="Medium" />
+                    <CheckBox IsChecked="{Binding RepeatOnSat }"></CheckBox>
+                </StackLayout>
+                <StackLayout Orientation="Horizontal">
+                    <Label Text="Reoccurs on Sun" FontSize="Medium" />
+                    <CheckBox IsChecked="{Binding RepeatOnSun }"></CheckBox>
+                </StackLayout>
+
+                <Label Text="Repeat ever # Weeks" FontSize="Medium" />
+                <Entry Keyboard="Numeric" 
+                    Text="{Binding RepeatEveryWeek, Mode=TwoWay}" 
+                       />
+
+                <StackLayout Orientation="Horizontal">
+                    <Button Text="Cancel" Command="{Binding CancelCommand}" HorizontalOptions="FillAndExpand"></Button>
+                    <Button Text="Save" Command="{Binding SaveCommand}" HorizontalOptions="FillAndExpand"></Button>
+                </StackLayout>
             </StackLayout>
-        </StackLayout>
+
+        </ScrollView>
     </ContentPage.Content>
 
 </ContentPage>

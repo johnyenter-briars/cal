@@ -1,4 +1,5 @@
-﻿using CAL.Client.Models.Cal;
+﻿using CAL.Client;
+using CAL.Client.Models.Cal;
 using CAL.Models;
 using CAL.Views;
 using System;
@@ -93,13 +94,13 @@ namespace CAL.ViewModels
         {
             var startUnixTimeSeconds = ((DateTimeOffset)SelectedDate).ToUnixTimeSeconds();
             var endUnixTimeSeconds = ((DateTimeOffset)SelectedDate.AddHours(1)).ToUnixTimeSeconds();
-            await Shell.Current.GoToAsync($@"{nameof(EditEventPage)}?{nameof(EditEventViewModel.StartTimeUnixSeconds)}={startUnixTimeSeconds}&{nameof(EditEventViewModel.EndTimeUnixSeconds)}={endUnixTimeSeconds}");
+            await Shell.Current.GoToAsync($@"{nameof(EditEventPage)}?{nameof(EditEventViewModel.StartTimeUnixSeconds)}={startUnixTimeSeconds}&{nameof(EditEventViewModel.EndTimeUnixSeconds)}={endUnixTimeSeconds}&{nameof(EditSeriesViewModel.CurrentlySelectedCalendar)}={CurrentlySelectedCalendar.Id}");
         }
         private async void OnAddSeries()
         {
             var startUnixTimeSeconds = ((DateTimeOffset)SelectedDate).ToUnixTimeSeconds();
-            var endUnixTimeSeconds = ((DateTimeOffset)SelectedDate.AddHours(1)).ToUnixTimeSeconds();
-            await Shell.Current.GoToAsync($@"{nameof(EditSeriesPage)}?{nameof(EditSeriesViewModel.StartTimeUnixSeconds)}={startUnixTimeSeconds}&{nameof(EditSeriesViewModel.EndTimeUnixSeconds)}={endUnixTimeSeconds}");
+            var endUnixTimeSeconds = ((DateTimeOffset)SelectedDate.AddDays(1)).ToUnixTimeSeconds();
+            await Shell.Current.GoToAsync($@"{nameof(EditSeriesPage)}?{nameof(EditSeriesViewModel.StartTimeUnixSeconds)}={startUnixTimeSeconds}&{nameof(EditSeriesViewModel.EndTimeUnixSeconds)}={endUnixTimeSeconds}&{nameof(EditSeriesViewModel.CurrentlySelectedCalendar)}={CurrentlySelectedCalendar.Id}");
         }
         private async void Refresh()
         {
@@ -110,9 +111,36 @@ namespace CAL.ViewModels
         {
             if (item is Event e)
             {
-                var startUnixTimeSeconds = ((DateTimeOffset)e.StartTime.ToUniversalTime()).ToUnixTimeSeconds();
-                var endUnixTimeSeconds = ((DateTimeOffset)e.EndTime.ToUniversalTime()).ToUnixTimeSeconds();
-                await Shell.Current.GoToAsync($@"{nameof(EditEventPage)}?{nameof(EditEventViewModel.StartTimeUnixSeconds)}={startUnixTimeSeconds}&{nameof(EditEventViewModel.EndTimeUnixSeconds)}={endUnixTimeSeconds}&{nameof(EditEventViewModel.Id)}={e.Id}&{nameof(EditEventViewModel.Name)}={e.Name}&{nameof(EditEventViewModel.Description)}={e.Description}");
+                if (e.SeriesId != null)
+                {
+                    var series = (await DependencyService.Get<ICalClient>().GetSeriesAsync((Guid)e.SeriesId)).Series;
+                    //var startUnixTimeSeconds = ((DateTimeOffset)e.StartTime.ToUniversalTime()).ToUnixTimeSeconds();
+                    //var endUnixTimeSeconds = ((DateTimeOffset)e.EndTime.ToUniversalTime()).ToUnixTimeSeconds();
+                    //await Shell.Current.GoToAsync($@"{nameof(EditSeriesPage)}?
+                    //        {nameof(EditSeriesViewModel.SubEventsStartTime)}={series.EventStartTime}
+                    //        &{nameof(EditSeriesViewModel.SeriesStartsOnSelectedDate)}={series.StartsOn}
+                    //        &{nameof(EditSeriesViewModel.SeriesEndsOnSelectedDate)}={series.EndsOn}
+                    //        &{nameof(EditSeriesViewModel.SubEventEndTime)}={series.EventEndTime}
+                    //        &{nameof(EditSeriesViewModel.Id)}={series.Id}
+                    //        &{nameof(EditSeriesViewModel.Name)}={series.Name}
+                    //        &{nameof(EditSeriesViewModel.Description)}={series.Description}
+                    //        &{nameof(EditSeriesViewModel.RepeatEveryWeek)}={series.RepeatEveryWeek}
+                    //        &{nameof(EditSeriesViewModel.RepeatOnMon)}={series.RepeatOnMon}
+                    //        &{nameof(EditSeriesViewModel.RepeatOnTues)}={series.RepeatOnTues}
+                    //        &{nameof(EditSeriesViewModel.RepeatOnWed)}={series.RepeatOnWed}
+                    //        &{nameof(EditSeriesViewModel.RepeatOnThurs)}={series.RepeatOnThurs}
+                    //        &{nameof(EditSeriesViewModel.RepeatOnFri)}={series.RepeatOnFri}
+                    //        &{nameof(EditSeriesViewModel.RepeatOnSat)}={series.RepeatOnSat}
+                    //        &{nameof(EditSeriesViewModel.RepeatOnSun)}={series.RepeatOnSun}
+                    //        ");
+                    await Shell.Current.GoToAsync($@"{nameof(EditSeriesPage)}?{nameof(EditSeriesViewModel.SubEventsStartTime)}={series.EventStartTime}&{nameof(EditSeriesViewModel.SeriesStartsOnSelectedDate)}={series.StartsOn}&{nameof(EditSeriesViewModel.SeriesEndsOnSelectedDate)}={series.EndsOn}&{nameof(EditSeriesViewModel.SubEventEndTime)}={series.EventEndTime}&{nameof(EditSeriesViewModel.Id)}={series.Id}&{nameof(EditSeriesViewModel.Name)}={series.Name}&{nameof(EditSeriesViewModel.Description)}={series.Description}&{nameof(EditSeriesViewModel.RepeatEveryWeek)}={series.RepeatEveryWeek}&{nameof(EditSeriesViewModel.RepeatOnMon)}={series.RepeatOnMon}&{nameof(EditSeriesViewModel.RepeatOnTues)}={series.RepeatOnTues}&{nameof(EditSeriesViewModel.RepeatOnWed)}={series.RepeatOnWed}&{nameof(EditSeriesViewModel.RepeatOnThurs)}={series.RepeatOnThurs}&{nameof(EditSeriesViewModel.RepeatOnFri)}={series.RepeatOnFri}&{nameof(EditSeriesViewModel.RepeatOnSat)}={series.RepeatOnSat}&{nameof(EditSeriesViewModel.RepeatOnSun)}={series.RepeatOnSun}");
+                }
+                else
+                {
+                    var startUnixTimeSeconds = ((DateTimeOffset)e.StartTime.ToUniversalTime()).ToUnixTimeSeconds();
+                    var endUnixTimeSeconds = ((DateTimeOffset)e.EndTime.ToUniversalTime()).ToUnixTimeSeconds();
+                    await Shell.Current.GoToAsync($@"{nameof(EditEventPage)}?{nameof(EditEventViewModel.StartTimeUnixSeconds)}={startUnixTimeSeconds}&{nameof(EditEventViewModel.EndTimeUnixSeconds)}={endUnixTimeSeconds}&{nameof(EditEventViewModel.Id)}={e.Id}&{nameof(EditEventViewModel.Name)}={e.Name}&{nameof(EditEventViewModel.Description)}={e.Description}");
+                }
             }
         }
     }

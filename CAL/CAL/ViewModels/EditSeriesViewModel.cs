@@ -10,13 +10,34 @@ using Xamarin.Forms;
 
 namespace CAL.ViewModels
 {
-    [QueryProperty(nameof(StartTimeUnixSeconds), nameof(StartTimeUnixSeconds))]
-    [QueryProperty(nameof(EndTimeUnixSeconds), nameof(EndTimeUnixSeconds))]
     [QueryProperty(nameof(Id), nameof(Id))]
     [QueryProperty(nameof(Name), nameof(Name))]
     [QueryProperty(nameof(Description), nameof(Description))]
+    [QueryProperty(nameof(RepeatEveryWeek), nameof(RepeatEveryWeek))]
+    [QueryProperty(nameof(RepeatOnMon), nameof(RepeatOnMon))]
+    [QueryProperty(nameof(RepeatOnTues), nameof(RepeatOnTues))]
+    [QueryProperty(nameof(RepeatOnWed), nameof(RepeatOnWed))]
+    [QueryProperty(nameof(RepeatOnThurs), nameof(RepeatOnThurs))]
+    [QueryProperty(nameof(RepeatOnFri), nameof(RepeatOnFri))]
+    [QueryProperty(nameof(RepeatOnSat), nameof(RepeatOnSat))]
+    [QueryProperty(nameof(RepeatOnSun), nameof(RepeatOnSun))]
+    [QueryProperty(nameof(StartTimeUnixSeconds), nameof(StartTimeUnixSeconds))]
+    [QueryProperty(nameof(EndTimeUnixSeconds), nameof(EndTimeUnixSeconds))]
+    [QueryProperty(nameof(CurrentlySelectedCalendar), nameof(CurrentlySelectedCalendar))]
     public class EditSeriesViewModel : BaseViewModel
     {
+        public string CurrentlySelectedCalendar
+        {
+            get
+            {
+                return _currentlySelectedCalendar.ToString();
+            }
+            set
+            {
+                _currentlySelectedCalendar = Guid.Parse(value);
+            }
+        }
+        private Guid _currentlySelectedCalendar;
         private string name;
         private string description;
         private Guid id;
@@ -28,9 +49,9 @@ namespace CAL.ViewModels
             set
             {
                 startTimeUnixSeconds = value;
-                //DateTime dateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc).AddSeconds(value);
-                //SeriesStartsOnSelectedDate = dateTime.ToLocalTime();
-                //SubEventsStartTime = dateTime.ToLocalTime().TimeOfDay;
+                DateTime dateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc).AddSeconds(value);
+                SeriesStartsOnSelectedDate = dateTime.ToLocalTime();
+                SubEventsStartTime = dateTime.ToLocalTime().TimeOfDay;
             }
         }
         private long endTimeUnixSeconds;
@@ -40,9 +61,9 @@ namespace CAL.ViewModels
             set
             {
                 endTimeUnixSeconds = value;
-                //DateTime dateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc).AddSeconds(endTimeUnixSeconds);
-                //SeriesEndsOnSelectedDate = dateTime.ToLocalTime();
-                //SubEventEndTime = dateTime.ToLocalTime().TimeOfDay;
+                DateTime dateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc).AddSeconds(endTimeUnixSeconds);
+                SeriesEndsOnSelectedDate = dateTime.ToLocalTime();
+                SubEventEndTime = dateTime.ToLocalTime().TimeOfDay.Add(TimeSpan.FromHours(1));
             }
         }
         private TimeSpan _subEventStartTime;
@@ -108,6 +129,14 @@ namespace CAL.ViewModels
             get => description;
             set => SetProperty(ref description, value);
         }
+        public bool RepeatOnMon { get; set; }
+        public bool RepeatOnTues { get; set; }
+        public bool RepeatOnWed { get; set; }
+        public bool RepeatOnThurs { get; set; }
+        public bool RepeatOnFri { get; set; }
+        public bool RepeatOnSat { get; set; }
+        public bool RepeatOnSun { get; set; }
+        public int RepeatEveryWeek { get; set; }
 
         public Command SaveCommand { get; }
         public Command CancelCommand { get; }
@@ -119,34 +148,30 @@ namespace CAL.ViewModels
 
         private async void OnSave()
         {
-            //var startingTimeDatePart = new DateTime(SeriesStartsOnSelectedDate.Year, SeriesStartsOnSelectedDate.Month, SeriesStartsOnSelectedDate.Day, 0, 0, 0, kind: DateTimeKind.Local);
-            //var startTime = startingTimeDatePart + SubEventsStartTime;
+            var startingTimeDatePart = new DateTime(SeriesStartsOnSelectedDate.Year, SeriesStartsOnSelectedDate.Month, SeriesStartsOnSelectedDate.Day, 0, 0, 0, kind: DateTimeKind.Local);
+            var startTime = startingTimeDatePart + SubEventsStartTime;
 
-            //var endingTimeDatePart = new DateTime(SeriesEndsOnSelectedDate.Year, SeriesEndsOnSelectedDate.Month, SeriesEndsOnSelectedDate.Day, 0, 0, 0, kind: DateTimeKind.Local);
-            //var endTime = endingTimeDatePart + SubEventEndTime;
-
-            //Event newEvent = new Event()
-            //{
-            //    Id = id,
-            //    Name = name,
-            //    Description = description,
-            //    StartTime = startTime.ToUniversalTime(),
-            //    EndTime = endTime.ToUniversalTime(),
-            //    CalUserId = new Guid(PreferencesManager.GetUserId()),
-            //};
+            var endingTimeDatePart = new DateTime(SeriesEndsOnSelectedDate.Year, SeriesEndsOnSelectedDate.Month, SeriesEndsOnSelectedDate.Day, 0, 0, 0, kind: DateTimeKind.Local);
+            var endTime = endingTimeDatePart + SubEventEndTime;
 
             var request = new CreateSeriesRequest
             {
-                Name = "test",
-                Description = "please",
-                RepeatOnThurs = true,
-                RepeatEveryWeek = 2,
-                StartsOn = new DateTime(2022, 8, 4, 0, 0, 0, DateTimeKind.Utc),
-                EndsOn = new DateTime(2022, 8, 30, 0, 0, 0, DateTimeKind.Utc),
-                //EventStartTime = new TimeSpan(SubEventsStartTime.Hours, SubEventsStartTime.Minutes, SubEventsStartTime.Seconds),
-                EventStartTime = new TimeSpan(3, 0, 0),
-                EventEndTime = new TimeSpan(7, 0, 0),
+                Name = name,
+                Description = description,
+                RepeatOnMon = RepeatOnMon,
+                RepeatOnTues = RepeatOnTues,
+                RepeatOnWed = RepeatOnWed,
+                RepeatOnThurs = RepeatOnThurs,
+                RepeatOnFri = RepeatOnFri,
+                RepeatOnSat = RepeatOnSat,
+                RepeatOnSun = RepeatOnSun,
+                RepeatEveryWeek = RepeatEveryWeek,
+                StartsOn = startingTimeDatePart.ToUniversalTime(),
+                EndsOn = endingTimeDatePart.ToUniversalTime(),
+                EventStartTime = startTime.TimeOfDay,
+                EventEndTime = endTime.TimeOfDay,
                 CalUserId = new Guid(PreferencesManager.GetUserId()),
+                CalendarId = _currentlySelectedCalendar,
             };
 
             await EventDataStore.CreateSeriesAsync(request);

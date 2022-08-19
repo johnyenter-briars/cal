@@ -135,11 +135,14 @@ namespace CAL.Client
 
             request.Content = new StringContent(JsonConvert.SerializeObject(requestObject, JsonSettings), Encoding.UTF8, "application/json");
 
+            var idk = JsonConvert.SerializeObject(requestObject, JsonSettings);
+
             return await SendRequest<TResponse>(request);
         }
         private async Task<TResponse> SendRequest<TResponse>(HttpRequestMessage request)
         {
             var clientResponse = await HttpClient.SendAsync(request, CancellationToken.None);
+            var idk = await clientResponse.Content.ReadAsStringAsync();
 
             if (clientResponse.IsSuccessStatusCode)
             {

@@ -17,6 +17,7 @@
                         <Span Text="{Binding StartTime, StringFormat='{0:MM/dd HH\\:mm}'}" />
                         <Span Text=" - " />
                         <Span Text="{Binding Name}" />
+                        <Span  Text=" - " />
                     </FormattedString>
                 </Label.FormattedText>
             </Label>

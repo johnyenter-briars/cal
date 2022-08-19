@@ -27,6 +27,7 @@ namespace CAL.Client.Models.Cal.Request
         [JsonProperty(TypeNameHandling = TypeNameHandling.All)]
         public TimeSpan EventEndTime { get; set; }
         public Guid CalUserId { get; set; }
+        public Guid CalendarId { get; set; }
 
         public CreateEventRequest CreateSubEventRequest(DateTime dayToAdd, Guid seriesId)
         {
@@ -50,6 +51,7 @@ namespace CAL.Client.Models.Cal.Request
                 EndTime = endTime,
                 CalUserId = CalUserId,
                 SeriesId = seriesId,
+                CalendarId = CalendarId,
             };
 
             return createEventRequest;

@@ -12,7 +12,9 @@ namespace CAL.Client.Converters
 
         public override TimeSpan ReadJson(JsonReader reader, Type objectType, TimeSpan existingValue, bool hasExistingValue, JsonSerializer serializer)
         {
-            return TimeSpan.FromSeconds((int)reader.Value);
+            var idk = reader.Value.GetType();
+            var foo = (Int64)reader.Value;
+            return TimeSpan.FromSeconds((Int64)reader.Value);
         }
     }
 }
