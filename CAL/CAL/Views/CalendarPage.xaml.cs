@@ -22,7 +22,7 @@ namespace CAL.Views
             {
                 var calClient = DependencyService.Get<ICalClient>();
                 var calendarsForUser = await calClient.GetCalendarsForUserAsync(new Guid(PreferencesManager.GetUserId()));
-                var vm = new CalendarViewModel(calendarsForUser.Calendars.FirstOrDefault().Id);
+                var vm = new CalendarViewModel(calendarsForUser.Calendars.FirstOrDefault());
 
                 BindingContext = vm;
 
@@ -33,7 +33,7 @@ namespace CAL.Views
                         Order = ToolbarItemOrder.Secondary,
                         Text = calendar.Name,
                         Command = vm.SelectCalendarCommand,
-                        CommandParameter = calendar.Id,
+                        CommandParameter = calendar,
                     });
                 }
 

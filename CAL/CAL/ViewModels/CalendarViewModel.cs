@@ -3,14 +3,11 @@ using CAL.Models;
 using CAL.Views;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Xamarin.Forms;
-using Xamarin.Plugin.Calendar.Interfaces;
 using Xamarin.Plugin.Calendar.Models;
 
 namespace CAL.ViewModels
@@ -25,72 +22,31 @@ namespace CAL.ViewModels
         public string SelectedCalendar { get; set; }
         public EventCollection Events { get; } = new EventCollection();
         public DateTime _selectedDate;
-        public Guid CurrentlySelectedCalendarId { get; set; }
+        public Calendar CurrentlySelectedCalendar { get; set; }
         public DateTime SelectedDate
         {
             get { return _selectedDate; }
             set { SetProperty(ref _selectedDate, value); }
         }
-        public CalendarViewModel(Guid defaultCalendarId)
+        public CalendarViewModel(Calendar defaultCalendar)
         {
-            CurrentlySelectedCalendarId = defaultCalendarId;
+            CurrentlySelectedCalendar = defaultCalendar;
             Title = "Calendar";
             _selectedDate = DateTime.Now;
             Task.Run(async () => await ExecuteLoadEventsAsync());
-            //Events = new EventCollection
-            //{
-            //    [DateTime.Now.AddDays(-3)] = new List<Event>(GenerateEvents(10, "Cool")),
-            //    [DateTime.Now.AddDays(-6)] = new DayEventCollection<Event>(Color.Purple, Color.Purple)
-            //        {
-            //            new Event { Name = "Cool event1", Description = "This is Cool event1's description!", StartTime = new DateTime().ToUniversalTime() },
-            //            new Event { Name = "Cool event2", Description = "This is Cool event2's description!", StartTime = new DateTime().ToUniversalTime() }
-            //        }
-            //};
-
-            ////Adding a day with a different dot color
-            //Events.Add(DateTime.Now.AddDays(-2), new DayEventCollection<Event>(GenerateEvents(10, "Cool")) { EventIndicatorColor = Color.Blue, EventIndicatorSelectedColor = Color.Blue });
-            //Events.Add(DateTime.Now.AddDays(-4), new DayEventCollection<Event>(GenerateEvents(10, "Cool")) { EventIndicatorColor = Color.Green, EventIndicatorSelectedColor = Color.White });
-            //Events.Add(DateTime.Now.AddDays(-5), new DayEventCollection<Event>(GenerateEvents(10, "Cool")) { EventIndicatorColor = Color.Orange, EventIndicatorSelectedColor = Color.Orange });
-
-            //// with add method
-            //Events.Add(DateTime.Now.AddDays(-1), new List<Event>(GenerateEvents(5, "Cool")));
-
-            // with indexer
-            //Events[DateTime.Now] = new List<Event>(GenerateEvents(2, "Boring"));
         }
-        private async Task SelectCalendar(object calendarId)
+        private async Task SelectCalendar(object calendar)
         {
-            if (calendarId is Guid id)
+            if (calendar is Calendar cal)
             {
-                CurrentlySelectedCalendarId = id;
-                var events = (await EventDataStore.GetItemsAsync()).Where(e => e.CalendarId == id).ToList();
+                CurrentlySelectedCalendar = cal;
+                var events = (await EventDataStore.GetItemsAsync()).Where(e => e.CalendarId == CurrentlySelectedCalendar.Id).ToList();
                 LoadEventCollection(events, Events);
             }
         }
         private void LoadEventCollection(IList<Event> events, EventCollection eventCollection)
         {
             eventCollection.Clear();
-            //var Events = eventCollection;
-            //Events = new EventCollection
-            //{
-            //    [DateTime.Now.AddDays(-3)] = new List<Event>(GenerateEvents(10, "Cool")),
-            //    [DateTime.Now.AddDays(-6)] = new DayEventCollection<Event>(Color.Purple, Color.Purple)
-            //    {
-            //        new Event { Name = "Cool event1", Description = "This is Cool event1's description!", StartTime = new DateTime().ToUniversalTime() },
-            //        new Event { Name = "Cool event2", Description = "This is Cool event2's description!", StartTime = new DateTime().ToUniversalTime() }
-            //    }
-            //};
-
-            ////Adding a day with a different dot color
-            //Events.Add(DateTime.Now.AddDays(-2), new DayEventCollection<Event>(GenerateEvents(10, "Cool")) { EventIndicatorColor = Color.Blue, EventIndicatorSelectedColor = Color.Blue });
-            //Events.Add(DateTime.Now.AddDays(-4), new DayEventCollection<Event>(GenerateEvents(10, "Cool")) { EventIndicatorColor = Color.Green, EventIndicatorSelectedColor = Color.White });
-            //Events.Add(DateTime.Now.AddDays(-5), new DayEventCollection<Event>(GenerateEvents(10, "Cool")) { EventIndicatorColor = Color.Orange, EventIndicatorSelectedColor = Color.Orange });
-
-            //// with add method
-            //Events.Add(DateTime.Now.AddDays(-1), new List<Event>(GenerateEvents(5, "Cool")));
-
-            //// with indexer
-            //Events[DateTime.Now] = new List<Event>(GenerateEvents(2, "Boring"));
 
             foreach (var e in events)
             {
@@ -103,51 +59,25 @@ namespace CAL.ViewModels
                     if (eventWithSameId != null)
                     {
                         throw new ApplicationException("ireally dont think this should ever happen");
-                        //listOfEvents.Remove(eventWithSameId);
-                        //listOfEvents.Add(e);
                     }
                 }
                 else
                 {
-                    var dayEventCollection = new DayEventCollection<Event>(Color.Orange, Color.Orange) { e };
+                    ColorTypeConverter converter = new ColorTypeConverter();
+                    Color color = (Color)(converter.ConvertFromInvariantString(CurrentlySelectedCalendar.Color));
+
+                    var dayEventCollection = new DayEventCollection<Event>(color, color) { e };
                     eventCollection.Add(e.StartTime, dayEventCollection);
                 }
             }
-            //eventCollection[DateTime.Now.AddDays(-5)] = new DayEventCollection<Event>(Color.Blue, Color.Blue)
-            //    {
-            //        new Event
-            //        {
-            //            Name = "test",
-            //            Description = "idk",
-            //            StartTime = DateTime.Now.AddDays(-5).ToUniversalTime(),
-            //            EndTime = DateTime.Now.AddDays(-5).ToUniversalTime(),
-            //        },
-            //        new Event
-            //        {
-            //            Name = "test",
-            //            Description = "idk",
-            //            StartTime = DateTime.Now.AddDays(-5).ToUniversalTime(),
-            //            EndTime = DateTime.Now.AddDays(-5).ToUniversalTime(),
-            //        }
-            //    };
         }
-        private IEnumerable<Event> GenerateEvents(int count, string name)
-        {
-            return Enumerable.Range(1, count).Select(x => new Event
-            {
-                Name = $"{name} event{x}",
-                Description = $"This is {name} event{x}'s description!",
-                StartTime = new DateTime(2000, 1, 1, (x * 2) % 24, (x * 3) % 60, 0).ToUniversalTime()
-            });
-        }
-
         private async Task ExecuteLoadEventsAsync()
         {
             IsBusy = true;
 
             try
             {
-                var events = (await EventDataStore.GetItemsAsync()).Where(e => e.CalendarId == CurrentlySelectedCalendarId).ToList();
+                var events = (await EventDataStore.GetItemsAsync()).Where(e => e.CalendarId == CurrentlySelectedCalendar.Id).ToList();
                 LoadEventCollection(events, Events);
             }
             catch (Exception ex)
