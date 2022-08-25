@@ -54,13 +54,14 @@ namespace CAL.ViewModels
                 if (eventCollection.ContainsKey(e.StartTime))
                 {
                     var listOfEvents = ((DayEventCollection<Event>)eventCollection[e.StartTime]);
+                    listOfEvents.Add(e);
 
-                    var eventWithSameId = listOfEvents.Where(temp => e.ShouldReplace(temp)).SingleOrDefault();
+                    //var eventWithSameId = listOfEvents.Where(temp => e.ShouldReplace(temp)).SingleOrDefault();
 
-                    if (eventWithSameId != null)
-                    {
-                        throw new ApplicationException("ireally dont think this should ever happen");
-                    }
+                    //if (eventWithSameId != null)
+                    //{
+                    //    throw new ApplicationException("ireally dont think this should ever happen");
+                    //}
                 }
                 else
                 {
@@ -114,26 +115,15 @@ namespace CAL.ViewModels
                 if (e.SeriesId != null)
                 {
                     var series = (await DependencyService.Get<ICalClient>().GetSeriesAsync((Guid)e.SeriesId)).Series;
-                    //var startUnixTimeSeconds = ((DateTimeOffset)e.StartTime.ToUniversalTime()).ToUnixTimeSeconds();
-                    //var endUnixTimeSeconds = ((DateTimeOffset)e.EndTime.ToUniversalTime()).ToUnixTimeSeconds();
-                    //await Shell.Current.GoToAsync($@"{nameof(EditSeriesPage)}?
-                    //        {nameof(EditSeriesViewModel.SubEventsStartTime)}={series.EventStartTime}
-                    //        &{nameof(EditSeriesViewModel.SeriesStartsOnSelectedDate)}={series.StartsOn}
-                    //        &{nameof(EditSeriesViewModel.SeriesEndsOnSelectedDate)}={series.EndsOn}
-                    //        &{nameof(EditSeriesViewModel.SubEventEndTime)}={series.EventEndTime}
-                    //        &{nameof(EditSeriesViewModel.Id)}={series.Id}
-                    //        &{nameof(EditSeriesViewModel.Name)}={series.Name}
-                    //        &{nameof(EditSeriesViewModel.Description)}={series.Description}
-                    //        &{nameof(EditSeriesViewModel.RepeatEveryWeek)}={series.RepeatEveryWeek}
-                    //        &{nameof(EditSeriesViewModel.RepeatOnMon)}={series.RepeatOnMon}
-                    //        &{nameof(EditSeriesViewModel.RepeatOnTues)}={series.RepeatOnTues}
-                    //        &{nameof(EditSeriesViewModel.RepeatOnWed)}={series.RepeatOnWed}
-                    //        &{nameof(EditSeriesViewModel.RepeatOnThurs)}={series.RepeatOnThurs}
-                    //        &{nameof(EditSeriesViewModel.RepeatOnFri)}={series.RepeatOnFri}
-                    //        &{nameof(EditSeriesViewModel.RepeatOnSat)}={series.RepeatOnSat}
-                    //        &{nameof(EditSeriesViewModel.RepeatOnSun)}={series.RepeatOnSun}
-                    //        ");
-                    await Shell.Current.GoToAsync($@"{nameof(EditSeriesPage)}?{nameof(EditSeriesViewModel.SubEventsStartTime)}={series.EventStartTime}&{nameof(EditSeriesViewModel.SeriesStartsOnSelectedDate)}={series.StartsOn}&{nameof(EditSeriesViewModel.SeriesEndsOnSelectedDate)}={series.EndsOn}&{nameof(EditSeriesViewModel.SubEventEndTime)}={series.EventEndTime}&{nameof(EditSeriesViewModel.Id)}={series.Id}&{nameof(EditSeriesViewModel.Name)}={series.Name}&{nameof(EditSeriesViewModel.Description)}={series.Description}&{nameof(EditSeriesViewModel.RepeatEveryWeek)}={series.RepeatEveryWeek}&{nameof(EditSeriesViewModel.RepeatOnMon)}={series.RepeatOnMon}&{nameof(EditSeriesViewModel.RepeatOnTues)}={series.RepeatOnTues}&{nameof(EditSeriesViewModel.RepeatOnWed)}={series.RepeatOnWed}&{nameof(EditSeriesViewModel.RepeatOnThurs)}={series.RepeatOnThurs}&{nameof(EditSeriesViewModel.RepeatOnFri)}={series.RepeatOnFri}&{nameof(EditSeriesViewModel.RepeatOnSat)}={series.RepeatOnSat}&{nameof(EditSeriesViewModel.RepeatOnSun)}={series.RepeatOnSun}");
+                    //var startsOnUtc = series.StartsOn.ToString();
+                    //var startsOnLocal = series.StartsOn.ToLocalTime().ToString();
+                    //var subEventStartTime = series.EventStartTime.ToString();
+                    var endsOnUtc = series.EndsOn.ToString();
+                    var endsOnLocal = series.EndsOn.ToLocalTime().ToString();
+                    var subEventEndtime = series.EventEndTime.ToString();
+                    var startUnixTimeSeconds = ((DateTimeOffset)series.StartsOn.Add(series.EventStartTime).ToUniversalTime()).ToUnixTimeSeconds();
+                    var endUnixTimeSeconds = ((DateTimeOffset)series.EndsOn.Add(series.EventEndTime).ToUniversalTime()).ToUnixTimeSeconds();
+                    await Shell.Current.GoToAsync($@"{nameof(EditSeriesPage)}?{nameof(EditSeriesViewModel.StartTimeUnixSeconds)}={startUnixTimeSeconds}&{nameof(EditSeriesViewModel.EndTimeUnixSeconds)}={endUnixTimeSeconds}&{nameof(EditSeriesViewModel.Id)}={series.Id}&{nameof(EditSeriesViewModel.Name)}={series.Name}&{nameof(EditSeriesViewModel.Description)}={series.Description}&{nameof(EditSeriesViewModel.RepeatEveryWeek)}={series.RepeatEveryWeek}&{nameof(EditSeriesViewModel.RepeatOnMon)}={series.RepeatOnMon}&{nameof(EditSeriesViewModel.RepeatOnTues)}={series.RepeatOnTues}&{nameof(EditSeriesViewModel.RepeatOnWed)}={series.RepeatOnWed}&{nameof(EditSeriesViewModel.RepeatOnThurs)}={series.RepeatOnThurs}&{nameof(EditSeriesViewModel.RepeatOnFri)}={series.RepeatOnFri}&{nameof(EditSeriesViewModel.RepeatOnSat)}={series.RepeatOnSat}&{nameof(EditSeriesViewModel.RepeatOnSun)}={series.RepeatOnSun}");
                 }
                 else
                 {

@@ -49,7 +49,7 @@ namespace CAL.ViewModels
             set
             {
                 startTimeUnixSeconds = value;
-                DateTime dateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc).AddSeconds(value);
+                DateTime dateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc).AddSeconds(startTimeUnixSeconds);
                 SeriesStartsOnSelectedDate = dateTime.ToLocalTime();
                 SubEventsStartTime = dateTime.ToLocalTime().TimeOfDay;
             }
@@ -63,7 +63,7 @@ namespace CAL.ViewModels
                 endTimeUnixSeconds = value;
                 DateTime dateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc).AddSeconds(endTimeUnixSeconds);
                 SeriesEndsOnSelectedDate = dateTime.ToLocalTime();
-                SubEventEndTime = dateTime.ToLocalTime().TimeOfDay.Add(TimeSpan.FromHours(1));
+                SubEventEndTime = dateTime.ToLocalTime().TimeOfDay;
             }
         }
         private TimeSpan _subEventStartTime;
@@ -129,14 +129,54 @@ namespace CAL.ViewModels
             get => description;
             set => SetProperty(ref description, value);
         }
-        public bool RepeatOnMon { get; set; }
-        public bool RepeatOnTues { get; set; }
-        public bool RepeatOnWed { get; set; }
-        public bool RepeatOnThurs { get; set; }
-        public bool RepeatOnFri { get; set; }
-        public bool RepeatOnSat { get; set; }
-        public bool RepeatOnSun { get; set; }
-        public int RepeatEveryWeek { get; set; }
+        private bool repeatOnMon;
+        public bool RepeatOnMon 
+        {
+            get => repeatOnMon;
+            set => SetProperty(ref repeatOnMon, value);
+        }
+        private bool repeatOnTues;
+        public bool RepeatOnTues  
+        {
+            get => repeatOnTues;
+            set => SetProperty(ref repeatOnTues, value);
+        }
+        private bool repeatOnWed;
+        public bool RepeatOnWed   
+        {
+            get => repeatOnWed;
+            set => SetProperty(ref repeatOnWed, value);
+        }
+        private bool repeatOnThurs;
+        public bool RepeatOnThurs    
+        {
+            get => repeatOnThurs;
+            set => SetProperty(ref repeatOnThurs, value);
+        }
+        private bool repeatOnFri;
+        public bool RepeatOnFri    
+        {
+            get => repeatOnFri;
+            set => SetProperty(ref repeatOnFri, value);
+        }
+        private bool repeatOnSat;
+        public bool RepeatOnSat
+        {
+            get => repeatOnSat;
+            set => SetProperty(ref repeatOnSat, value);
+        }
+        private bool repeatOnSun;
+        public bool RepeatOnSun
+        {
+            get => repeatOnSun;
+            set => SetProperty(ref repeatOnSun, value);
+        }
+        private int repeatEveryWeek;
+        public int RepeatEveryWeek
+        {
+            get => repeatEveryWeek;
+            set => SetProperty(ref repeatEveryWeek, value);
+        }
 
         public Command SaveCommand { get; }
         public Command CancelCommand { get; }

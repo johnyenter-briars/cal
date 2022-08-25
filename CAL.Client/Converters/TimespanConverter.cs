@@ -7,13 +7,11 @@ namespace CAL.Client.Converters
     {
         public override void WriteJson(JsonWriter writer, TimeSpan value, JsonSerializer serializer)
         {
-            writer.WriteValue(value.Seconds);
+            writer.WriteValue(value.Seconds + (value.Minutes * 60) + (value.Hours * 60 * 60));
         }
 
         public override TimeSpan ReadJson(JsonReader reader, Type objectType, TimeSpan existingValue, bool hasExistingValue, JsonSerializer serializer)
         {
-            var idk = reader.Value.GetType();
-            var foo = (Int64)reader.Value;
             return TimeSpan.FromSeconds((Int64)reader.Value);
         }
     }

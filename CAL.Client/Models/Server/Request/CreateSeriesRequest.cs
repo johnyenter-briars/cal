@@ -35,13 +35,13 @@ namespace CAL.Client.Models.Cal.Request
                 EventStartTime.Hours,
                 EventStartTime.Minutes,
                 EventStartTime.Seconds,
-                DateTimeKind.Utc);
+                DateTimeKind.Local).ToUniversalTime();
 
             var endTime = new DateTime(dayToAdd.Year, dayToAdd.Month, dayToAdd.Day,
                 EventEndTime.Hours,
                 EventEndTime.Minutes,
                 EventEndTime.Seconds,
-                DateTimeKind.Utc);
+                DateTimeKind.Local).ToUniversalTime();
 
             var createEventRequest = new CreateEventRequest
             {
