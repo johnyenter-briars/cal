@@ -109,8 +109,7 @@ namespace CAL.ViewModels
         }
         private bool ValidateSave()
         {
-            //return !string.IsNullOrWhiteSpace(name);
-            return true;
+            return !string.IsNullOrWhiteSpace(name);
         }
         public string Id
         {

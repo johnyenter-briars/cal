@@ -7,6 +7,7 @@ using CAL.Client.Models.Server.Response;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -224,10 +225,25 @@ namespace CAL.Client
         }
         private DateTime GetNextDayToAdd(CreateSeriesRequest request, DateTime currentDay)
         {
-            var daysOfWeek = new[] { DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Wednesday, DayOfWeek.Thursday, DayOfWeek.Friday, DayOfWeek.Saturday, DayOfWeek.Sunday };
+            var daysOfWeek = new List<DayOfWeek> { DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Wednesday, DayOfWeek.Thursday, DayOfWeek.Friday, DayOfWeek.Saturday, DayOfWeek.Sunday };
 
-            foreach (var dayOfWeek in daysOfWeek)
+            void CircularIncrement(ref int i, int count)
             {
+                if (i == count - 1)
+                {
+                    i = 0;
+                }
+                else
+                {
+                    i++;
+                }
+            }
+
+            for (var index = daysOfWeek.IndexOf(currentDay.DayOfWeek) == daysOfWeek.Count - 1 ? 0 : daysOfWeek.IndexOf(currentDay.DayOfWeek) + 1;
+                index > -1;
+                CircularIncrement(ref index, daysOfWeek.Count))
+            {
+                var dayOfWeek = daysOfWeek[index];
                 if (ShouldAddOnToday(request, dayOfWeek))
                 {
                     return GetNextWeekday(currentDay, dayOfWeek);
