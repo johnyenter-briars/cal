@@ -57,12 +57,13 @@ namespace CAL.Client.Models.Cal
         {
             return new CreateEventRequest
             {
-                StartTime = StartTime,
+                StartTime = StartTime.ToUniversalTime(),
                 Description = Description,
-                EndTime = EndTime,
+                EndTime = EndTime.ToUniversalTime(),
                 CalUserId = CalUserId,
                 SeriesId = SeriesId,
                 Name = Name,
+                CalendarId = CalendarId,
             };
         }
         public UpdateEventRequest ToUpdateRequest()
@@ -76,21 +77,14 @@ namespace CAL.Client.Models.Cal
                 CalUserId = CalUserId,
                 SeriesId = SeriesId,
                 Name = Name,
+                CalendarId = CalendarId,
             };
         }
 
         public override string ToString() => $"{Name}-LOCAL START: {StartTime}- UTC START: {StartTime.ToUniversalTime()}-{EndTime}";
-        public bool ShouldReplace(Event e)
-        {
-            return e.Id == Id &&
-                    (
-                        e.StartTime != StartTime ||
-                        e.EndTime != EndTime ||
-                        e.Description != Description ||
-                        e.SeriesId != SeriesId ||
-                        e.Name != Name
-                    );
 
-        }
+        public string SeriesName { get; set; }
+
+        public bool IsPartOfSeries => SeriesName != null;
     }
 }

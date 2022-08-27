@@ -14,13 +14,13 @@ using Xamarin.Forms;
 
 namespace CAL.Services
 {
-    public class EventsDataStore : ObservableCollection<Event>,  IDataStore<Event>
+    public class EventsDataStore : ObservableCollection<Event>
     {
         //IList<Event> events = new List<Event>();
-        private readonly ICalClient CalClient;
+        private readonly ICalClient CalClientSingleton;
         public EventsDataStore()
         {
-            CalClient = DependencyService.Get<ICalClient>();
+            CalClientSingleton = DependencyService.Get<ICalClient>();
             //UpdateAuthentication();
 
             //Thread t = new Thread(async () =>
@@ -39,7 +39,7 @@ namespace CAL.Services
         }
         public async Task<bool> AddItemAsync(Event e)
         {
-            var success = await CalClient.CreateEventAsync(e.ToRequest());
+            var success = await CalClientSingleton.CreateEventAsync(e.ToRequest());
 
             await RefreshItemsAsync();
 
@@ -47,7 +47,7 @@ namespace CAL.Services
         }
         public async Task<bool> UpdateItemAsync(Event e)
         {
-            var success = await CalClient.UpdateEventAsync(e.ToUpdateRequest());
+            var success = await CalClientSingleton.UpdateEventAsync(e.ToUpdateRequest());
 
             await RefreshItemsAsync();
 
@@ -55,7 +55,11 @@ namespace CAL.Services
         }
         public async Task<bool> DeleteItemAsync(Guid id)
         {
-            throw new NotImplementedException();
+            var success = await CalClientSingleton.DeleteEntityAsync(id);
+
+            await RefreshItemsAsync();
+
+            return success.StatusCode == 200;
         }
         public async Task<Event> GetItemAsync(Guid id)
         {
@@ -73,7 +77,7 @@ namespace CAL.Services
         }
         public async Task RefreshItemsAsync()
         {
-            var newEvents = (await CalClient.GetEventsAsync()).Events;
+            var newEvents = (await CalClientSingleton.GetEventsAsync()).Events;
             Clear();
             foreach (var e in newEvents)
             {
@@ -91,7 +95,7 @@ namespace CAL.Services
         }
         public async Task<bool> CreateSeriesAsync(CreateSeriesRequest createSeriesRequest)
         {
-            var idk =  await CalClient.CreateSeriesAsync(createSeriesRequest);
+            var idk = await CalClientSingleton.CreateSeriesAsync(createSeriesRequest);
 
             return true;
         }
@@ -99,9 +103,9 @@ namespace CAL.Services
         {
             if (forceRefresh)
             {
-                CalClient.UpdateSettings(   PreferencesManager.GetHostname(), 
-                                            PreferencesManager.GetPort(), 
-                                            PreferencesManager.GetApiKey(), 
+                CalClientSingleton.UpdateSettings(PreferencesManager.GetHostname(),
+                                            PreferencesManager.GetPort(),
+                                            PreferencesManager.GetApiKey(),
                                             PreferencesManager.GetUserId());
             }
         }

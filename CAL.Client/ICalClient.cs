@@ -18,7 +18,6 @@ namespace CAL.Client
         ICalClient UpdateSettings(string hostname, int port, string apiKey, string userId);
         Task<CreateEventResponse> CreateEventAsync(CreateEventRequest createEventRequest);
         Task<CreateCalendarResponse> CreateCalendarAsync(CreateCalendarRequest createCalendarRequest);
-        Task<UpdateEventResponse> UpdateEventAsync(UpdateEventRequest updateEventRequest);
         Task<CreateCalUserResponse> CreateCalUserAsync(CreateCalUserRequest createCalUserRequest);
         Task<CreateSeriesResponse> CreateSeriesAsync(CreateSeriesRequest createSeriesRequest);
         Task<CalendarsResponse> GetCalendarsForUserAsync(Guid calUserId);
@@ -26,6 +25,8 @@ namespace CAL.Client
         Task<CalUserResponse> GetCalUserAsync(Guid id);
         Task<SeriesResponse> GetSeriesAsync(Guid id);
         Task<List<Event>> GetEventsForDayAsync(int dayOfCurrentMonth);
+        Task<UpdateEventResponse> UpdateEventAsync(UpdateEventRequest updateEventRequest);
+        Task<DeletedEntityResponse> DeleteEntityAsync(Guid entityId);
     }
 }
 

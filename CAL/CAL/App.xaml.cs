@@ -15,7 +15,7 @@ namespace CAL
         {
             InitializeComponent();
 
-            DependencyService.Register<EventsDataStore>();
+            //DependencyService.Register<EventsDataStore>();
             DependencyService.RegisterSingleton(CalClientFactory.GetNewCalClient().
                     UpdateSettings(PreferencesManager.GetHostname(),
                                     PreferencesManager.GetPort(),

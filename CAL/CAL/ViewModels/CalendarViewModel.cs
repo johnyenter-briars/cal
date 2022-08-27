@@ -41,7 +41,7 @@ namespace CAL.ViewModels
             if (calendar is Calendar cal)
             {
                 CurrentlySelectedCalendar = cal;
-                var events = (await EventDataStore.GetItemsAsync()).Where(e => e.CalendarId == CurrentlySelectedCalendar.Id).ToList();
+                var events = (await CalClientSingleton.GetEventsAsync()).Events.Where(e => e.CalendarId == CurrentlySelectedCalendar.Id).ToList();
                 LoadEventCollection(events, Events);
             }
         }
@@ -79,7 +79,7 @@ namespace CAL.ViewModels
 
             try
             {
-                var events = (await EventDataStore.GetItemsAsync()).Where(e => e.CalendarId == CurrentlySelectedCalendar.Id).ToList();
+                var events = (await CalClientSingleton.GetEventsAsync()).Events.Where(e => e.CalendarId == CurrentlySelectedCalendar.Id).ToList();
                 LoadEventCollection(events, Events);
             }
             catch (Exception ex)
@@ -105,7 +105,7 @@ namespace CAL.ViewModels
         }
         private async void Refresh()
         {
-            await EventDataStore.RefreshItemsAsync();
+            //await EventDataStore.RefreshItemsAsync();
             await ExecuteLoadEventsAsync();
         }
         private async Task ExecuteEventSelectedCommand(object item)

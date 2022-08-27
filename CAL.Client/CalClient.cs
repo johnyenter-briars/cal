@@ -95,7 +95,15 @@ namespace CAL.Client
         }
         public async Task<EventsResponse> GetEventsAsync()
         {
-            return await CalServerRequest<EventsResponse>($"event", HttpMethod.Get);
+            var events = await CalServerRequest<EventsResponse>($"event", HttpMethod.Get);
+            var series = await CalServerRequest<AllSeriesResponse>($"series", HttpMethod.Get);
+
+            foreach (var e in events.Events)
+            {
+                e.SeriesName = series.Series.Where(s => s.Id == e.SeriesId).FirstOrDefault()?.Name;
+            }
+
+            return events;
         }
         public async Task<SeriesResponse> GetSeriesAsync(Guid id)
         {
@@ -270,6 +278,11 @@ namespace CAL.Client
         public async Task<CalendarsResponse> GetCalendarsForUserAsync(Guid calUserId)
         {
             return await CalServerRequest<CalendarsResponse>($"calendar/user/{calUserId}", HttpMethod.Get);
+        }
+
+        public async Task<DeletedEntityResponse> DeleteEntityAsync(Guid entityId)
+        {
+            return await CalServerRequest<DeletedEntityResponse>($"event/{entityId}", HttpMethod.Delete);
         }
     }
 }

@@ -22,9 +22,9 @@ namespace CAL.Views
             {
                 var calClient = DependencyService.Get<ICalClient>();
                 var calendarsForUser = await calClient.GetCalendarsForUserAsync(new Guid(PreferencesManager.GetUserId()));
-                var vm = new CalendarViewModel(calendarsForUser.Calendars.FirstOrDefault());
+                var viewModel = new CalendarViewModel(calendarsForUser.Calendars.FirstOrDefault());
 
-                BindingContext = vm;
+                BindingContext = viewModel;
 
                 foreach(var calendar in calendarsForUser.Calendars)
                 {
@@ -32,11 +32,10 @@ namespace CAL.Views
                     {
                         Order = ToolbarItemOrder.Secondary,
                         Text = calendar.Name,
-                        Command = vm.SelectCalendarCommand,
+                        Command = viewModel.SelectCalendarCommand,
                         CommandParameter = calendar,
                     });
                 }
-
             });
 
             InitializeComponent();

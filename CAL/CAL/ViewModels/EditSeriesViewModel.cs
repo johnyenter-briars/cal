@@ -213,7 +213,7 @@ namespace CAL.ViewModels
                 CalendarId = _currentlySelectedCalendar,
             };
 
-            await EventDataStore.CreateSeriesAsync(request);
+            await CalClientSingleton.CreateSeriesAsync(request);
 
             await Shell.Current.GoToAsync("..");
         }
