@@ -15,8 +15,21 @@ namespace CAL.ViewModels
     [QueryProperty(nameof(Id), nameof(Id))]
     [QueryProperty(nameof(Name), nameof(Name))]
     [QueryProperty(nameof(Description), nameof(Description))]
+    [QueryProperty(nameof(CurrentlySelectedCalendar), nameof(CurrentlySelectedCalendar))]
     public class EditEventViewModel : BaseViewModel
     {
+        public string CurrentlySelectedCalendar
+        {
+            get
+            {
+                return _currentlySelectedCalendar.ToString();
+            }
+            set
+            {
+                _currentlySelectedCalendar = Guid.Parse(value);
+            }
+        }
+        private Guid _currentlySelectedCalendar;
         private string name;
         private string description;
         private Guid id;
@@ -83,6 +96,7 @@ namespace CAL.ViewModels
         {
             SaveCommand = new Command(OnSave, ValidateSave);
             CancelCommand = new Command(OnCancel);
+            DeleteCommand = new Command(OnDelete);
             this.PropertyChanged +=
                 (_, __) => SaveCommand.ChangeCanExecute();
         }
@@ -109,11 +123,16 @@ namespace CAL.ViewModels
         }
 
         public Command SaveCommand { get; }
+        public Command DeleteCommand { get; }
         public Command CancelCommand { get; }
 
         private async void OnCancel()
         {
             await Shell.Current.GoToAsync("..");
+        }
+        private async void OnDelete()
+        {
+
         }
 
         private async void OnSave()
@@ -132,15 +151,16 @@ namespace CAL.ViewModels
                 StartTime = startTime.ToUniversalTime(),
                 EndTime = endTime.ToUniversalTime(),
                 CalUserId = new Guid(PreferencesManager.GetUserId()),
+                CalendarId = _currentlySelectedCalendar,
             };
 
-            if (id != null)
+            if (id != Guid.Empty)
             {
-                await EventDataStore.UpdateItemAsync(newEvent);
+                await CalClientSingleton.UpdateEventAsync(newEvent.ToUpdateRequest());
             }
             else
             {
-                await EventDataStore.AddItemAsync(newEvent);
+                await CalClientSingleton.CreateEventAsync(newEvent.ToRequest());
             }
 
             await Shell.Current.GoToAsync("..");

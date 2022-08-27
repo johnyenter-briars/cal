@@ -10,7 +10,8 @@
              Title="{Binding Title}">
 
     <ContentPage.ToolbarItems>
-        <ToolbarItem Text="Add" Command="{Binding AddEventCommand}" />
+        <ToolbarItem Text="+Series" Command="{Binding AddSeriesCommand}" />
+        <ToolbarItem Text="+Event" Command="{Binding AddEventCommand}" />
         <ToolbarItem Text="Refresh" Command="{Binding RefreshEventsCommand}" />
     </ContentPage.ToolbarItems>
 
@@ -22,7 +23,7 @@
         <StackLayout VerticalOptions="FillAndExpand" HorizontalOptions="Fill">
             <ContentView Padding="0,0,0,0" VerticalOptions="FillAndExpand">
                 <plugin:Calendar
-                        Events="{Binding EventCollection}"
+                        Events="{Binding Events}"
                         VerticalOptions="FillAndExpand"
                         HorizontalOptions="FillAndExpand"
                         CalendarLayout="Month"

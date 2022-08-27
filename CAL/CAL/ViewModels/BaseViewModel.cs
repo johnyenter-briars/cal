@@ -1,6 +1,6 @@
-﻿using CAL.Client.Models;
+﻿using CAL.Client;
+using CAL.Client.Models;
 using CAL.Client.Models.Cal;
-using CAL.Services;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -11,7 +11,8 @@ namespace CAL.ViewModels
 {
     public class BaseViewModel : INotifyPropertyChanged
     {
-        public IDataStore<Event> EventDataStore => DependencyService.Get<IDataStore<Event>>();
+        //public IDataStore<Event> EventDataStore => DependencyService.Get<IDataStore<Event>>();
+        protected ICalClient CalClientSingleton = DependencyService.Get<ICalClient>();
         bool isBusy = false;
         public bool IsBusy
         {

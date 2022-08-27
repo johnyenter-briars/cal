@@ -12,6 +12,7 @@ using Xamarin.Forms;
 
 namespace CAL.ViewModels
 {
+    //TODO: fix events page - CalClient needs to be an observable
     public class EventsViewModel : BaseViewModel
     {
         public ObservableCollection<Event> Events { get; }
@@ -22,7 +23,7 @@ namespace CAL.ViewModels
         public EventsViewModel()
         {
             Title = "Events";
-            Events = EventDataStore.GetAsObservable();
+            //Events = EventDataStore.GetAsObservable();
             LoadEventsCommand = new Command(async () => await ExecuteLoadEventsComand());
 
             AddEventCommand = new Command(OnAddEvent);
@@ -31,14 +32,14 @@ namespace CAL.ViewModels
 
         async Task<IEnumerable<Event>> GetNewData()
         {
-            var events = await EventDataStore.GetItemsAsync();
+            //var events = await EventDataStore.GetItemsAsync();
 
-            return events;
+            return null;
         }
         async Task ExecuteLoadEventsComand()
         {
             IsBusy = true;
-            await EventDataStore.RefreshItemsAsync();
+            //await EventDataStore.RefreshItemsAsync();
             IsBusy = false;
         }
 

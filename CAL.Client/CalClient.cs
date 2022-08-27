@@ -7,6 +7,7 @@ using CAL.Client.Models.Server.Response;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -18,13 +19,16 @@ using System.Threading.Tasks;
 
 namespace CAL.Client
 {
-    internal class CalClient : ICalClient
+    public class CalClient : ICalClient
     {
         private string _apiKey = "";
         private string _userId = "";
         private string _hostName = "";
         private int _port = -1;
-        private static readonly HttpClient _httpClient = new HttpClient();
+        private static readonly HttpClient _httpClient = new HttpClient
+        {
+            Timeout = new TimeSpan(0, 0, 10),
+        };
         private static readonly JsonSerializerSettings JsonSettings =
                 new JsonSerializerSettings
                 {
@@ -34,6 +38,9 @@ namespace CAL.Client
                     },
                     Formatting = Formatting.Indented
                 };
+
+        public static HttpClient HttpClient => _httpClient;
+
         public CalClient()
         {
         }
@@ -56,7 +63,31 @@ namespace CAL.Client
         }
         public async Task<CreateSeriesResponse> CreateSeriesAsync(CreateSeriesRequest createSeriesRequest)
         {
-            return await CalServerRequest<CreateSeriesRequest, CreateSeriesResponse>(createSeriesRequest, "series", HttpMethod.Post);
+            var createSeriesResponse = await CalServerRequest<CreateSeriesRequest, CreateSeriesResponse>(createSeriesRequest, "series", HttpMethod.Post);
+
+            var startsOn = createSeriesRequest.StartsOn;
+            var endsOn = createSeriesRequest.EndsOn;
+
+            if (ShouldAddOnToday(createSeriesRequest, startsOn.DayOfWeek))
+            {
+                var createEventResponse = await CreateEventAsync(createSeriesRequest.CreateSubEventRequest(startsOn, (Guid)createSeriesResponse.SeriesId));
+            }
+
+            var currentDay = startsOn;
+            while (true)
+            {
+                var dayToAdd = GetNextDayToAdd(createSeriesRequest, currentDay);
+                currentDay = dayToAdd;
+
+                if (dayToAdd > endsOn)
+                {
+                    break;
+                }
+
+                var createEventResponse = await CreateEventAsync(createSeriesRequest.CreateSubEventRequest(dayToAdd, (Guid)createSeriesResponse.SeriesId));
+            }
+
+            return createSeriesResponse;
         }
         public async Task<CalUserResponse> GetCalUserAsync(Guid id)
         {
@@ -64,7 +95,15 @@ namespace CAL.Client
         }
         public async Task<EventsResponse> GetEventsAsync()
         {
-            return await CalServerRequest<EventsResponse>($"event", HttpMethod.Get);
+            var events = await CalServerRequest<EventsResponse>($"event", HttpMethod.Get);
+            var series = await CalServerRequest<AllSeriesResponse>($"series", HttpMethod.Get);
+
+            foreach (var e in events.Events)
+            {
+                e.SeriesName = series.Series.Where(s => s.Id == e.SeriesId).FirstOrDefault()?.Name;
+            }
+
+            return events;
         }
         public async Task<SeriesResponse> GetSeriesAsync(Guid id)
         {
@@ -85,9 +124,7 @@ namespace CAL.Client
         }
         private bool ValidateRequest(IValidatable request)
         {
-            return request.StartTime.Kind == DateTimeKind.Utc &&
-                    request.EndTime.Kind == DateTimeKind.Utc &&
-                    request.CalUserId != null;
+            return request.Validate();
         }
         private async Task<TResponse> CalServerRequest<TResponse>(string path, HttpMethod httpMethod)
         {
@@ -107,11 +144,14 @@ namespace CAL.Client
 
             request.Content = new StringContent(JsonConvert.SerializeObject(requestObject, JsonSettings), Encoding.UTF8, "application/json");
 
+            var idk = JsonConvert.SerializeObject(requestObject, JsonSettings);
+
             return await SendRequest<TResponse>(request);
         }
         private async Task<TResponse> SendRequest<TResponse>(HttpRequestMessage request)
         {
-            var clientResponse = await _httpClient.SendAsync(request, CancellationToken.None);
+            var clientResponse = await HttpClient.SendAsync(request, CancellationToken.None);
+            var idk = await clientResponse.Content.ReadAsStringAsync();
 
             if (clientResponse.IsSuccessStatusCode)
             {
@@ -119,7 +159,8 @@ namespace CAL.Client
             }
             else
             {
-                throw new Exception($"Failure to complete action. Reason phrase: {clientResponse.ReasonPhrase}, Raw response: {await clientResponse.Content.ReadAsStringAsync()}");
+                var message = $"Failure to complete action. Reason phrase: {clientResponse.ReasonPhrase}, Raw response: {await clientResponse.Content.ReadAsStringAsync()}";
+                throw new Exception(message);
             }
         }
         public async Task<List<Event>> GetEventsForDayAsync(int dayOfCurrentMonth)
@@ -132,13 +173,116 @@ namespace CAL.Client
 
             return selectedEvents;
         }
-        public void UpdateSettings(string hostname, int port, string apiKey, string userId)
+        public ICalClient UpdateSettings(string hostname, int port, string apiKey, string userId)
         {
             _hostName = hostname;
             _port = port;
             _apiKey = apiKey;
             _userId = userId;
+            return this;
+        }
+        //https://stackoverflow.com/questions/6346119/compute-the-datetime-of-an-upcoming-weekday
+        private static DateTime GetNextWeekday(DateTime start, DayOfWeek day)
+        {
+            // The (... + 7) % 7 ensures we end up with a value in the range [0, 6]
+            int daysToAdd = ((int)day - (int)start.DayOfWeek + 7) % 7;
+            if (daysToAdd == 0)
+            {
+                daysToAdd = 7;
+            }
+            return start.AddDays(daysToAdd);
+        }
+        private bool ShouldAddOnToday(CreateSeriesRequest request, DayOfWeek dayOfWeek)
+        {
+            if (request.RepeatOnMon && dayOfWeek == DayOfWeek.Monday)
+            {
+                return true;
+            }
+
+            if (request.RepeatOnTues && dayOfWeek == DayOfWeek.Tuesday)
+            {
+                return true;
+            }
+
+            if (request.RepeatOnWed && dayOfWeek == DayOfWeek.Wednesday)
+            {
+                return true;
+            }
+
+            if (request.RepeatOnThurs && dayOfWeek == DayOfWeek.Thursday)
+            {
+                return true;
+            }
+
+            if (request.RepeatOnFri && dayOfWeek == DayOfWeek.Friday)
+            {
+                return true;
+            }
+
+            if (request.RepeatOnSat && dayOfWeek == DayOfWeek.Saturday)
+            {
+                return true;
+            }
+
+            if (request.RepeatOnSun && dayOfWeek == DayOfWeek.Sunday)
+            {
+                return true;
+            }
+
+            return false;
+        }
+        private DateTime GetNextDayToAdd(CreateSeriesRequest request, DateTime currentDay)
+        {
+            var daysOfWeek = new List<DayOfWeek> { DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Wednesday, DayOfWeek.Thursday, DayOfWeek.Friday, DayOfWeek.Saturday, DayOfWeek.Sunday };
+
+            void CircularIncrement(ref int i, int count)
+            {
+                if (i == count - 1)
+                {
+                    i = 0;
+                }
+                else
+                {
+                    i++;
+                }
+            }
+
+            for (var index = daysOfWeek.IndexOf(currentDay.DayOfWeek) == daysOfWeek.Count - 1 ? 0 : daysOfWeek.IndexOf(currentDay.DayOfWeek) + 1;
+                index > -1;
+                CircularIncrement(ref index, daysOfWeek.Count))
+            {
+                var dayOfWeek = daysOfWeek[index];
+                if (ShouldAddOnToday(request, dayOfWeek))
+                {
+                    return GetNextWeekday(currentDay, dayOfWeek);
+                }
+            }
+
+            throw new ApplicationException("We should never get here");
         }
 
+        public async Task<CreateCalendarResponse> CreateCalendarAsync(CreateCalendarRequest createCalendarRequest)
+        {
+            if (!ValidateRequest(createCalendarRequest))
+            {
+                return new CreateCalendarResponse
+                {
+                    StatusCode = 400,
+                    Message = "Bad Request",
+                };
+            }
+
+            return await CalServerRequest<CreateCalendarRequest, CreateCalendarResponse>(createCalendarRequest, "calendar", HttpMethod.Post);
+        }
+
+        public async Task<CalendarsResponse> GetCalendarsForUserAsync(Guid calUserId)
+        {
+            return await CalServerRequest<CalendarsResponse>($"calendar/user/{calUserId}", HttpMethod.Get);
+        }
+
+        public async Task<DeletedEntityResponse> DeleteEntityAsync(Guid entityId)
+        {
+            return await CalServerRequest<DeletedEntityResponse>($"event/{entityId}", HttpMethod.Delete);
+        }
     }
 }
