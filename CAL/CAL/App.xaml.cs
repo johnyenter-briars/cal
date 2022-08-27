@@ -1,6 +1,5 @@
 ﻿using CAL.Client;
 using CAL.Managers;
-using CAL.Services;
 using CAL.Views;
 using System;
 using Xamarin.Forms;

@@ -1,7 +1,6 @@
 ﻿using CAL.Client;
 using CAL.Client.Models.Cal;
 using CAL.Managers;
-using CAL.Services;
 using CAL.ViewModels;
 using System;
 using System.Collections.ObjectModel;
