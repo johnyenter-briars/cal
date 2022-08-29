@@ -26,7 +26,7 @@ namespace CAL.Client
         Task<SeriesResponse> GetSeriesAsync(Guid id);
         Task<List<Event>> GetEventsForDayAsync(int dayOfCurrentMonth);
         Task<UpdateEventResponse> UpdateEventAsync(UpdateEventRequest updateEventRequest);
-        Task<DeletedEntityResponse> DeleteEntityAsync(Guid entityId);
+        Task<DeletedEntityResponse> DeleteEntityAsync(Guid entityId, EntityType entityType);
     }
 }
 

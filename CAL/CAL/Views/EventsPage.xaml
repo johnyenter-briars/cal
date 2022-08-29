@@ -22,7 +22,7 @@
                 SelectionMode="None">
             <CollectionView.ItemTemplate>
                 <DataTemplate>
-                    <controls:CalenderEvent CalenderEventCommand="{Binding BindingContext.EventSelectedCommand, Source={x:Reference browseItemsPage}}" />
+                    <controls:CalendarEvent CalendarEventCommand="{Binding BindingContext.EventSelectedCommand, Source={x:Reference browseItemsPage}}" />
                 </DataTemplate>
             </CollectionView.ItemTemplate>
             <!--

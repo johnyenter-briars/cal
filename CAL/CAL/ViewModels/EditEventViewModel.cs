@@ -16,8 +16,18 @@ namespace CAL.ViewModels
     [QueryProperty(nameof(Name), nameof(Name))]
     [QueryProperty(nameof(Description), nameof(Description))]
     [QueryProperty(nameof(CurrentlySelectedCalendar), nameof(CurrentlySelectedCalendar))]
+    [QueryProperty(nameof(EntityType), nameof(EntityType))]
     public class EditEventViewModel : BaseViewModel
     {
+        private EntityType _entityType;
+        public string EntityType
+        {
+            get => _entityType.ToString(); set
+            {
+                Enum.TryParse(value, out EntityType entityType);
+                _entityType = entityType;
+            }
+        }
         public string CurrentlySelectedCalendar
         {
             get
@@ -132,7 +142,8 @@ namespace CAL.ViewModels
         }
         private async void OnDelete()
         {
-
+            await CalClientSingleton.DeleteEntityAsync(id, _entityType);
+            await Shell.Current.GoToAsync("..");
         }
 
         private async void OnSave()

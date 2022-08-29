@@ -24,8 +24,18 @@ namespace CAL.ViewModels
     [QueryProperty(nameof(StartTimeUnixSeconds), nameof(StartTimeUnixSeconds))]
     [QueryProperty(nameof(EndTimeUnixSeconds), nameof(EndTimeUnixSeconds))]
     [QueryProperty(nameof(CurrentlySelectedCalendar), nameof(CurrentlySelectedCalendar))]
+    [QueryProperty(nameof(EntityType), nameof(EntityType))]
     public class EditSeriesViewModel : BaseViewModel
     {
+        private EntityType _entityType;
+        public string EntityType
+        {
+            get => _entityType.ToString(); set
+            {
+                Enum.TryParse(value, out EntityType entityType);
+                _entityType = entityType;
+            }
+        }
         public string CurrentlySelectedCalendar
         {
             get
@@ -104,6 +114,7 @@ namespace CAL.ViewModels
         {
             SaveCommand = new Command(OnSave, ValidateSave);
             CancelCommand = new Command(OnCancel);
+            DeleteCommand = new Command(OnDelete);
             this.PropertyChanged +=
                 (_, __) => SaveCommand.ChangeCanExecute();
         }
@@ -129,31 +140,31 @@ namespace CAL.ViewModels
             set => SetProperty(ref description, value);
         }
         private bool repeatOnMon;
-        public bool RepeatOnMon 
+        public bool RepeatOnMon
         {
             get => repeatOnMon;
             set => SetProperty(ref repeatOnMon, value);
         }
         private bool repeatOnTues;
-        public bool RepeatOnTues  
+        public bool RepeatOnTues
         {
             get => repeatOnTues;
             set => SetProperty(ref repeatOnTues, value);
         }
         private bool repeatOnWed;
-        public bool RepeatOnWed   
+        public bool RepeatOnWed
         {
             get => repeatOnWed;
             set => SetProperty(ref repeatOnWed, value);
         }
         private bool repeatOnThurs;
-        public bool RepeatOnThurs    
+        public bool RepeatOnThurs
         {
             get => repeatOnThurs;
             set => SetProperty(ref repeatOnThurs, value);
         }
         private bool repeatOnFri;
-        public bool RepeatOnFri    
+        public bool RepeatOnFri
         {
             get => repeatOnFri;
             set => SetProperty(ref repeatOnFri, value);
@@ -179,6 +190,7 @@ namespace CAL.ViewModels
 
         public Command SaveCommand { get; }
         public Command CancelCommand { get; }
+        public Command DeleteCommand { get; }
 
         private async void OnCancel()
         {
@@ -215,6 +227,11 @@ namespace CAL.ViewModels
 
             await CalClientSingleton.CreateSeriesAsync(request);
 
+            await Shell.Current.GoToAsync("..");
+        }
+        private async void OnDelete()
+        {
+            await CalClientSingleton.DeleteEntityAsync(id, _entityType);
             await Shell.Current.GoToAsync("..");
         }
     }

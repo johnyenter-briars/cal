@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<ContentView
+    x:Class="CAL.Controls.CalendarEvent"
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    x:Name="eventTemplate"
+    >
+    <Frame BorderColor="LightGray" HasShadow="False" Padding="15" BackgroundColor="{StaticResource BackgroundColor}">
+        <StackLayout
+        Padding="0,0,0,0"
+        HorizontalOptions="FillAndExpand"
+        VerticalOptions="FillAndExpand">
+            <StackLayout 
+                 Orientation="Horizontal"
+                 HorizontalOptions="Start">
+                <Label FontAttributes="Bold" FontSize="Medium" TextDecorations="Underline">
+                    <Label.FormattedText>
+                        <FormattedString>
+                            <Span Text="{Binding StartTime, StringFormat='{0:MM/dd HH\\:mm}'}" />
+                            <Span Text=" - " />
+                            <Span Text="{Binding Name}" />
+                        </FormattedString>
+                    </Label.FormattedText>
+                </Label>
+
+                <Frame IsVisible="{Binding IsPartOfSeries}"  CornerRadius="10" x:Name="circleFrame" HasShadow="False" Padding="0" Margin="0" HorizontalOptions="Center" BackgroundColor="Gray">
+                    <Image MinimumWidthRequest="10" BackgroundColor="{StaticResource Primary}" Source="icons8_multiple_25.png" />
+                </Frame>
+            </StackLayout>
+
+            <Label
+                FontSize="Small"
+                LineBreakMode="WordWrap"
+                Text="{Binding Description}" />
+            <StackLayout.GestureRecognizers>
+                <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped" />
+            </StackLayout.GestureRecognizers>
+        </StackLayout>
+    </Frame>
+</ContentView>

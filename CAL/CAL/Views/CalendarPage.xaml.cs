@@ -17,6 +17,8 @@ namespace CAL.Views
     {
         public CalendarPage()
         {
+            InitializeComponent();
+
             Task.Run(async () =>
             {
                 var calClient = DependencyService.Get<ICalClient>();
@@ -25,7 +27,7 @@ namespace CAL.Views
 
                 BindingContext = viewModel;
 
-                foreach(var calendar in calendarsForUser.Calendars)
+                foreach (var calendar in calendarsForUser.Calendars)
                 {
                     ToolbarItems.Add(new ToolbarItem
                     {
@@ -36,8 +38,12 @@ namespace CAL.Views
                     });
                 }
             });
+        }
+        protected override void OnAppearing()
+        {
+            var bc = (CalendarViewModel)BindingContext;
 
-            InitializeComponent();
+            bc?.Refresh();
         }
     }
 }

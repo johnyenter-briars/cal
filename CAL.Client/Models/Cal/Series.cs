@@ -33,6 +33,8 @@ namespace CAL.Client.Models.Cal
         public TimeSpan EventEndTime { get; set; } 
         public Guid CalUserId { get; set; }
         public Guid CalendarId { get; set; }
+        [JsonIgnore]
+        public EntityType EntityType => EntityType.Series;
         public CreateSeriesRequest ToRequest()
         {
             return new CreateSeriesRequest 
