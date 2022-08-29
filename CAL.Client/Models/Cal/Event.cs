@@ -1,4 +1,5 @@
 ﻿using CAL.Client.Models.Server.Request;
+using Newtonsoft.Json;
 using System;
 
 namespace CAL.Client.Models.Cal
@@ -53,6 +54,8 @@ namespace CAL.Client.Models.Cal
         public Guid CalUserId { get; set; }
         public Guid? SeriesId { get; set; }
         public Guid CalendarId { get; set; }
+        [JsonIgnore]
+        public EntityType EntityType => EntityType.Event;
         public CreateEventRequest ToRequest()
         {
             return new CreateEventRequest

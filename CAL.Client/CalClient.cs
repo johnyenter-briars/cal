@@ -144,14 +144,11 @@ namespace CAL.Client
 
             request.Content = new StringContent(JsonConvert.SerializeObject(requestObject, JsonSettings), Encoding.UTF8, "application/json");
 
-            var idk = JsonConvert.SerializeObject(requestObject, JsonSettings);
-
             return await SendRequest<TResponse>(request);
         }
         private async Task<TResponse> SendRequest<TResponse>(HttpRequestMessage request)
         {
             var clientResponse = await HttpClient.SendAsync(request, CancellationToken.None);
-            var idk = await clientResponse.Content.ReadAsStringAsync();
 
             if (clientResponse.IsSuccessStatusCode)
             {
@@ -280,9 +277,10 @@ namespace CAL.Client
             return await CalServerRequest<CalendarsResponse>($"calendar/user/{calUserId}", HttpMethod.Get);
         }
 
-        public async Task<DeletedEntityResponse> DeleteEntityAsync(Guid entityId)
+        public async Task<DeletedEntityResponse> DeleteEntityAsync(Guid entityId, EntityType entityType)
         {
-            return await CalServerRequest<DeletedEntityResponse>($"event/{entityId}", HttpMethod.Delete);
+            var lowerCase = entityType.ToString().ToLower();
+            return await CalServerRequest<DeletedEntityResponse>($"{lowerCase}/{entityId}", HttpMethod.Delete);
         }
     }
 }

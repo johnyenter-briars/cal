@@ -1,5 +1,6 @@
 using System;
 using CAL.Client.Models.Cal.Request;
+using Newtonsoft.Json;
 
 namespace CAL.Client.Models.Cal
 {
@@ -16,5 +17,7 @@ namespace CAL.Client.Models.Cal
                 LastName = LastName,
             };
         }
+        [JsonIgnore]
+        public EntityType EntityType => EntityType.CalUser;
     }
 }

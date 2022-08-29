@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -11,5 +12,7 @@ namespace CAL.Client.Models.Cal
         public string Description { get; set; }
         public Guid CalUserId { get; set; }
         public string Color { get; set; }
+        [JsonIgnore]
+        public EntityType EntityType => EntityType.Calendar;
     }
 }

@@ -43,7 +43,7 @@
 
                     <plugin:Calendar.EventTemplate>
                         <DataTemplate>
-                            <controls:CalenderEvent CalenderEventCommand="{Binding BindingContext.EventSelectedCommand, Source={x:Reference calendarPage}}" />
+                            <controls:CalendarEvent CalanderEventCommand="{Binding BindingContext.EventSelectedCommand, Source={x:Reference calendarPage}}" />
                         </DataTemplate>
                     </plugin:Calendar.EventTemplate>
                     <plugin:Calendar.EmptyTemplate>
