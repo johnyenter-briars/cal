@@ -1,5 +1,4 @@
 ﻿using CAL.Client.Interfaces;
-using CAL.Client.Models;
 using CAL.Client.Models.Cal;
 using CAL.Client.Models.Cal.Request;
 using CAL.Client.Models.Server.Request;
@@ -7,12 +6,9 @@ using CAL.Client.Models.Server.Response;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
 using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -109,18 +105,18 @@ namespace CAL.Client
         {
             return await CalServerRequest<SeriesResponse>($"series/{id}", HttpMethod.Get);
         }
-        public async Task<UpdateEventResponse> UpdateEventAsync(UpdateEventRequest updateEventRequest)
+        public async Task<UpdateEntityResponse> UpdateEventAsync(UpdateEventRequest updateEventRequest)
         {
             if (!ValidateRequest(updateEventRequest))
             {
-                return new UpdateEventResponse
+                return new UpdateEntityResponse
                 {
                     StatusCode = 400,
                     Message = "Bad Request",
                 };
             }
 
-            return await CalServerRequest<UpdateEventRequest, UpdateEventResponse>(updateEventRequest, "event", HttpMethod.Put);
+            return await CalServerRequest<UpdateEventRequest, UpdateEntityResponse>(updateEventRequest, "event", HttpMethod.Put);
         }
         private bool ValidateRequest(IValidatable request)
         {
@@ -191,42 +187,33 @@ namespace CAL.Client
         }
         private bool ShouldAddOnToday(CreateSeriesRequest request, DayOfWeek dayOfWeek)
         {
-            if (request.RepeatOnMon && dayOfWeek == DayOfWeek.Monday)
+            bool returnVal = false;
+            switch (dayOfWeek)
             {
-                return true;
+                case DayOfWeek.Monday:
+                    returnVal = request.RepeatOnMon;
+                    break;
+                case DayOfWeek.Tuesday:
+                    returnVal = request.RepeatOnTues;
+                    break;
+                case DayOfWeek.Wednesday:
+                    returnVal = request.RepeatOnWed;
+                    break;
+                case DayOfWeek.Thursday:
+                    returnVal = request.RepeatOnThurs;
+                    break;
+                case DayOfWeek.Friday:
+                    returnVal = request.RepeatOnFri;
+                    break;
+                case DayOfWeek.Saturday:
+                    returnVal = request.RepeatOnSat;
+                    break;
+                case DayOfWeek.Sunday:
+                    returnVal = request.RepeatOnSun;
+                    break;
             }
 
-            if (request.RepeatOnTues && dayOfWeek == DayOfWeek.Tuesday)
-            {
-                return true;
-            }
-
-            if (request.RepeatOnWed && dayOfWeek == DayOfWeek.Wednesday)
-            {
-                return true;
-            }
-
-            if (request.RepeatOnThurs && dayOfWeek == DayOfWeek.Thursday)
-            {
-                return true;
-            }
-
-            if (request.RepeatOnFri && dayOfWeek == DayOfWeek.Friday)
-            {
-                return true;
-            }
-
-            if (request.RepeatOnSat && dayOfWeek == DayOfWeek.Saturday)
-            {
-                return true;
-            }
-
-            if (request.RepeatOnSun && dayOfWeek == DayOfWeek.Sunday)
-            {
-                return true;
-            }
-
-            return false;
+            return returnVal;
         }
         private DateTime GetNextDayToAdd(CreateSeriesRequest request, DateTime currentDay)
         {
@@ -281,6 +268,20 @@ namespace CAL.Client
         {
             var lowerCase = entityType.ToString().ToLower();
             return await CalServerRequest<DeletedEntityResponse>($"{lowerCase}/{entityId}", HttpMethod.Delete);
+        }
+
+        public async Task<UpdateEntityResponse> UpdateSeriesAsync(UpdateSeriesRequest updateEventRequest)
+        {
+            var _ = await DeleteEntityAsync(updateEventRequest.Id, EntityType.Series);
+
+            var created = await CreateSeriesAsync(updateEventRequest.ToCreateSeriesRequest());
+
+            return new UpdateEntityResponse
+            {
+                Message = created.Message,
+                EntityId = created.SeriesId,
+                StatusCode = created.StatusCode,
+            };
         }
     }
 }

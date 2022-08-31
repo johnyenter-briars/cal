@@ -205,27 +205,36 @@ namespace CAL.ViewModels
             var endingTimeDatePart = new DateTime(SeriesEndsOnSelectedDate.Year, SeriesEndsOnSelectedDate.Month, SeriesEndsOnSelectedDate.Day, 0, 0, 0, kind: DateTimeKind.Local);
             var endTime = endingTimeDatePart + SubEventEndTime;
 
-            var request = new CreateSeriesRequest
-            {
-                Name = name,
-                Description = description,
-                RepeatOnMon = RepeatOnMon,
-                RepeatOnTues = RepeatOnTues,
-                RepeatOnWed = RepeatOnWed,
-                RepeatOnThurs = RepeatOnThurs,
-                RepeatOnFri = RepeatOnFri,
-                RepeatOnSat = RepeatOnSat,
-                RepeatOnSun = RepeatOnSun,
-                RepeatEveryWeek = RepeatEveryWeek,
-                StartsOn = startingTimeDatePart.ToUniversalTime(),
-                EndsOn = endingTimeDatePart.ToUniversalTime(),
-                EventStartTime = startTime.TimeOfDay,
-                EventEndTime = endTime.TimeOfDay,
-                CalUserId = new Guid(PreferencesManager.GetUserId()),
-                CalendarId = _currentlySelectedCalendar,
-            };
 
-            await CalClientSingleton.CreateSeriesAsync(request);
+            if (id == Guid.Empty)
+            {
+                var request = new CreateSeriesRequest
+                {
+                    Name = name,
+                    Description = description,
+                    RepeatOnMon = RepeatOnMon,
+                    RepeatOnTues = RepeatOnTues,
+                    RepeatOnWed = RepeatOnWed,
+                    RepeatOnThurs = RepeatOnThurs,
+                    RepeatOnFri = RepeatOnFri,
+                    RepeatOnSat = RepeatOnSat,
+                    RepeatOnSun = RepeatOnSun,
+                    RepeatEveryWeek = RepeatEveryWeek,
+                    StartsOn = startingTimeDatePart.ToUniversalTime(),
+                    EndsOn = endingTimeDatePart.ToUniversalTime(),
+                    EventStartTime = startTime.TimeOfDay,
+                    EventEndTime = endTime.TimeOfDay,
+                    CalUserId = new Guid(PreferencesManager.GetUserId()),
+                    CalendarId = _currentlySelectedCalendar,
+                };
+
+                await CalClientSingleton.CreateSeriesAsync(request);
+            }
+            else
+            {
+
+            }
+
 
             await Shell.Current.GoToAsync("..");
         }

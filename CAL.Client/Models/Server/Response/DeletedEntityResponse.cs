@@ -4,10 +4,8 @@ using System.Text;
 
 namespace CAL.Client.Models.Server.Response
 {
-    public class DeletedEntityResponse
+    public class DeletedEntityResponse : BaseResponse
     {
         public Guid Id { get; set; }
-        public int StatusCode { get; set; }
-        public string Message { get; set; }
     }
 }

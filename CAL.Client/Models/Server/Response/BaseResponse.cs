@@ -1,13 +1,14 @@
 ﻿using CAL.Client.Interfaces;
 using System;
+using System.Collections.Generic;
+using System.Text;
 
 namespace CAL.Client.Models.Server.Response
 {
-    public class UpdateEventResponse : IResponse
+    public abstract class BaseResponse : IResponse
     {
         public int StatusCode { get; set; }
         public string Message { get; set; }
-        public Guid? EventId { get; set; }
         public string GetMessage() => Message;
         public int GetStatusCode() => StatusCode;
     }

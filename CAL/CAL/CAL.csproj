@@ -22,6 +22,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="Controls\CalendarEvent.xaml.cs">
+      <DependentUpon>CalendarEvent.xaml</DependentUpon>
+    </Compile>
     <Compile Update="Views\EditSeriesPage.xaml.cs">
       <DependentUpon>EditSeriesPage.xaml</DependentUpon>
     </Compile>

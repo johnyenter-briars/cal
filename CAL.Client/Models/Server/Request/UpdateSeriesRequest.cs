@@ -1,14 +1,18 @@
-using CAL.Client.Converters;
-using CAL.Client.Models.Server.Request;
+﻿using CAL.Client.Converters;
+using CAL.Client.Interfaces;
+using CAL.Client.Models.Cal.Request;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace CAL.Client.Models.Cal.Request
+namespace CAL.Client.Models.Server.Request
 {
-    public class CreateSeriesRequest
+    public class UpdateSeriesRequest : IValidatable
     {
-        public Guid? Id { get; set; }
+        public Guid Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
         public int RepeatEveryWeek { get; set; }
@@ -30,34 +34,34 @@ namespace CAL.Client.Models.Cal.Request
         public Guid CalUserId { get; set; }
         public Guid CalendarId { get; set; }
 
-        public CreateEventRequest CreateSubEventRequest(DateTime dayToAdd, Guid seriesId)
+        public bool Validate()
         {
-            var startTime = new DateTime(dayToAdd.Year, dayToAdd.Month, dayToAdd.Day,
-                EventStartTime.Hours,
-                EventStartTime.Minutes,
-                EventStartTime.Seconds,
-                DateTimeKind.Local).ToUniversalTime();
+            return StartsOn.Kind == DateTimeKind.Utc &&
+                    EndsOn.Kind == DateTimeKind.Utc &&
+                    CalUserId != null;
+        }
 
-            var endTime = new DateTime(dayToAdd.Year, dayToAdd.Month, dayToAdd.Day,
-                EventEndTime.Hours,
-                EventEndTime.Minutes,
-                EventEndTime.Seconds,
-                DateTimeKind.Local).ToUniversalTime();
-
-            var createEventRequest = new CreateEventRequest
+        public CreateSeriesRequest ToCreateSeriesRequest()
+        {
+            return new CreateSeriesRequest
             {
+                Id = Id,
                 Name = Name,
                 Description = Description,
-                StartTime = startTime,
-                EndTime = endTime,
+                RepeatEveryWeek = RepeatEveryWeek,
+                RepeatOnMon = RepeatOnMon,
+                RepeatOnTues = RepeatOnTues,
+                RepeatOnThurs = RepeatOnThurs,
+                RepeatOnFri = RepeatOnFri,
+                RepeatOnSat = RepeatOnSat,
+                RepeatOnSun = RepeatOnSun,
+                StartsOn = StartsOn,
+                EndsOn = EndsOn,
+                EventStartTime = EventStartTime,
+                EventEndTime = EventEndTime,
                 CalUserId = CalUserId,
-                SeriesId = seriesId,
                 CalendarId = CalendarId,
             };
-
-            return createEventRequest;
         }
     }
 }
-
-

@@ -3,12 +3,8 @@ using System;
 
 namespace CAL.Client.Models.Server.Response
 {
-    public class CreateCalendarResponse : IResponse
+    public class CreateCalendarResponse : BaseResponse
     {
-        public int StatusCode { get; set; }
-        public string Message { get; set; }
-        public Guid? EventId { get; set; }
-        public string GetMessage() => Message;
-        public int GetStatusCode() => StatusCode;
+        public Guid? CalendarId { get; set; }
     }
 }
