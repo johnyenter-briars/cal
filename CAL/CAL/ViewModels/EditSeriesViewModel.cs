@@ -1,10 +1,9 @@
 ﻿using CAL.Client;
 using CAL.Client.Models;
 using CAL.Client.Models.Cal;
-using CAL.Client.Models.Cal.Request;
+using CAL.Client.Models.Server.Request;
 using CAL.Managers;
 using System;
-using System.Collections.Generic;
 using System.Text;
 using Xamarin.Forms;
 
@@ -232,9 +231,29 @@ namespace CAL.ViewModels
             }
             else
             {
+                var request = new UpdateSeriesRequest
+                {
+                    Id = id,
+                    Name = name,
+                    Description = description,
+                    RepeatOnMon = RepeatOnMon,
+                    RepeatOnTues = RepeatOnTues,
+                    RepeatOnWed = RepeatOnWed,
+                    RepeatOnThurs = RepeatOnThurs,
+                    RepeatOnFri = RepeatOnFri,
+                    RepeatOnSat = RepeatOnSat,
+                    RepeatOnSun = RepeatOnSun,
+                    RepeatEveryWeek = RepeatEveryWeek,
+                    StartsOn = startingTimeDatePart.ToUniversalTime(),
+                    EndsOn = endingTimeDatePart.ToUniversalTime(),
+                    EventStartTime = startTime.TimeOfDay,
+                    EventEndTime = endTime.TimeOfDay,
+                    CalUserId = new Guid(PreferencesManager.GetUserId()),
+                    CalendarId = _currentlySelectedCalendar,
+                };
 
+                await CalClientSingleton.UpdateSeriesAsync(request);
             }
-
 
             await Shell.Current.GoToAsync("..");
         }

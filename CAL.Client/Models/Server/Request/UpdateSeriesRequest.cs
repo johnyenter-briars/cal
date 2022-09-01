@@ -1,6 +1,5 @@
 ﻿using CAL.Client.Converters;
 using CAL.Client.Interfaces;
-using CAL.Client.Models.Cal.Request;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;

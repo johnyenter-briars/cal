@@ -1,6 +1,5 @@
 ﻿using CAL.Client.Interfaces;
 using CAL.Client.Models.Cal;
-using CAL.Client.Models.Cal.Request;
 using CAL.Client.Models.Server.Request;
 using CAL.Client.Models.Server.Response;
 using Newtonsoft.Json;
@@ -46,14 +45,6 @@ namespace CAL.Client
         }
         public async Task<CreateEventResponse> CreateEventAsync(CreateEventRequest createEventRequest)
         {
-            if (!ValidateRequest(createEventRequest))
-            {
-                return new CreateEventResponse
-                {
-                    StatusCode = 400,
-                    Message = "Bad Request",
-                };
-            }
 
             return await CalServerRequest<CreateEventRequest, CreateEventResponse>(createEventRequest, "event", HttpMethod.Post);
         }
@@ -131,8 +122,17 @@ namespace CAL.Client
 
             return await SendRequest<TResponse>(request);
         }
-        private async Task<TResponse> CalServerRequest<TRequest, TResponse>(TRequest requestObject, string path, HttpMethod httpMethod) where TResponse : IResponse
+        private async Task<TResponse> CalServerRequest<TRequest, TResponse>(TRequest requestObject, string path, HttpMethod httpMethod)
+                where TResponse : IResponse, new()
+                where TRequest : IValidatable
         {
+            if (!requestObject.Validate())
+            {
+                var idk = new TResponse();
+                idk.SetMessage("BadRequest").SetStatusCode(400);
+                return idk;
+            }
+
             var request = new HttpRequestMessage(httpMethod, $"http://{_hostName}:{_port}/api/" + path);
             request.Headers.Accept.Clear();
             request.Headers.Add("x-api-key", _apiKey);
@@ -261,13 +261,14 @@ namespace CAL.Client
 
         public async Task<CalendarsResponse> GetCalendarsForUserAsync(Guid calUserId)
         {
-            return await CalServerRequest<CalendarsResponse>($"calendar/user/{calUserId}", HttpMethod.Get);
+            var idk = await CalServerRequest<CalendarsResponse>($"calendar/user/{calUserId}", HttpMethod.Get);
+            return idk;
         }
 
         public async Task<DeletedEntityResponse> DeleteEntityAsync(Guid entityId, EntityType entityType)
         {
             var lowerCase = entityType.ToString().ToLower();
-            return await CalServerRequest<DeletedEntityResponse>($"{lowerCase}/{entityId}", HttpMethod.Delete);
+            return await CalServerRequest<DeletedEntityResponse>($"{lowerCase}/{entityId}", HttpMethod.Delete) as DeletedEntityResponse;
         }
 
         public async Task<UpdateEntityResponse> UpdateSeriesAsync(UpdateSeriesRequest updateEventRequest)

@@ -4,11 +4,9 @@ using System.Text;
 
 namespace CAL.Client.Interfaces
 {
-    internal interface IResponse
+    internal interface IBaseResponse
     {
         string GetMessage();
         int GetStatusCode();
-        IResponse SetMessage(string message);
-        IResponse SetStatusCode(int statusCode);
     }
 }

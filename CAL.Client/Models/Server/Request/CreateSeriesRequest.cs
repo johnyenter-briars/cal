@@ -1,12 +1,13 @@
 using CAL.Client.Converters;
+using CAL.Client.Interfaces;
 using CAL.Client.Models.Server.Request;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using System;
 
-namespace CAL.Client.Models.Cal.Request
+namespace CAL.Client.Models.Server.Request
 {
-    public class CreateSeriesRequest
+    public class CreateSeriesRequest : IValidatable
     {
         public Guid? Id { get; set; }
         public string Name { get; set; }
@@ -56,6 +57,13 @@ namespace CAL.Client.Models.Cal.Request
             };
 
             return createEventRequest;
+        }
+
+        public bool Validate()
+        {
+            return StartsOn.Kind == DateTimeKind.Utc &&
+                    EndsOn.Kind == DateTimeKind.Utc &&
+                    CalUserId != null;
         }
     }
 }
