@@ -3,8 +3,8 @@ using System;
 
 namespace CAL.Client.Models.Server.Response
 {
-    public class CreateEventResponse : BaseResponse
+    public class UpdateEntityResponse : BaseResponse
     {
-        public Guid? EventId { get; set; }
+        public Guid? EntityId { get; set; }
     }
 }

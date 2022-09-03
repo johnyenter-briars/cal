@@ -1,5 +1,5 @@
 using System;
-using CAL.Client.Models.Cal.Request;
+using CAL.Client.Models.Server.Request;
 using Newtonsoft.Json;
 
 namespace CAL.Client.Models.Cal

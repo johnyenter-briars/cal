@@ -1,6 +1,5 @@
 ﻿using CAL.Client;
 using CAL.Client.Models;
-using CAL.Client.Models.Cal.Request;
 using CAL.Client.Models.Server.Request;
 using CommandLine;
 

@@ -1,11 +1,15 @@
-using CAL.Client.Converters;
-using CAL.Client.Models.Server.Request;
+﻿using CAL.Client.Converters;
+using CAL.Client.Interfaces;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace CAL.Client.Models.Cal
+namespace CAL.Client.Models.Server.Request
 {
-    public class Series
+    public class UpdateSeriesRequest : IValidatable
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
@@ -22,29 +26,41 @@ namespace CAL.Client.Models.Cal
         public DateTime EndsOn { get; set; }
         [JsonConverter(typeof(TimespanConverter))]
         [JsonProperty(TypeNameHandling = TypeNameHandling.All)]
-        public TimeSpan EventStartTime { get; set; } 
+        public TimeSpan EventStartTime { get; set; }
         [JsonConverter(typeof(TimespanConverter))]
         [JsonProperty(TypeNameHandling = TypeNameHandling.All)]
-        public TimeSpan EventEndTime { get; set; } 
+        public TimeSpan EventEndTime { get; set; }
         public Guid CalUserId { get; set; }
         public Guid CalendarId { get; set; }
-        [JsonIgnore]
-        public EntityType EntityType => EntityType.Series;
-        public CreateSeriesRequest ToRequest()
+
+        public bool Validate()
         {
-            return new CreateSeriesRequest 
+            return StartsOn.Kind == DateTimeKind.Utc &&
+                    EndsOn.Kind == DateTimeKind.Utc &&
+                    CalUserId != null;
+        }
+
+        public CreateSeriesRequest ToCreateSeriesRequest()
+        {
+            return new CreateSeriesRequest
             {
+                Id = Id,
                 Name = Name,
+                Description = Description,
                 RepeatEveryWeek = RepeatEveryWeek,
                 RepeatOnMon = RepeatOnMon,
                 RepeatOnTues = RepeatOnTues,
+                RepeatOnThurs = RepeatOnThurs,
                 RepeatOnFri = RepeatOnFri,
                 RepeatOnSat = RepeatOnSat,
                 RepeatOnSun = RepeatOnSun,
-                EndsOn = EndsOn,
                 StartsOn = StartsOn,
+                EndsOn = EndsOn,
+                EventStartTime = EventStartTime,
+                EventEndTime = EventEndTime,
+                CalUserId = CalUserId,
+                CalendarId = CalendarId,
             };
         }
     }
 }
-

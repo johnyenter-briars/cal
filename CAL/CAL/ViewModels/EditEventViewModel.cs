@@ -1,7 +1,6 @@
 ﻿using CAL.Client;
 using CAL.Client.Models;
 using CAL.Client.Models.Cal;
-using CAL.Client.Models.Cal.Request;
 using CAL.Managers;
 using System;
 using System.Collections.Generic;

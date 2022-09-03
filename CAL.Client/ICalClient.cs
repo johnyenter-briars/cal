@@ -1,6 +1,5 @@
 using CAL.Client.Models;
 using CAL.Client.Models.Cal;
-using CAL.Client.Models.Cal.Request;
 using CAL.Client.Models.Server.Request;
 using CAL.Client.Models.Server.Response;
 using Newtonsoft.Json;
@@ -25,7 +24,8 @@ namespace CAL.Client
         Task<CalUserResponse> GetCalUserAsync(Guid id);
         Task<SeriesResponse> GetSeriesAsync(Guid id);
         Task<List<Event>> GetEventsForDayAsync(int dayOfCurrentMonth);
-        Task<UpdateEventResponse> UpdateEventAsync(UpdateEventRequest updateEventRequest);
+        Task<UpdateEntityResponse> UpdateEventAsync(UpdateEventRequest updateEventRequest);
+        Task<UpdateEntityResponse> UpdateSeriesAsync(UpdateSeriesRequest updateEventRequest);
         Task<DeletedEntityResponse> DeleteEntityAsync(Guid entityId, EntityType entityType);
     }
 }
