@@ -119,7 +119,8 @@ namespace CAL.ViewModels
         }
         private bool ValidateSave()
         {
-            return !string.IsNullOrWhiteSpace(name);
+            return true;
+            //return !string.IsNullOrWhiteSpace(name);
         }
         public string Id
         {
@@ -198,27 +199,53 @@ namespace CAL.ViewModels
 
         private async void OnSave()
         {
-            var startingTimeDatePart = new DateTime(SeriesStartsOnSelectedDate.Year, SeriesStartsOnSelectedDate.Month, SeriesStartsOnSelectedDate.Day, 0, 0, 0, kind: DateTimeKind.Local);
-            var startTime = startingTimeDatePart + SubEventsStartTime;
+            //var startingTimeDatePart = new DateTime(SeriesStartsOnSelectedDate.Year, SeriesStartsOnSelectedDate.Month, SeriesStartsOnSelectedDate.Day, 0, 0, 0, kind: DateTimeKind.Local);
+            //var startTime = startingTimeDatePart + SubEventsStartTime;
 
-            var endingTimeDatePart = new DateTime(SeriesEndsOnSelectedDate.Year, SeriesEndsOnSelectedDate.Month, SeriesEndsOnSelectedDate.Day, 0, 0, 0, kind: DateTimeKind.Local);
-            var endTime = endingTimeDatePart + SubEventEndTime;
+            //var endingTimeDatePart = new DateTime(SeriesEndsOnSelectedDate.Year, SeriesEndsOnSelectedDate.Month, SeriesEndsOnSelectedDate.Day, 0, 0, 0, kind: DateTimeKind.Local);
+            //var endTime = endingTimeDatePart + SubEventEndTime;
 
 
             if (id == Guid.Empty)
             {
+                //var request = new CreateSeriesRequest
+                //{
+                //    Name = name,
+                //    Description = description,
+                //    RepeatOnMon = RepeatOnMon,
+                //    RepeatOnTues = RepeatOnTues,
+                //    RepeatOnWed = RepeatOnWed,
+                //    RepeatOnThurs = RepeatOnThurs,
+                //    RepeatOnFri = RepeatOnFri,
+                //    RepeatOnSat = RepeatOnSat,
+                //    RepeatOnSun = RepeatOnSun,
+                //    RepeatEveryWeek = RepeatEveryWeek,
+                //    StartsOn = startingTimeDatePart.ToUniversalTime(),
+                //    EndsOn = endingTimeDatePart.ToUniversalTime(),
+                //    EventStartTime = startTime.TimeOfDay,
+                //    EventEndTime = endTime.TimeOfDay,
+                //    CalUserId = new Guid(PreferencesManager.GetUserId()),
+                //    CalendarId = _currentlySelectedCalendar,
+                //};
+
+                var startingTimeDatePart = new DateTime(2022, 9, 5, 0, 0, 0, kind: DateTimeKind.Local);
+                var startTime = startingTimeDatePart + SubEventsStartTime;
+
+                var endingTimeDatePart = new DateTime(2022, 12, 25, 0, 0, 0, kind: DateTimeKind.Local);
+                var endTime = endingTimeDatePart + SubEventEndTime;
+
                 var request = new CreateSeriesRequest
                 {
-                    Name = name,
-                    Description = description,
-                    RepeatOnMon = RepeatOnMon,
-                    RepeatOnTues = RepeatOnTues,
-                    RepeatOnWed = RepeatOnWed,
-                    RepeatOnThurs = RepeatOnThurs,
-                    RepeatOnFri = RepeatOnFri,
-                    RepeatOnSat = RepeatOnSat,
-                    RepeatOnSun = RepeatOnSun,
-                    RepeatEveryWeek = RepeatEveryWeek,
+                    Name = "test",
+                    Description = "test",
+                    RepeatOnMon = true,
+                    RepeatOnTues = false,
+                    RepeatOnWed = false,
+                    RepeatOnThurs = false,
+                    RepeatOnFri = true,
+                    RepeatOnSat = false,
+                    RepeatOnSun = false,
+                    RepeatEveryWeek = 3,
                     StartsOn = startingTimeDatePart.ToUniversalTime(),
                     EndsOn = endingTimeDatePart.ToUniversalTime(),
                     EventStartTime = startTime.TimeOfDay,
@@ -229,31 +256,31 @@ namespace CAL.ViewModels
 
                 await CalClientSingleton.CreateSeriesAsync(request);
             }
-            else
-            {
-                var request = new UpdateSeriesRequest
-                {
-                    Id = id,
-                    Name = name,
-                    Description = description,
-                    RepeatOnMon = RepeatOnMon,
-                    RepeatOnTues = RepeatOnTues,
-                    RepeatOnWed = RepeatOnWed,
-                    RepeatOnThurs = RepeatOnThurs,
-                    RepeatOnFri = RepeatOnFri,
-                    RepeatOnSat = RepeatOnSat,
-                    RepeatOnSun = RepeatOnSun,
-                    RepeatEveryWeek = RepeatEveryWeek,
-                    StartsOn = startingTimeDatePart.ToUniversalTime(),
-                    EndsOn = endingTimeDatePart.ToUniversalTime(),
-                    EventStartTime = startTime.TimeOfDay,
-                    EventEndTime = endTime.TimeOfDay,
-                    CalUserId = new Guid(PreferencesManager.GetUserId()),
-                    CalendarId = _currentlySelectedCalendar,
-                };
+            //else
+            //{
+            //    var request = new UpdateSeriesRequest
+            //    {
+            //        Id = id,
+            //        Name = name,
+            //        Description = description,
+            //        RepeatOnMon = RepeatOnMon,
+            //        RepeatOnTues = RepeatOnTues,
+            //        RepeatOnWed = RepeatOnWed,
+            //        RepeatOnThurs = RepeatOnThurs,
+            //        RepeatOnFri = RepeatOnFri,
+            //        RepeatOnSat = RepeatOnSat,
+            //        RepeatOnSun = RepeatOnSun,
+            //        RepeatEveryWeek = RepeatEveryWeek,
+            //        StartsOn = startingTimeDatePart.ToUniversalTime(),
+            //        EndsOn = endingTimeDatePart.ToUniversalTime(),
+            //        EventStartTime = startTime.TimeOfDay,
+            //        EventEndTime = endTime.TimeOfDay,
+            //        CalUserId = new Guid(PreferencesManager.GetUserId()),
+            //        CalendarId = _currentlySelectedCalendar,
+            //    };
 
-                await CalClientSingleton.UpdateSeriesAsync(request);
-            }
+            //    await CalClientSingleton.UpdateSeriesAsync(request);
+            //}
 
             await Shell.Current.GoToAsync("..");
         }

@@ -57,21 +57,33 @@ namespace CAL.Client
 
             if (ShouldAddOnToday(createSeriesRequest, startsOn.DayOfWeek))
             {
-                var createEventResponse = await CreateEventAsync(createSeriesRequest.CreateSubEventRequest(startsOn, (Guid)createSeriesResponse.SeriesId));
+                var _ = await CreateEventAsync(createSeriesRequest.CreateSubEventRequest(startsOn, (Guid)createSeriesResponse.SeriesId));
             }
+            int currentWeek = 0;
 
             var currentDay = startsOn;
             while (true)
             {
                 var dayToAdd = GetNextDayToAdd(createSeriesRequest, currentDay);
+
+                if (!DatesAreInTheSameWeek(currentDay, dayToAdd))
+                {
+                    currentWeek++;
+                }
+
                 currentDay = dayToAdd;
+
+                if (currentWeek % createSeriesRequest.RepeatEveryWeek != 0)
+                {
+                    continue;
+                }
 
                 if (dayToAdd > endsOn)
                 {
                     break;
                 }
 
-                var createEventResponse = await CreateEventAsync(createSeriesRequest.CreateSubEventRequest(dayToAdd, (Guid)createSeriesResponse.SeriesId));
+                var _ = await CreateEventAsync(createSeriesRequest.CreateSubEventRequest(dayToAdd, (Guid)createSeriesResponse.SeriesId));
             }
 
             return createSeriesResponse;
@@ -128,9 +140,7 @@ namespace CAL.Client
         {
             if (!requestObject.Validate())
             {
-                var idk = new TResponse();
-                idk.SetMessage("BadRequest").SetStatusCode(400);
-                return idk;
+                return (TResponse)new TResponse().SetMessage("BadRequest").SetStatusCode(400);
             }
 
             var request = new HttpRequestMessage(httpMethod, $"http://{_hostName}:{_port}/api/" + path);
@@ -222,13 +232,9 @@ namespace CAL.Client
             void CircularIncrement(ref int i, int count)
             {
                 if (i == count - 1)
-                {
                     i = 0;
-                }
                 else
-                {
                     i++;
-                }
             }
 
             for (var index = daysOfWeek.IndexOf(currentDay.DayOfWeek) == daysOfWeek.Count - 1 ? 0 : daysOfWeek.IndexOf(currentDay.DayOfWeek) + 1;
@@ -238,7 +244,10 @@ namespace CAL.Client
                 var dayOfWeek = daysOfWeek[index];
                 if (ShouldAddOnToday(request, dayOfWeek))
                 {
-                    return GetNextWeekday(currentDay, dayOfWeek);
+                    var nextDayToAdd = GetNextWeekday(currentDay, dayOfWeek);
+                    var week = DatesAreInTheSameWeek(currentDay, nextDayToAdd) ? 0 : 1;
+
+                    return nextDayToAdd;
                 }
             }
 
@@ -261,8 +270,7 @@ namespace CAL.Client
 
         public async Task<CalendarsResponse> GetCalendarsForUserAsync(Guid calUserId)
         {
-            var idk = await CalServerRequest<CalendarsResponse>($"calendar/user/{calUserId}", HttpMethod.Get);
-            return idk;
+            return await CalServerRequest<CalendarsResponse>($"calendar/user/{calUserId}", HttpMethod.Get);
         }
 
         public async Task<DeletedEntityResponse> DeleteEntityAsync(Guid entityId, EntityType entityType)
@@ -283,6 +291,15 @@ namespace CAL.Client
                 EntityId = created.SeriesId,
                 StatusCode = created.StatusCode,
             };
+        }
+        //https://stackoverflow.com/questions/25795254/check-if-a-datetime-is-in-same-week-as-other-datetime
+        private bool DatesAreInTheSameWeek(DateTime date1, DateTime date2)
+        {
+            var cal = System.Globalization.DateTimeFormatInfo.CurrentInfo.Calendar;
+            var d1 = date1.Date.AddDays(-1 * (int)cal.GetDayOfWeek(date1));
+            var d2 = date2.Date.AddDays(-1 * (int)cal.GetDayOfWeek(date2));
+
+            return d1 == d2;
         }
     }
 }
