@@ -7,6 +7,11 @@ using Android.OS;
 using Android.Content;
 using CAL.Droid.LocalNotifications;
 using Xamarin.Forms;
+using CAL.Droid.Services;
+using CAL.Droid.Helpers;
+using CAL.Droid.Jobs;
+using Android.App.Job;
+using Android.Net;
 
 namespace CAL.Droid
 {
@@ -19,6 +24,29 @@ namespace CAL.Droid
         )]
     public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity
     {
+        IGetTimestamp serviceConnection;
+        protected override void OnStart()
+        {
+            base.OnStart();
+            if (serviceConnection == null)
+            {
+                this.serviceConnection = new TimestampServiceConnection(this);
+            }
+
+            var jobInfo = this.CreateJobBuilderUsingJobId<NotificationJob>(1)
+                                 .SetPeriodic(900000, 900000)
+                                 .SetPersisted(true)
+                                 .SetRequiresCharging(false)
+                                 .SetRequiredNetworkType(NetworkType.Any)
+                                 .SetRequiresStorageNotLow(false)
+                                 .Build();
+
+            var jobScheduler = (JobScheduler)GetSystemService(JobSchedulerService);
+            var scheduleResult = jobScheduler.Schedule(jobInfo);
+
+            string title = "idk";
+            string message = "idk";
+        }
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
