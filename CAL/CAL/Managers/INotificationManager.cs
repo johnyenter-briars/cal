@@ -1,9 +1,12 @@
 ﻿using System;
 
-public interface INotificationManager
+namespace CAL.Managers
 {
-    event EventHandler NotificationReceived;
-    void Initialize();
-    void SendNotification(string title, string message, DateTime? notifyTime = null);
-    void ReceiveNotification(string title, string message);
+    public interface INotificationManager
+    {
+        event EventHandler NotificationReceived;
+        void Initialize();
+        void SendNotification(string title, string message, DateTime? notifyTime = null);
+        void ReceiveNotification(string title, string message);
+    }
 }

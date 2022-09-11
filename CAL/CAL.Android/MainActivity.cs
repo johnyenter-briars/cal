@@ -7,6 +7,10 @@ using Android.OS;
 using Android.Content;
 using CAL.Droid.LocalNotifications;
 using Xamarin.Forms;
+using CAL.Droid.Helpers;
+using CAL.Droid.Jobs;
+using Android.App.Job;
+using Android.Net;
 
 namespace CAL.Droid
 {
@@ -19,6 +23,21 @@ namespace CAL.Droid
         )]
     public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity
     {
+        protected override void OnStart()
+        {
+            base.OnStart();
+
+            var jobInfo = this.CreateJobBuilderUsingJobId<NotificationJob>(1)
+                                 .SetPeriodic(900000, 900000)
+                                 .SetPersisted(true)
+                                 .SetRequiresCharging(false)
+                                 .SetRequiredNetworkType(NetworkType.Any)
+                                 .SetRequiresStorageNotLow(false)
+                                 .Build();
+
+            var jobScheduler = (JobScheduler)GetSystemService(JobSchedulerService);
+            var scheduleResult = jobScheduler.Schedule(jobInfo);
+        }
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
@@ -32,20 +51,6 @@ namespace CAL.Droid
             Xamarin.Essentials.Platform.OnRequestPermissionsResult(requestCode, permissions, grantResults);
 
             base.OnRequestPermissionsResult(requestCode, permissions, grantResults);
-        }
-        protected override void OnNewIntent(Intent intent)
-        {
-            CreateNotificationFromIntent(intent);
-        }
-
-        void CreateNotificationFromIntent(Intent intent)
-        {
-            if (intent?.Extras != null)
-            {
-                string title = intent.GetStringExtra(AndroidNotificationManager.TitleKey);
-                string message = intent.GetStringExtra(AndroidNotificationManager.MessageKey);
-                DependencyService.Get<INotificationManager>().ReceiveNotification(title, message);
-            }
         }
     }
 }

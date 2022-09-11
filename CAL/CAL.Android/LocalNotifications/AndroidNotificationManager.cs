@@ -5,6 +5,7 @@ using Android.Graphics;
 using Android.OS;
 using AndroidX.Core.App;
 using CAL.Droid;
+using CAL.Managers;
 using CAL.Models;
 using Xamarin.Forms;
 using AndroidApp = Android.App.Application;

@@ -58,6 +58,8 @@
     <PackageReference Include="Xamarin.Essentials" Version="1.7.0" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Helpers\JobScheduleHelpers.cs" />
+    <Compile Include="Jobs\NotificationJob.cs" />
     <Compile Include="LocalNotifications\AlarmHandler.cs" />
     <Compile Include="LocalNotifications\AndroidNotificationManager.cs" />
     <Compile Include="MainActivity.cs" />
@@ -91,6 +93,10 @@
     <AndroidResource Include="Resources\drawable\icon_feed.png" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\CAL.Client\CAL.Client.csproj">
+      <Project>{0ec58d94-7c40-4ca4-93df-9f41d3387a2e}</Project>
+      <Name>CAL.Client</Name>
+    </ProjectReference>
     <ProjectReference Include="..\CAL\CAL.csproj">
       <Project>{AB6285B2-086B-4313-8E10-FF10447190FD}</Project>
       <Name>CAL</Name>
