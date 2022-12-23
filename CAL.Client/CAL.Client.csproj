@@ -6,4 +6,12 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Folder Include="Interfaces\" />
+    <Folder Include="Converters\" />
+    <Folder Include="Models\Cal\" />
+    <Folder Include="Models\Server\Response\" />
+    <Folder Include="Models\Server\Request\" />
+  </ItemGroup>
+
 </Project>
