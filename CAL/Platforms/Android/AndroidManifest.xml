@@ -6,6 +6,12 @@
 		android:roundIcon="@mipmap/appicon_round" 
 		android:usesCleartextTraffic="true"
 		android:supportsRtl="true">
+		<receiver android:name=".BootAlarmReceiver" android:exported="true" android:enabled="false">
+			<intent-filter>
+				<action android:name="android.intent.action.BOOT_COMPLETED"></action>
+				<action android:name="android.intent.action.SCREEN_ON" />
+			</intent-filter>
+		</receiver>
 	</application>
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 	<uses-permission android:name="com.google.android.gms.permission.AD_ID" />

@@ -15,19 +15,15 @@ public class MainActivity : MauiAppCompatActivity
 		base.OnStart();
 
 		var alarmIntent = new Intent(this, typeof(AlarmReceiver));
-		alarmIntent.PutExtra("message", "this came from main act part 2 lez goo");
+		var id = int.Parse(GetString(Resource.String.notification_alarm_id));
+		var interval = int.Parse(GetString(Resource.String.notification_interval_millis));
 
-		var pendingIntent = PendingIntent.GetBroadcast(this, 1, alarmIntent, PendingIntentFlags.Immutable);
-
+		var pendingIntent = PendingIntent.GetBroadcast(this, id, alarmIntent, PendingIntentFlags.Immutable);
 		var alarmManager = GetSystemService(AlarmService).JavaCast<AlarmManager>();
-
-		var notificationIntervalMilis = Resource.String.notification_interval_millis;
-
 		alarmManager.SetInexactRepeating(
 			AlarmType.ElapsedRealtimeWakeup,
-			SystemClock.ElapsedRealtime() + 1000, //virtually now
-			notificationIntervalMilis,
+			SystemClock.ElapsedRealtime() + 5000, //virtually now
+			interval,
 			pendingIntent);
 	}
-
 }
