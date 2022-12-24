@@ -78,8 +78,8 @@ namespace CAL.Platforms.Android
 
 		public void Show(string title, string message)
 		{
-			var context = Microsoft.Maui.ApplicationModel.Platform.AppContext;
-			Intent intent = new Intent(context, typeof(MainActivity));
+			var context = Platform.AppContext;
+			Intent intent = new(context, typeof(MainActivity));
 			intent.PutExtra(TitleKey, title);
 			intent.PutExtra(MessageKey, message);
 

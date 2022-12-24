@@ -50,6 +50,11 @@
 
 	<ItemGroup>
 		<None Remove="Platforms\Android\Resources\drawable\icons8_calendar_48.png" />
+		<None Remove="Platforms\Android\Resources\values\strings.xml" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\CAL.Client\CAL.Client.csproj" />
 	</ItemGroup>
 
 </Project>

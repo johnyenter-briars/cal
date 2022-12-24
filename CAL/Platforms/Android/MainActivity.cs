@@ -21,10 +21,12 @@ public class MainActivity : MauiAppCompatActivity
 
 		var alarmManager = GetSystemService(AlarmService).JavaCast<AlarmManager>();
 
+		var notificationIntervalMilis = Resource.String.notification_interval_millis;
+
 		alarmManager.SetInexactRepeating(
 			AlarmType.ElapsedRealtimeWakeup,
-			SystemClock.ElapsedRealtime() + 1 * 1000,
-			1000,
+			SystemClock.ElapsedRealtime() + 1000, //virtually now
+			notificationIntervalMilis,
 			pendingIntent);
 	}
 
