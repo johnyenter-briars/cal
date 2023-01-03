@@ -14,9 +14,9 @@ namespace CAL.ViewModels
 {
 	internal class CalendarViewModel : BaseViewModel
 	{
-		public Command AddEventCommand => new Command(OnAddEvent);
-		public Command AddSeriesCommand => new Command(OnAddSeries);
-		public Command RefreshEventsCommand => new Command(Refresh);
+		public Command AddEventCommand => new(OnAddEvent);
+		public Command AddSeriesCommand => new(OnAddSeries);
+		public Command RefreshEventsCommand => new(Refresh);
 		public ICommand EventSelectedCommand => new Command(async (item) => await ExecuteEventSelectedCommand(item));
 		public ICommand SelectCalendarCommand => new Command(async (item) => await SelectCalendar(item));
 		public string SelectedCalendar { get; set; }

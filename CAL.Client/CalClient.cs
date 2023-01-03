@@ -34,8 +34,6 @@ namespace CAL.Client
 					Formatting = Formatting.Indented
 				};
 
-		public static HttpClient HttpClient => _httpClient;
-
 		public CalClient()
 		{
 		}
@@ -152,9 +150,9 @@ namespace CAL.Client
 
 			return await SendRequest<TResponse>(request);
 		}
-		private async Task<TResponse> SendRequest<TResponse>(HttpRequestMessage request)
+		private static async Task<TResponse> SendRequest<TResponse>(HttpRequestMessage request)
 		{
-			var clientResponse = await HttpClient.SendAsync(request, CancellationToken.None);
+			var clientResponse = await _httpClient.SendAsync(request, CancellationToken.None);
 
 			if (clientResponse.IsSuccessStatusCode)
 			{
