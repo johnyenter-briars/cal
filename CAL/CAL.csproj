@@ -54,6 +54,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <PackageReference Include="XCalendar.Maui" Version="4.2.0" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<ProjectReference Include="..\CAL.Client\CAL.Client.csproj" />
 	</ItemGroup>
 
