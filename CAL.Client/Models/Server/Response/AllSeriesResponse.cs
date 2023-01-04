@@ -6,7 +6,7 @@ namespace CAL.Client.Models.Server.Response
 {
     public class AllSeriesResponse : BaseResponse 
     {
-        public List<Series> Series { get; set; }
+        public List<Series> Series { get; set; } = new ();
     }
 }
 

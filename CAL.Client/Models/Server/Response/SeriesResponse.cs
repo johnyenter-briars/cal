@@ -5,7 +5,7 @@ namespace CAL.Client.Models.Server.Response
 {
     public class SeriesResponse : BaseResponse 
     {
-        public Series Series { get; set; }
+        public Series Series { get; set; } = new ();
     }
 }
 

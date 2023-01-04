@@ -12,6 +12,8 @@ namespace CAL.Client.Converters
 
         public override TimeSpan ReadJson(JsonReader reader, Type objectType, TimeSpan existingValue, bool hasExistingValue, JsonSerializer serializer)
         {
+            var val = reader.Value ?? throw new ArgumentNullException(nameof(reader.Value));
+
             return TimeSpan.FromSeconds((Int64)reader.Value);
         }
     }

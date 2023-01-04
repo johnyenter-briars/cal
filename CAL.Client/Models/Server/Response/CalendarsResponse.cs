@@ -7,6 +7,6 @@ namespace CAL.Client.Models.Server.Response
 {
     public class CalendarsResponse: BaseResponse
     {
-        public IList<Calendar> Calendars { get; set; }
+        public List<Calendar> Calendars { get; set; } = new ();
     }
 }

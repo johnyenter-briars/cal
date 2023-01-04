@@ -8,7 +8,7 @@ namespace CAL.Client.Models.Server.Response
     public abstract class BaseResponse : IResponse
     {
         public int StatusCode { get; set; }
-        public string Message { get; set; }
+        public string Message { get; set; } = "";
         public string GetMessage() => Message;
         public int GetStatusCode() => StatusCode;
         IResponse IResponse.SetMessage(string message)

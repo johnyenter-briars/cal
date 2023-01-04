@@ -99,7 +99,7 @@ namespace CAL.Client
 
 			foreach (var e in events.Events)
 			{
-				e.SeriesName = series.Series.Where(s => s.Id == e.SeriesId).FirstOrDefault()?.Name;
+				e.SeriesName = series.Series.Where(s => s.Id == e.SeriesId).FirstOrDefault()?.Name ?? throw new NullReferenceException("Serles.Name");
 			}
 
 			return events;
@@ -158,7 +158,7 @@ namespace CAL.Client
 
 			if (clientResponse.IsSuccessStatusCode)
 			{
-				return JsonConvert.DeserializeObject<TResponse>(await clientResponse.Content.ReadAsStringAsync());
+				return JsonConvert.DeserializeObject<TResponse>(await clientResponse.Content.ReadAsStringAsync()) ?? throw new NullReferenceException("JsonConvert.DeserializeObject<TResponse>");
 			}
 			else
 			{

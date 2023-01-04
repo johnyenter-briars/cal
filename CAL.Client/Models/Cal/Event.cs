@@ -49,8 +49,8 @@ namespace CAL.Client.Models.Cal
                 endTime = value.ToLocalTime();
             }
         }
-        public string Name { get; set; }
-        public string Description { get; set; }
+        public string Name { get; set; } = "";
+        public string Description { get; set; } = "";
         public Guid CalUserId { get; set; }
         public Guid? SeriesId { get; set; }
         public Guid CalendarId { get; set; }
@@ -86,8 +86,8 @@ namespace CAL.Client.Models.Cal
 
         public override string ToString() => $"{Name}-LOCAL START: {StartTime}- UTC START: {StartTime.ToUniversalTime()}-{EndTime}";
 
-        public string SeriesName { get; set; }
+        public string SeriesName { get; set; } = "";
 
-        public bool IsPartOfSeries => SeriesName != null;
+        public bool IsPartOfSeries => !string.IsNullOrEmpty(SeriesName);
     }
 }
