@@ -36,25 +36,23 @@ namespace CAL.ViewModels
 		public Calendar<EventDay> EventCalendar { get; set; } = new Calendar<EventDay>()
 		{
 			SelectedDates = new ObservableRangeCollection<DateTime>(),
-			SelectionAction = SelectionAction.Modify,
-			SelectionType = SelectionType.Single
+			SelectionType = SelectionType.Single,
 		};
 		public static readonly Random Random = new Random();
 		public List<Color> Colors { get; } = new List<Color>() { Microsoft.Maui.Graphics.Colors.Red, Microsoft.Maui.Graphics.Colors.Orange, Microsoft.Maui.Graphics.Colors.Yellow, Color.FromArgb("#00A000"), Microsoft.Maui.Graphics.Colors.Blue, Color.FromArgb("#8010E0") };
 		public ObservableRangeCollection<Event> SelectedEvents { get; } = new ObservableRangeCollection<Event>();
 		public ICommand NavigateCalendarCommand { get; set; }
 		public ICommand ChangeDateSelectionCommand { get; set; }
-
 		public DateTime _selectedDate;
-		public Calendar CurrentlySelectedCalendar { get; set; }
+		//public Calendar CurrentlySelectedCalendar { get; set; }
 		public DateTime SelectedDate
 		{
 			get { return _selectedDate; }
 			set { SetProperty(ref _selectedDate, value); }
 		}
-		public CalendarViewModel(Calendar defaultCalendar)
+		public CalendarViewModel()
 		{
-			CurrentlySelectedCalendar = defaultCalendar;
+			//CurrentlySelectedCalendar = defaultCalendar;
 			Title = "Calendar";
 			_selectedDate = DateTime.Now;
 			NavigateCalendarCommand = new Command<int>(NavigateCalendar);
@@ -74,7 +72,7 @@ namespace CAL.ViewModels
 			}
 
 
-			Task.Run(async () => await ExecuteLoadEventsAsync());
+			//Task.Run(async () => await ExecuteLoadEventsAsync());
 		}
 		public void NavigateCalendar(int Amount)
 		{
@@ -89,8 +87,8 @@ namespace CAL.ViewModels
 		{
 			if (calendar is Calendar cal)
 			{
-				CurrentlySelectedCalendar = cal;
-				var events = (await CalClientSingleton.GetEventsAsync()).Events.Where(e => e.CalendarId == CurrentlySelectedCalendar.Id).ToList();
+				//CurrentlySelectedCalendar = cal;
+				//var events = (await CalClientSingleton.GetEventsAsync()).Events.Where(e => e.CalendarId == CurrentlySelectedCalendar.Id).ToList();
 				//LoadEventCollection(events, Events);
 			}
 		}
@@ -115,39 +113,39 @@ namespace CAL.ViewModels
 		//		}
 		//	}
 		//}
-		private async Task ExecuteLoadEventsAsync()
-		{
-			IsBusy = true;
+		//private async Task ExecuteLoadEventsAsync()
+		//{
+		//	IsBusy = true;
 
-			try
-			{
-				var events = (await CalClientSingleton.GetEventsAsync()).Events.Where(e => e.CalendarId == CurrentlySelectedCalendar.Id).ToList();
-				//LoadEventCollection(events, Events);
-			}
-			catch (Exception ex)
-			{
-				Debug.WriteLine(ex);
-			}
-			finally
-			{
-				IsBusy = false;
-			}
-		}
+		//	try
+		//	{
+		//		var events = (await CalClientSingleton.GetEventsAsync()).Events.Where(e => e.CalendarId == CurrentlySelectedCalendar.Id).ToList();
+		//		//LoadEventCollection(events, Events);
+		//	}
+		//	catch (Exception ex)
+		//	{
+		//		Debug.WriteLine(ex);
+		//	}
+		//	finally
+		//	{
+		//		IsBusy = false;
+		//	}
+		//}
 		private async void OnAddEvent()
 		{
 			var startUnixTimeSeconds = ((DateTimeOffset)SelectedDate).ToUnixTimeSeconds();
 			var endUnixTimeSeconds = ((DateTimeOffset)SelectedDate.AddHours(1)).ToUnixTimeSeconds();
-			await Shell.Current.GoToAsync($@"{nameof(EditEventPage)}?{nameof(EditEventViewModel.StartTimeUnixSeconds)}={startUnixTimeSeconds}&{nameof(EditEventViewModel.EndTimeUnixSeconds)}={endUnixTimeSeconds}&{nameof(EditEventViewModel.CurrentlySelectedCalendar)}={CurrentlySelectedCalendar.Id}");
+			//await Shell.Current.GoToAsync($@"{nameof(EditEventPage)}?{nameof(EditEventViewModel.StartTimeUnixSeconds)}={startUnixTimeSeconds}&{nameof(EditEventViewModel.EndTimeUnixSeconds)}={endUnixTimeSeconds}&{nameof(EditEventViewModel.CurrentlySelectedCalendar)}={CurrentlySelectedCalendar.Id}");
 		}
 		private async void OnAddSeries()
 		{
 			var startUnixTimeSeconds = ((DateTimeOffset)SelectedDate).ToUnixTimeSeconds();
 			var endUnixTimeSeconds = ((DateTimeOffset)SelectedDate.AddDays(1)).ToUnixTimeSeconds();
-			await Shell.Current.GoToAsync($@"{nameof(EditSeriesPage)}?{nameof(EditSeriesViewModel.StartTimeUnixSeconds)}={startUnixTimeSeconds}&{nameof(EditSeriesViewModel.EndTimeUnixSeconds)}={endUnixTimeSeconds}&{nameof(EditSeriesViewModel.CurrentlySelectedCalendar)}={CurrentlySelectedCalendar.Id}");
+			//await Shell.Current.GoToAsync($@"{nameof(EditSeriesPage)}?{nameof(EditSeriesViewModel.StartTimeUnixSeconds)}={startUnixTimeSeconds}&{nameof(EditSeriesViewModel.EndTimeUnixSeconds)}={endUnixTimeSeconds}&{nameof(EditSeriesViewModel.CurrentlySelectedCalendar)}={CurrentlySelectedCalendar.Id}");
 		}
 		public async void Refresh()
 		{
-			await ExecuteLoadEventsAsync();
+			//await ExecuteLoadEventsAsync();
 		}
 		private void SelectedDates_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
 		{

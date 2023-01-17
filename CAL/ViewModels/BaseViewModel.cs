@@ -11,7 +11,7 @@ namespace CAL.ViewModels
 	public class BaseViewModel : INotifyPropertyChanged
 	{
 		//public IDataStore<Event> EventDataStore => DependencyService.Get<IDataStore<Event>>();
-		protected ICalClient CalClientSingleton = DependencyService.Get<ICalClient>();
+		//protected ICalClient CalClientSingleton = DependencyService.Get<ICalClient>();
 		bool isBusy = false;
 		public bool IsBusy
 		{

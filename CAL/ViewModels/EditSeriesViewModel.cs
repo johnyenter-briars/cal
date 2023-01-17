@@ -225,7 +225,7 @@ namespace CAL.ViewModels
 					CalendarId = _currentlySelectedCalendar,
 				};
 
-				await CalClientSingleton.CreateSeriesAsync(request);
+				//await CalClientSingleton.CreateSeriesAsync(request);
 			}
 			else
 			{
@@ -250,14 +250,14 @@ namespace CAL.ViewModels
 					CalendarId = _currentlySelectedCalendar,
 				};
 
-				await CalClientSingleton.UpdateSeriesAsync(request);
+				//await CalClientSingleton.UpdateSeriesAsync(request);
 			}
 
 			await Shell.Current.GoToAsync("..");
 		}
 		private async void OnDelete()
 		{
-			await CalClientSingleton.DeleteEntityAsync(id, _entityType);
+			//await CalClientSingleton.DeleteEntityAsync(id, _entityType);
 			await Shell.Current.GoToAsync("..");
 		}
 	}

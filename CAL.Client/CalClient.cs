@@ -43,7 +43,6 @@ namespace CAL.Client
 		}
 		public async Task<CreateEventResponse> CreateEventAsync(CreateEventRequest createEventRequest)
 		{
-
 			return await CalServerRequest<CreateEventRequest, CreateEventResponse>(createEventRequest, "event", HttpMethod.Post);
 		}
 		public async Task<CreateSeriesResponse> CreateSeriesAsync(CreateSeriesRequest createSeriesRequest)
