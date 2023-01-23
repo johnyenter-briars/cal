@@ -16,6 +16,7 @@ using System.Runtime.CompilerServices;
 using XCalendar.Core.Enums;
 using Event = CAL.Models.Event;
 using System.Collections.Specialized;
+using Microsoft.Maui.Graphics;
 
 namespace CAL.ViewModels
 {
@@ -30,8 +31,8 @@ namespace CAL.ViewModels
 		//public EventCollection Events { get; } = new EventCollection();
 		public ObservableRangeCollection<Event> Events { get; } = new ObservableRangeCollection<Event>()
 		{
-			new Event() { Title = "Bowling", Description = "Bowling with friends" },
-			new Event() { Title = "Swimming", Description = "Swimming with friends" },
+			new Event() { Title = "Bowling", Description = "Bowling with friends", Color =  Colors.Red },
+			new Event() { Title = "Swimming", Description = "Swimming with friends", Color =  Colors.Blue },
 		};
 		public Calendar<EventDay> EventCalendar { get; set; } = new Calendar<EventDay>()
 		{
@@ -39,7 +40,7 @@ namespace CAL.ViewModels
 			SelectionType = SelectionType.Single,
 		};
 		public static readonly Random Random = new Random();
-		public List<Color> Colors { get; } = new List<Color>() { Microsoft.Maui.Graphics.Colors.Red, Microsoft.Maui.Graphics.Colors.Orange, Microsoft.Maui.Graphics.Colors.Yellow, Color.FromArgb("#00A000"), Microsoft.Maui.Graphics.Colors.Blue, Color.FromArgb("#8010E0") };
+		//public List<Color> Colors { get; } = new List<Color>() { Microsoft.Maui.Graphics.Colors.Red, Microsoft.Maui.Graphics.Colors.Orange, Microsoft.Maui.Graphics.Colors.Yellow, Color.FromArgb("#00A000"), Microsoft.Maui.Graphics.Colors.Blue, Color.FromArgb("#8010E0") };
 		public ObservableRangeCollection<Event> SelectedEvents { get; } = new ObservableRangeCollection<Event>();
 		public ICommand NavigateCalendarCommand { get; set; }
 		public ICommand ChangeDateSelectionCommand { get; set; }
@@ -61,7 +62,7 @@ namespace CAL.ViewModels
 			foreach (Event Event in Events)
 			{
 				Event.DateTime = DateTime.Today.AddDays(1).AddSeconds(Random.Next(86400));
-				Event.Color = Microsoft.Maui.Graphics.Colors.Red;
+				//Event.Color = Microsoft.Maui.Graphics.Colors.Red;
 			}
 
 			EventCalendar.SelectedDates.CollectionChanged += SelectedDates_CollectionChanged;
