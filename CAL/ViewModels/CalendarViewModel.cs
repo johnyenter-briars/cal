@@ -25,10 +25,8 @@ namespace CAL.ViewModels
 		public Command AddEventCommand => new(OnAddEvent);
 		public Command AddSeriesCommand => new(OnAddSeries);
 		public Command RefreshEventsCommand => new(Refresh);
-		//public ICommand EventSelectedCommand => new Command(async (item) => await ExecuteEventSelectedCommand(item));
 		public ICommand SelectCalendarCommand => new Command(async (item) => await SelectCalendar(item));
 		public string SelectedCalendar { get; set; }
-		//public EventCollection Events { get; } = new EventCollection();
 		public ObservableRangeCollection<Event> Events { get; } = new ObservableRangeCollection<Event>()
 		{
 			new Event() { Title = "Bowling", Description = "Bowling with friends", Color =  Colors.Red },
@@ -53,7 +51,6 @@ namespace CAL.ViewModels
 		}
 		public CalendarViewModel()
 		{
-			//CurrentlySelectedCalendar = defaultCalendar;
 			Title = "Calendar";
 			_selectedDate = DateTime.Now;
 			NavigateCalendarCommand = new Command<int>(NavigateCalendar);
@@ -62,7 +59,6 @@ namespace CAL.ViewModels
 			foreach (Event Event in Events)
 			{
 				Event.DateTime = DateTime.Today.AddDays(1).AddSeconds(Random.Next(86400));
-				//Event.Color = Microsoft.Maui.Graphics.Colors.Red;
 			}
 
 			EventCalendar.SelectedDates.CollectionChanged += SelectedDates_CollectionChanged;
@@ -73,7 +69,7 @@ namespace CAL.ViewModels
 			}
 
 
-			//Task.Run(async () => await ExecuteLoadEventsAsync());
+			Task.Run(async () => await ExecuteLoadEventsAsync());
 		}
 		public void NavigateCalendar(int Amount)
 		{
@@ -114,24 +110,26 @@ namespace CAL.ViewModels
 		//		}
 		//	}
 		//}
-		//private async Task ExecuteLoadEventsAsync()
-		//{
-		//	IsBusy = true;
 
-		//	try
-		//	{
-		//		var events = (await CalClientSingleton.GetEventsAsync()).Events.Where(e => e.CalendarId == CurrentlySelectedCalendar.Id).ToList();
-		//		//LoadEventCollection(events, Events);
-		//	}
-		//	catch (Exception ex)
-		//	{
-		//		Debug.WriteLine(ex);
-		//	}
-		//	finally
-		//	{
-		//		IsBusy = false;
-		//	}
-		//}
+		private async Task ExecuteLoadEventsAsync()
+		{
+			IsBusy = true;
+
+			try
+			{
+				var idk = 10;
+				//var events = (await CalClientSingleton.GetEventsAsync()).Events.Where(e => e.CalendarId == CurrentlySelectedCalendar.Id).ToList();
+				//LoadEventCollection(events, Events);
+			}
+			catch (Exception ex)
+			{
+				Debug.WriteLine(ex);
+			}
+			finally
+			{
+				IsBusy = false;
+			}
+		}
 		private async void OnAddEvent()
 		{
 			var startUnixTimeSeconds = ((DateTimeOffset)SelectedDate).ToUnixTimeSeconds();
@@ -146,7 +144,7 @@ namespace CAL.ViewModels
 		}
 		public async void Refresh()
 		{
-			//await ExecuteLoadEventsAsync();
+			await ExecuteLoadEventsAsync();
 		}
 		private void SelectedDates_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
 		{
