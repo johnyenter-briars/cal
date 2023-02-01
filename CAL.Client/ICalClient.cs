@@ -21,7 +21,7 @@ namespace CAL.Client
 		Task<CreateSeriesResponse> CreateSeriesAsync(CreateSeriesRequest createSeriesRequest);
 		Task<CalendarsResponse> GetCalendarsForUserAsync(Guid calUserId);
 		Task<EventsResponse> GetEventsAsync();
-		Task<EventsResponse> GetEventsAsync(int month);
+		Task<EventsResponse> GetEventsAsync(int year, int month);
 		Task<CalUserResponse> GetCalUserAsync(Guid id);
 		Task<SeriesResponse> GetSeriesAsync(Guid id);
 		Task<List<Event>> GetEventsForDayAsync(int dayOfCurrentMonth);

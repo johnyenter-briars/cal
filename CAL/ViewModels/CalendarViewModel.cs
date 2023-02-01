@@ -14,7 +14,6 @@ using XCalendar.Core.Interfaces;
 using XCalendar.Core.Models;
 using System.Runtime.CompilerServices;
 using XCalendar.Core.Enums;
-using Event = CAL.Models.Event;
 using System.Collections.Specialized;
 using Microsoft.Maui.Graphics;
 
@@ -25,12 +24,8 @@ namespace CAL.ViewModels
 		public Command AddEventCommand => new(OnAddEvent);
 		public Command AddSeriesCommand => new(OnAddSeries);
 		public Command RefreshEventsCommand => new(Refresh);
-		public ICommand SelectCalendarCommand => new Command(async (item) => await SelectCalendar(item));
-		public string SelectedCalendar { get; set; }
-		public ObservableRangeCollection<Event> Events { get; } = new ObservableRangeCollection<Event>()
+		public ObservableRangeCollection<CalendarEvent> CurrentEvents { get; } = new ObservableRangeCollection<CalendarEvent>()
 		{
-			new Event() { Title = "Bowling", Description = "Bowling with friends", Color =  Colors.Red },
-			new Event() { Title = "Swimming", Description = "Swimming with friends", Color =  Colors.Blue },
 		};
 		public Calendar<EventDay> EventCalendar { get; set; } = new Calendar<EventDay>()
 		{
@@ -38,12 +33,10 @@ namespace CAL.ViewModels
 			SelectionType = SelectionType.Single,
 		};
 		public static readonly Random Random = new Random();
-		//public List<Color> Colors { get; } = new List<Color>() { Microsoft.Maui.Graphics.Colors.Red, Microsoft.Maui.Graphics.Colors.Orange, Microsoft.Maui.Graphics.Colors.Yellow, Color.FromArgb("#00A000"), Microsoft.Maui.Graphics.Colors.Blue, Color.FromArgb("#8010E0") };
-		public ObservableRangeCollection<Event> SelectedEvents { get; } = new ObservableRangeCollection<Event>();
+		public ObservableRangeCollection<CalendarEvent> SelectedEvents { get; } = new ObservableRangeCollection<CalendarEvent>();
 		public ICommand NavigateCalendarCommand { get; set; }
 		public ICommand ChangeDateSelectionCommand { get; set; }
 		public DateTime _selectedDate;
-		//public Calendar CurrentlySelectedCalendar { get; set; }
 		public DateTime SelectedDate
 		{
 			get { return _selectedDate; }
@@ -56,20 +49,17 @@ namespace CAL.ViewModels
 			NavigateCalendarCommand = new Command<int>(NavigateCalendar);
 			ChangeDateSelectionCommand = new Command<DateTime>(ChangeDateSelection);
 
-			foreach (Event Event in Events)
-			{
-				Event.DateTime = DateTime.Today.AddDays(1).AddSeconds(Random.Next(86400));
-			}
 
 			EventCalendar.SelectedDates.CollectionChanged += SelectedDates_CollectionChanged;
+
 			EventCalendar.DaysUpdated += EventCalendar_DaysUpdated;
+
 			foreach (var Day in EventCalendar.Days)
 			{
-				Day.Events.ReplaceRange(Events.Where(x => x.DateTime.Date == Day.DateTime.Date));
+				Day.Events.ReplaceRange(CurrentEvents.Where(x => x.DateTime.Date == Day.DateTime.Date));
 			}
 
-
-			Task.Run(async () => await ExecuteLoadEventsAsync());
+			//Task.Run(async () => await ExecuteLoadEventsAsync());
 		}
 		public void NavigateCalendar(int Amount)
 		{
@@ -79,37 +69,30 @@ namespace CAL.ViewModels
 		{
 			EventCalendar?.ChangeDateSelection(DateTime);
 		}
-
-		private async Task SelectCalendar(object calendar)
+		private void LoadEventCollection(IList<Event> events)
 		{
-			if (calendar is Calendar cal)
+			CurrentEvents.AddRange(events.Select(d => new CalendarEvent
 			{
-				//CurrentlySelectedCalendar = cal;
-				//var events = (await CalClientSingleton.GetEventsAsync()).Events.Where(e => e.CalendarId == CurrentlySelectedCalendar.Id).ToList();
-				//LoadEventCollection(events, Events);
+				Title = d.Name,
+				DateTime = d.StartTime,
+				Color = Colors.Red,
+				Description = d.Description,
+			}));
+
+			foreach (var Day in EventCalendar.Days)
+			{
+				//Day.Events.ReplaceRange(CalendarEvents.Where(x => x.DateTime.Date == Day.DateTime.Date));
+				var filtered = events.Where(x => x.StartTime.Date == Day.DateTime.Date);
+				var selected = filtered.Select(d => new CalendarEvent
+				{
+					Title = d.Name,
+					DateTime = d.StartTime,
+					Color = Colors.Red,
+					Description = d.Description,
+				});
+				Day.Events.ReplaceRange(selected);
 			}
 		}
-		//private void LoadEventCollection(IList<Event> events, EventCollection eventCollection)
-		//{
-		//	eventCollection.Clear();
-
-		//	foreach (var e in events)
-		//	{
-		//		if (eventCollection.ContainsKey(e.StartTime))
-		//		{
-		//			//var listOfEvents = ((DayEventCollection<Event>)eventCollection[e.StartTime]);
-		//			//listOfEvents.Add(e);
-		//		}
-		//		else
-		//		{
-		//			ColorTypeConverter converter = new ColorTypeConverter();
-		//			Color color = (Color)(converter.ConvertFromInvariantString(CurrentlySelectedCalendar.Color));
-
-		//			//var dayEventCollection = new DayEventCollection<Event>(color, color) { e };
-		//			eventCollection.Add(e.StartTime, dayEventCollection);
-		//		}
-		//	}
-		//}
 
 		private async Task ExecuteLoadEventsAsync()
 		{
@@ -117,9 +100,10 @@ namespace CAL.ViewModels
 
 			try
 			{
+				var today = DateTime.Now;
+				var events = await CalClientSingleton.GetEventsAsync(today.Year, today.Month);
 				var idk = 10;
-				//var events = (await CalClientSingleton.GetEventsAsync()).Events.Where(e => e.CalendarId == CurrentlySelectedCalendar.Id).ToList();
-				//LoadEventCollection(events, Events);
+				LoadEventCollection(events.Events);
 			}
 			catch (Exception ex)
 			{
@@ -148,13 +132,13 @@ namespace CAL.ViewModels
 		}
 		private void SelectedDates_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
 		{
-			SelectedEvents.ReplaceRange(Events.Where(x => EventCalendar.SelectedDates.Any(y => x.DateTime.Date == y.Date)).OrderByDescending(x => x.DateTime));
+			SelectedEvents.ReplaceRange(CurrentEvents.Where(x => EventCalendar.SelectedDates.Any(y => x.DateTime.Date == y.Date)).OrderByDescending(x => x.DateTime));
 		}
 		private void EventCalendar_DaysUpdated(object sender, EventArgs e)
 		{
 			foreach (var Day in EventCalendar.Days)
 			{
-				Day.Events.ReplaceRange(Events.Where(x => x.DateTime.Date == Day.DateTime.Date));
+				Day.Events.ReplaceRange(CurrentEvents.Where(x => x.DateTime.Date == Day.DateTime.Date));
 			}
 		}
 

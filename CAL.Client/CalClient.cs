@@ -299,14 +299,14 @@ namespace CAL.Client
 			return d1 == d2;
 		}
 
-		public async Task<EventsResponse> GetEventsAsync(int month)
+		public async Task<EventsResponse> GetEventsAsync(int year, int month)
 		{
-			var eventsResponse = await CalServerRequest<EventsResponse>($"event/month/{month}", HttpMethod.Get);
+			var eventsResponse = await CalServerRequest<EventsResponse>($"event/{year}/{month}", HttpMethod.Get);
 			var seriesResponse = await CalServerRequest<AllSeriesResponse>($"series", HttpMethod.Get);
 
 			foreach (var e in eventsResponse.Events)
 			{
-				e.SeriesName = seriesResponse.Series.FirstOrDefault(s => s.Id == e.SeriesId)?.Name ?? throw new Exception($"No series found with id: {e.SeriesId}");
+				e.SeriesName = seriesResponse.Series.FirstOrDefault(s => s.Id == e.SeriesId)?.Name;
 			}
 
 			return eventsResponse;

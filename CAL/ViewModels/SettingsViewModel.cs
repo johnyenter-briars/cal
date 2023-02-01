@@ -39,11 +39,11 @@ namespace CAL.ViewModels
 		{
 			if (int.TryParse(port, out int p))
 			{
-				//PreferencesManager.SetSettings(hostname, p, apiKey, userId);
-				//CalClientSingleton.UpdateSettings(PreferencesManager.GetHostname(),
-				//							PreferencesManager.GetPort(),
-				//							PreferencesManager.GetApiKey(),
-				//							PreferencesManager.GetUserId());
+				PreferencesManager.SetSettings(hostname, p, apiKey, userId);
+				CalClientSingleton.UpdateSettings(PreferencesManager.GetHostname(),
+											PreferencesManager.GetPort(),
+											PreferencesManager.GetApiKey(),
+											PreferencesManager.GetUserId());
 			}
 		}
 	}

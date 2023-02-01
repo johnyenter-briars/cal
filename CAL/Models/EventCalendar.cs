@@ -7,7 +7,7 @@ namespace CAL.Models
 	public class EventCalendar : Calendar<EventDay>
 	{
 		#region Properties
-		public ObservableRangeCollection<Event> Events { get; set; } = new ObservableRangeCollection<Event>();
+		public ObservableRangeCollection<CalendarEvent> Events { get; set; } = new ObservableRangeCollection<CalendarEvent>();
 		#endregion
 
 		#region Methods

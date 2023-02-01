@@ -2,7 +2,7 @@
 
 namespace CAL.Models
 {
-	public class Event : BaseObservableModel
+	public class CalendarEvent : BaseObservableModel
 	{
 		public string Title { get; set; }
 		public string Description { get; set; }

@@ -132,7 +132,7 @@
                                                 </HorizontalStackLayout.IsVisible>
 
                                                 <BindableLayout.ItemTemplate>
-                                                    <DataTemplate x:DataType="{x:Type Models:Event}">
+                                                    <DataTemplate x:DataType="{x:Type Models:CalendarEvent}">
                                                         <BoxView
                                                             CornerRadius="100"
                                                             HeightRequest="7"
@@ -175,7 +175,7 @@
             </CollectionView.ItemsLayout>
 
             <CollectionView.ItemTemplate>
-                <DataTemplate x:DataType="{x:Type Models:Event}">
+                <DataTemplate x:DataType="{x:Type Models:CalendarEvent}">
                     <Border
                         Margin="5"
                         BackgroundColor="Transparent"
