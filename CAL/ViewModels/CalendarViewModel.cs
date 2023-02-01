@@ -75,7 +75,7 @@ namespace CAL.ViewModels
 			{
 				Title = d.Name,
 				DateTime = d.StartTime,
-				Color = Colors.Red,
+				Color = Color.Parse(d.Color),
 				Description = d.Description,
 			}));
 
