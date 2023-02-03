@@ -158,7 +158,12 @@
 
         </Border>
 
-        <CollectionView Grid.Row="1" ItemsSource="{Binding SelectedEvents}">
+        <CollectionView Grid.Row="1" 
+                        ItemsSource="{Binding SelectedEvents}"
+                        SelectionMode="Single"
+                        SelectedItem="{Binding SelectedEvent}"
+                        
+                        >
 
             <CollectionView.EmptyView>
                 <Label
@@ -201,6 +206,8 @@
                                 Grid.Column="1"
                                 Padding="10"
                                 BackgroundColor="{StaticResource ContentBackgroundColor}">
+
+
                                 <Label
                                     FontAttributes="Bold"
                                     FontSize="20"
