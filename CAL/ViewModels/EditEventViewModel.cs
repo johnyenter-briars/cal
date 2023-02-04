@@ -165,11 +165,11 @@ namespace CAL.ViewModels
 
 			if (id != Guid.Empty)
 			{
-				//await CalClientSingleton.UpdateEventAsync(newEvent.ToUpdateRequest());
+				await CalClientSingleton.UpdateEventAsync(newEvent.ToUpdateRequest());
 			}
 			else
 			{
-				//await CalClientSingleton.CreateEventAsync(newEvent.ToRequest());
+				await CalClientSingleton.CreateEventAsync(newEvent.ToRequest());
 			}
 
 			await Shell.Current.GoToAsync("..");

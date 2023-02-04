@@ -207,13 +207,21 @@
                                 Padding="10"
                                 BackgroundColor="{StaticResource ContentBackgroundColor}">
 
-
                                 <Label
                                     FontAttributes="Bold"
                                     FontSize="20"
-                                    Text="{Binding StartTime, StringFormat='{0: dd MMMM HH:mm}'}"
+                                    Text="{Binding StartTime, StringFormat='{0: HH:mm}'}"
                                     TextColor="{StaticResource ContentTextColor}"
                                     VerticalTextAlignment="Center"/>
+                                <Label
+                                    Margin="3,0,0,0"
+                                    FontSize="10"
+                                    Text="{Binding EndTime, StringFormat='{0: dd MMMM HH:mm}'}"
+                                    TextColor="{StaticResource ContentTextColor}"
+                                    VerticalTextAlignment="Center"/>
+
+                                <Line Stroke="black" X2="200" />
+
                                 <Label
                                     Margin="5,0,0,0"
                                     FontSize="16"
