@@ -21,7 +21,7 @@ namespace CAL.ViewModels
 	[QueryProperty(nameof(RepeatOnSun), nameof(RepeatOnSun))]
 	[QueryProperty(nameof(StartTimeUnixSeconds), nameof(StartTimeUnixSeconds))]
 	[QueryProperty(nameof(EndTimeUnixSeconds), nameof(EndTimeUnixSeconds))]
-	[QueryProperty(nameof(CurrentlySelectedCalendar), nameof(CurrentlySelectedCalendar))]
+	//[QueryProperty(nameof(CurrentlySelectedCalendar), nameof(CurrentlySelectedCalendar))]
 	[QueryProperty(nameof(EntityType), nameof(EntityType))]
 	public class EditSeriesViewModel : BaseViewModel
 	{
@@ -34,18 +34,18 @@ namespace CAL.ViewModels
 				_entityType = entityType;
 			}
 		}
-		public string CurrentlySelectedCalendar
-		{
-			get
-			{
-				return _currentlySelectedCalendar.ToString();
-			}
-			set
-			{
-				_currentlySelectedCalendar = Guid.Parse(value);
-			}
-		}
-		private Guid _currentlySelectedCalendar;
+		//public string CurrentlySelectedCalendar
+		//{
+		//	get
+		//	{
+		//		return _currentlySelectedCalendar.ToString();
+		//	}
+		//	set
+		//	{
+		//		_currentlySelectedCalendar = Guid.Parse(value);
+		//	}
+		//}
+		//private Guid _currentlySelectedCalendar;
 		private string name;
 		private string description;
 		private Guid id;
@@ -222,7 +222,7 @@ namespace CAL.ViewModels
 					EventStartTime = startTime.TimeOfDay,
 					EventEndTime = endTime.TimeOfDay,
 					CalUserId = new Guid(PreferencesManager.GetUserId()),
-					CalendarId = _currentlySelectedCalendar,
+					//CalendarId = _currentlySelectedCalendar,
 				};
 
 				//await CalClientSingleton.CreateSeriesAsync(request);
@@ -247,7 +247,7 @@ namespace CAL.ViewModels
 					EventStartTime = startTime.TimeOfDay,
 					EventEndTime = endTime.TimeOfDay,
 					CalUserId = new Guid(PreferencesManager.GetUserId()),
-					CalendarId = _currentlySelectedCalendar,
+					//CalendarId = _currentlySelectedCalendar,
 				};
 
 				//await CalClientSingleton.UpdateSeriesAsync(request);

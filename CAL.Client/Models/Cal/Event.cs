@@ -54,7 +54,7 @@ namespace CAL.Client.Models.Cal
 		public Guid CalUserId { get; set; }
 		public Guid? SeriesId { get; set; }
 		public Guid CalendarId { get; set; }
-		public string? Color { get; set; }
+		public string Color { get; set; }
 		[JsonIgnore]
 		public EntityType EntityType => EntityType.Event;
 		public CreateEventRequest ToRequest()

@@ -211,13 +211,13 @@
                                 <Label
                                     FontAttributes="Bold"
                                     FontSize="20"
-                                    Text="{Binding DateTime, StringFormat='{0: dd MMMM HH:mm}'}"
+                                    Text="{Binding StartTime, StringFormat='{0: dd MMMM HH:mm}'}"
                                     TextColor="{StaticResource ContentTextColor}"
                                     VerticalTextAlignment="Center"/>
                                 <Label
                                     Margin="5,0,0,0"
                                     FontSize="16"
-                                    Text="{Binding Title}"
+                                    Text="{Binding Name}"
                                     TextColor="{StaticResource ContentTextColor}"/>
                                 <Label
                                     Margin="5,10,0,0"
