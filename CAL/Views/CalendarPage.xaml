@@ -24,6 +24,11 @@
         <mct:InvertedBoolConverter x:Key="InvertedBoolConverter"/>
     </ContentPage.Resources>
 
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="+Series" Command="{Binding AddSeriesCommand}" />
+        <ToolbarItem Text="+Event" Command="{Binding AddEventCommand}" />
+    </ContentPage.ToolbarItems>
+
     <Grid>
 
         <Grid.RowDefinitions>
@@ -39,7 +44,7 @@
             Grid.Row="0"
             Margin="10"
             Padding="10"
-            BackgroundColor="{StaticResource ContentBackgroundColor}">
+            BackgroundColor="{DynamicResource ContentBackgroundColor}">
 
             <Border.StrokeShape>
                 <RoundRectangle CornerRadius="15"/>
@@ -205,7 +210,7 @@
                             <VerticalStackLayout
                                 Grid.Column="1"
                                 Padding="10"
-                                BackgroundColor="{StaticResource ContentBackgroundColor}">
+                                BackgroundColor="#5D3FD3">
 
                                 <Label
                                     FontAttributes="Bold"

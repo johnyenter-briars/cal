@@ -38,7 +38,7 @@ namespace CAL.ViewModels
 			}
 		}
 		private Guid _currentlySelectedCalendar;
-		private string name;
+		private string name = "default value";
 		private string description;
 		private Guid id;
 		private long startTimeUnixSeconds;
