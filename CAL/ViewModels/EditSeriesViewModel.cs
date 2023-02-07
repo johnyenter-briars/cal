@@ -257,7 +257,7 @@ namespace CAL.ViewModels
 		}
 		private async void OnDelete()
 		{
-			//await CalClientSingleton.DeleteEntityAsync(id, _entityType);
+			await CalClientSingleton.DeleteEntityAsync(id, _entityType);
 			await Shell.Current.GoToAsync("..");
 		}
 	}

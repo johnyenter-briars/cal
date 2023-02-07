@@ -50,6 +50,7 @@
 
 	<ItemGroup>
 		<None Remove="Platforms\Android\Resources\drawable\icons8_calendar_48.png" />
+		<None Remove="Platforms\Android\Resources\drawable\icons8_trash_24.png" />
 		<None Remove="Platforms\Android\Resources\values\strings.xml" />
 	</ItemGroup>
 
