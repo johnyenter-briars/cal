@@ -83,7 +83,7 @@ namespace CAL.ViewModels
 		}
 		public void NavigateCalendar(int Amount)
 		{
-			EventCalendar?.NavigateCalendar(Amount);
+			//EventCalendar?.NavigateCalendar(Amount);
 		}
 		public void ChangeDateSelection(DateTime DateTime)
 		{
