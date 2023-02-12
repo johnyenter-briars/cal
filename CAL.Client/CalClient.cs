@@ -91,15 +91,15 @@ namespace CAL.Client
 		}
 		public async Task<EventsResponse> GetEventsAsync()
 		{
-			var events = await CalServerRequest<EventsResponse>($"event", HttpMethod.Get);
-			var series = await CalServerRequest<AllSeriesResponse>($"series", HttpMethod.Get);
+			var eventsResponse = await CalServerRequest<EventsResponse>($"event", HttpMethod.Get);
+			var seriesResponse = await CalServerRequest<AllSeriesResponse>($"series", HttpMethod.Get);
 
-			foreach (var e in events.Events)
+			foreach (var e in eventsResponse.Events)
 			{
-				e.SeriesName = series.Series.Where(s => s.Id == e.SeriesId).FirstOrDefault()?.Name;
+				e.SeriesName = seriesResponse.Series.FirstOrDefault(s => s.Id == e.SeriesId)?.Name ?? throw new Exception($"No series found with id: {e.SeriesId}");
 			}
 
-			return events;
+			return eventsResponse;
 		}
 		public async Task<SeriesResponse> GetSeriesAsync(Guid id)
 		{
@@ -297,6 +297,19 @@ namespace CAL.Client
 			var d2 = date2.Date.AddDays(-1 * (int)cal.GetDayOfWeek(date2));
 
 			return d1 == d2;
+		}
+
+		public async Task<EventsResponse> GetEventsAsync(int year, int month)
+		{
+			var eventsResponse = await CalServerRequest<EventsResponse>($"event/{year}/{month}", HttpMethod.Get);
+			var seriesResponse = await CalServerRequest<AllSeriesResponse>($"series", HttpMethod.Get);
+
+			foreach (var e in eventsResponse.Events)
+			{
+				e.SeriesName = seriesResponse.Series.FirstOrDefault(s => s.Id == e.SeriesId)?.Name;
+			}
+
+			return eventsResponse;
 		}
 	}
 }

@@ -23,8 +23,18 @@ namespace CAL.ViewModels
 	[QueryProperty(nameof(EndTimeUnixSeconds), nameof(EndTimeUnixSeconds))]
 	[QueryProperty(nameof(CurrentlySelectedCalendar), nameof(CurrentlySelectedCalendar))]
 	[QueryProperty(nameof(EntityType), nameof(EntityType))]
+	[QueryProperty(nameof(Color), nameof(Color))]
 	public class EditSeriesViewModel : BaseViewModel
 	{
+		public Color CurrentlySelectedColor
+		{
+			get
+			{
+				return Microsoft.Maui.Graphics.Color.Parse(_color);
+			}
+			set { }
+		}
+		public Command ColorPickerChangedCommand { get; }
 		private EntityType _entityType;
 		public string EntityType
 		{
@@ -49,6 +59,7 @@ namespace CAL.ViewModels
 		private string name;
 		private string description;
 		private Guid id;
+		private string _color = "red";
 		private long startTimeUnixSeconds;
 		public DateTime CurrentDate = DateTime.Now;
 		public long StartTimeUnixSeconds
@@ -113,6 +124,7 @@ namespace CAL.ViewModels
 			SaveCommand = new Command(OnSave, ValidateSave);
 			CancelCommand = new Command(OnCancel);
 			DeleteCommand = new Command(OnDelete);
+			ColorPickerChangedCommand = new Command(OnPickerSelectedIndexChanged);
 			this.PropertyChanged +=
 				(_, __) => SaveCommand.ChangeCanExecute();
 		}
@@ -136,6 +148,11 @@ namespace CAL.ViewModels
 		{
 			get => description;
 			set => SetProperty(ref description, value);
+		}
+		public string Color
+		{
+			get => _color;
+			set => SetProperty(ref _color, value);
 		}
 		private bool repeatOnMon;
 		public bool RepeatOnMon
@@ -223,9 +240,10 @@ namespace CAL.ViewModels
 					EventEndTime = endTime.TimeOfDay,
 					CalUserId = new Guid(PreferencesManager.GetUserId()),
 					CalendarId = _currentlySelectedCalendar,
+					Color = Color,
 				};
 
-				//await CalClientSingleton.CreateSeriesAsync(request);
+				await CalClientSingleton.CreateSeriesAsync(request);
 			}
 			else
 			{
@@ -248,17 +266,25 @@ namespace CAL.ViewModels
 					EventEndTime = endTime.TimeOfDay,
 					CalUserId = new Guid(PreferencesManager.GetUserId()),
 					CalendarId = _currentlySelectedCalendar,
+					Color = Color,
 				};
 
-				//await CalClientSingleton.UpdateSeriesAsync(request);
+				await CalClientSingleton.UpdateSeriesAsync(request);
 			}
 
 			await Shell.Current.GoToAsync("..");
 		}
 		private async void OnDelete()
 		{
-			//await CalClientSingleton.DeleteEntityAsync(id, _entityType);
+			await CalClientSingleton.DeleteEntityAsync(id, _entityType);
 			await Shell.Current.GoToAsync("..");
+		}
+		private void OnPickerSelectedIndexChanged(object sender)
+		{
+			var selectedOption = (string)(sender as Picker).SelectedItem;
+
+			CurrentlySelectedColor = Microsoft.Maui.Graphics.Color.Parse(selectedOption);
+			Color = selectedOption;
 		}
 	}
 }

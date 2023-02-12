@@ -17,5 +17,11 @@ namespace CAL.Views
 			InitializeComponent();
 			BindingContext = new EditEventViewModel();
 		}
+
+		private void picker_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			var viewModel = (EditEventViewModel)BindingContext;
+			viewModel.ColorPickerChangedCommand.Execute(sender);
+		}
 	}
 }

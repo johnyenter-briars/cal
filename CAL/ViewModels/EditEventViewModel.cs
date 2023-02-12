@@ -2,6 +2,7 @@
 using CAL.Client.Models;
 using CAL.Client.Models.Cal;
 using CAL.Managers;
+using Microsoft.Maui.Graphics.Text;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -15,8 +16,18 @@ namespace CAL.ViewModels
 	[QueryProperty(nameof(Description), nameof(Description))]
 	[QueryProperty(nameof(CurrentlySelectedCalendar), nameof(CurrentlySelectedCalendar))]
 	[QueryProperty(nameof(EntityType), nameof(EntityType))]
+	[QueryProperty(nameof(Color), nameof(Color))]
 	public class EditEventViewModel : BaseViewModel
 	{
+		public Color CurrentlySelectedColor
+		{
+			get
+			{
+				return Microsoft.Maui.Graphics.Color.Parse(_color);
+			}
+			set { }
+		}
+
 		private EntityType _entityType;
 		public string EntityType
 		{
@@ -38,8 +49,9 @@ namespace CAL.ViewModels
 			}
 		}
 		private Guid _currentlySelectedCalendar;
-		private string name;
+		private string name = "default value";
 		private string description;
+		private string _color = "red";
 		private Guid id;
 		private long startTimeUnixSeconds;
 		public DateTime CurrentDate = DateTime.Now;
@@ -105,6 +117,7 @@ namespace CAL.ViewModels
 			SaveCommand = new Command(OnSave, ValidateSave);
 			CancelCommand = new Command(OnCancel);
 			DeleteCommand = new Command(OnDelete);
+			ColorPickerChangedCommand = new Command(OnPickerSelectedIndexChanged);
 			this.PropertyChanged +=
 				(_, __) => SaveCommand.ChangeCanExecute();
 		}
@@ -129,10 +142,22 @@ namespace CAL.ViewModels
 			get => description;
 			set => SetProperty(ref description, value);
 		}
+		public string Color
+		{
+			get => _color;
+			set => SetProperty(ref _color, value);
+		}
 
 		public Command SaveCommand { get; }
 		public Command DeleteCommand { get; }
 		public Command CancelCommand { get; }
+		public Command ColorPickerChangedCommand { get; }
+		private void OnPickerSelectedIndexChanged(object sender)
+		{
+			var selectedOption = (string)(sender as Picker).SelectedItem;
+			CurrentlySelectedColor = Microsoft.Maui.Graphics.Color.Parse(selectedOption);
+			Color = selectedOption;
+		}
 
 		private async void OnCancel()
 		{
@@ -161,15 +186,16 @@ namespace CAL.ViewModels
 				EndTime = endTime.ToUniversalTime(),
 				CalUserId = new Guid(PreferencesManager.GetUserId()),
 				CalendarId = _currentlySelectedCalendar,
+				Color = Color,
 			};
 
 			if (id != Guid.Empty)
 			{
-				//await CalClientSingleton.UpdateEventAsync(newEvent.ToUpdateRequest());
+				await CalClientSingleton.UpdateEventAsync(newEvent.ToUpdateRequest());
 			}
 			else
 			{
-				//await CalClientSingleton.CreateEventAsync(newEvent.ToRequest());
+				await CalClientSingleton.CreateEventAsync(newEvent.ToRequest());
 			}
 
 			await Shell.Current.GoToAsync("..");

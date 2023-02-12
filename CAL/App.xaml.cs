@@ -9,12 +9,12 @@ public partial class App : Application
 	{
 		InitializeComponent();
 
-		//DependencyService.RegisterSingleton(CalClientFactory.GetNewCalClient()
-		//			.UpdateSettings(PreferencesManager.GetHostname(),
-		//							PreferencesManager.GetPort(),
-		//							PreferencesManager.GetApiKey(),
-		//							PreferencesManager.GetUserId())
-		//			);
+		DependencyService.RegisterSingleton(CalClientFactory.GetNewCalClient()
+					.UpdateSettings(PreferencesManager.GetHostname(),
+									PreferencesManager.GetPort(),
+									PreferencesManager.GetApiKey(),
+									PreferencesManager.GetUserId())
+					);
 
 		MainPage = new AppShell();
 	}

@@ -14,6 +14,11 @@
     <ContentPage.Content>
         <ScrollView>
             <StackLayout Spacing="3" Padding="15">
+                <StackLayout Orientation="Horizontal">
+                    <ImageButton  Source="icons8_trash_24" Command="{Binding DeleteCommand}"  HorizontalOptions="FillAndExpand"/>
+                    <Button Text="Cancel" Command="{Binding CancelCommand}" HorizontalOptions="FillAndExpand"></Button>
+                    <Button Text="Save" Command="{Binding SaveCommand}" HorizontalOptions="FillAndExpand"></Button>
+                </StackLayout>
                 <Label Text="Name" FontSize="Medium" />
                 <Entry 
                 Text="{Binding Name, Mode=TwoWay}" 
@@ -75,12 +80,23 @@
                 <Entry Keyboard="Numeric" 
                     Text="{Binding RepeatEveryWeek, Mode=TwoWay}" 
                        />
+                <Picker x:Name="picker"
+                    SelectedIndexChanged="picker_SelectedIndexChanged"
+                    BackgroundColor="{Binding CurrentlySelectedColor}"
+                    Title="Select a Color">
+                    <Picker.ItemsSource>
+                        <x:Array Type="{x:Type x:String}">
+                            <x:String>Red</x:String>
+                            <x:String>Blue</x:String>
+                            <x:String>Green</x:String>
+                            <x:String>Orange</x:String>
+                            <x:String>Yellow</x:String>
+                            <x:String>Purple</x:String>
+                            <x:String>Pink</x:String>
+                        </x:Array>
+                    </Picker.ItemsSource>
+                </Picker>
 
-                <StackLayout Orientation="Horizontal">
-                    <!--<Button Image="icons8_trash_24" Command="{Binding DeleteCommand}"  HorizontalOptions="FillAndExpand"/>-->
-                    <Button Text="Cancel" Command="{Binding CancelCommand}" HorizontalOptions="FillAndExpand"></Button>
-                    <Button Text="Save" Command="{Binding SaveCommand}" HorizontalOptions="FillAndExpand"></Button>
-                </StackLayout>
             </StackLayout>
 
         </ScrollView>

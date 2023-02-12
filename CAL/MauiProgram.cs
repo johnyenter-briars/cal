@@ -1,4 +1,5 @@
-﻿using CommunityToolkit.Maui;
+﻿using CAL.Client;
+using CommunityToolkit.Maui;
 
 namespace CAL;
 

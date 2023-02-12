@@ -16,27 +16,38 @@ namespace CAL.Views
 		{
 			InitializeComponent();
 
-			BindingContext = new CalendarViewModel();
+			var viewModel = new CalendarViewModel(null);
 
-			//Task.Run(async () =>
-			//{
-			//	var calClient = DependencyService.Get<ICalClient>();
-			//	var calendarsForUser = await calClient.GetCalendarsForUserAsync(new Guid(PreferencesManager.GetUserId()));
-			//	var viewModel = new CalendarViewModel(calendarsForUser.Calendars.FirstOrDefault());
+			BindingContext = viewModel;
 
-			//	BindingContext = viewModel;
+			Task.Run(async () =>
+			{
+				try
+				{
+					await Task.Delay(1000);
+					var calClient = DependencyService.Get<ICalClient>();
+					var calendarsForUser = await calClient.GetCalendarsForUserAsync(new Guid(PreferencesManager.GetUserId()));
 
-			//	foreach (var calendar in calendarsForUser.Calendars)
-			//	{
-			//		ToolbarItems.Add(new ToolbarItem
-			//		{
-			//			Order = ToolbarItemOrder.Secondary,
-			//			Text = calendar.Name,
-			//			Command = viewModel.SelectCalendarCommand,
-			//			CommandParameter = calendar,
-			//		});
-			//	}
-			//});
+					var bc = (CalendarViewModel)BindingContext;
+
+					foreach (var calendar in calendarsForUser.Calendars)
+					{
+						ToolbarItems.Add(new ToolbarItem
+						{
+							Order = ToolbarItemOrder.Secondary,
+							Text = $"{calendar.Name} ({calendar.Color})",
+							Command = bc.SelectCalendarCommand,
+							CommandParameter = calendar,
+						});
+					}
+
+					OnAppearing();
+				}
+				catch (Exception e)
+				{
+					var idk = 10;
+				}
+			});
 		}
 		protected override void OnAppearing()
 		{
