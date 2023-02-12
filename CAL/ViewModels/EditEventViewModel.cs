@@ -155,18 +155,8 @@ namespace CAL.ViewModels
 		private void OnPickerSelectedIndexChanged(object sender)
 		{
 			var selectedOption = (string)(sender as Picker).SelectedItem;
-			var picker = (Picker)sender;
-			int selectedIndex = picker.SelectedIndex;
-
 			CurrentlySelectedColor = Microsoft.Maui.Graphics.Color.Parse(selectedOption);
 			Color = selectedOption;
-
-			//Microsoft.Maui.Graphics.Color.Parse(_color)
-
-			//if (selectedIndex != -1)
-			//{
-			//	monkeyNameLabel.Text = (string)picker.ItemsSource[selectedIndex];
-			//}
 		}
 
 		private async void OnCancel()

@@ -45,6 +45,7 @@
                 </Frame>
                 <Picker x:Name="picker"
                     SelectedIndexChanged="picker_SelectedIndexChanged"
+                    BackgroundColor="{Binding CurrentlySelectedColor}"
                     Title="Select a Color">
                     <Picker.ItemsSource>
                         <x:Array Type="{x:Type x:String}">
@@ -58,9 +59,6 @@
                         </x:Array>
                     </Picker.ItemsSource>
                 </Picker>
-
-
-                <BoxView Color="{Binding CurrentlySelectedColor}" WidthRequest="150" HeightRequest="150" HorizontalOptions="Center" VerticalOptions="CenterAndExpand" />
             </StackLayout>
         </ScrollView>
     </ContentPage.Content>
