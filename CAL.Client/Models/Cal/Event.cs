@@ -68,6 +68,7 @@ namespace CAL.Client.Models.Cal
 				SeriesId = SeriesId,
 				Name = Name,
 				CalendarId = CalendarId,
+				Color = Color,
 			};
 		}
 		public UpdateEventRequest ToUpdateRequest()
@@ -82,6 +83,7 @@ namespace CAL.Client.Models.Cal
 				SeriesId = SeriesId,
 				Name = Name,
 				CalendarId = CalendarId,
+				Color = Color,
 			};
 		}
 

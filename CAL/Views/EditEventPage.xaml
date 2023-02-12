@@ -43,6 +43,24 @@
                     FontSize="Medium" 
                     Margin="0" />
                 </Frame>
+                <Picker x:Name="picker"
+                    SelectedIndexChanged="picker_SelectedIndexChanged"
+                    Title="Select a Color">
+                    <Picker.ItemsSource>
+                        <x:Array Type="{x:Type x:String}">
+                            <x:String>Red</x:String>
+                            <x:String>Blue</x:String>
+                            <x:String>Green</x:String>
+                            <x:String>Orange</x:String>
+                            <x:String>Yellow</x:String>
+                            <x:String>Purple</x:String>
+                            <x:String>Pink</x:String>
+                        </x:Array>
+                    </Picker.ItemsSource>
+                </Picker>
+
+
+                <BoxView Color="{Binding CurrentlySelectedColor}" WidthRequest="150" HeightRequest="150" HorizontalOptions="Center" VerticalOptions="CenterAndExpand" />
             </StackLayout>
         </ScrollView>
     </ContentPage.Content>
