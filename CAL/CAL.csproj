@@ -28,14 +28,15 @@
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</SupportedOSPlatformVersion>
 		<TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</TargetPlatformMinVersion>
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tizen'">6.5</SupportedOSPlatformVersion>
+		<AssemblyVersion>1.0.1.1</AssemblyVersion>
 	</PropertyGroup>
 
 	<ItemGroup>
 		<!-- App Icon -->
-		<MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#512BD4" />
+		<MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\calendar2.svg" ForegroundScale="0.6" Color="#512BD4" />
+
 
 		<!-- Splash Screen -->
-		<MauiSplashScreen Include="Resources\Splash\splash.svg" Color="#512BD4" BaseSize="128,128" />
 
 		<!-- Images -->
 		<MauiImage Include="Resources\Images\*" />
@@ -55,8 +56,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <PackageReference Include="PropertyChanged.Fody" Version="4.0.4" />
-	  <PackageReference Include="XCalendar.Maui" Version="4.2.0" />
+		<PackageReference Include="PropertyChanged.Fody" Version="4.0.4" />
+		<PackageReference Include="XCalendar.Maui" Version="4.2.0" />
 	</ItemGroup>
 
 	<ItemGroup>
