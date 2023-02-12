@@ -78,28 +78,25 @@ namespace CAL.ViewModels
 			NavigateCalendarCommand = new Command<int>(NavigateCalendar);
 			ChangeDateSelectionCommand = new Command<DateTime>(ChangeDateSelection);
 
-
 			EventCalendar.SelectedDates.CollectionChanged += SelectedDates_CollectionChanged;
 
 			EventCalendar.DaysUpdated += EventCalendar_DaysUpdated;
-
-			foreach (var Day in EventCalendar.Days)
-			{
-				Day.Events.ReplaceRange(EventsBuffer.Where(x => x.StartTime.Date == Day.DateTime.Date));
-			}
-
-			//Task.Run(async () => await ExecuteLoadEventsAsync());
 		}
-		public void NavigateCalendar(int Amount)
+		public async void NavigateCalendar(int Amount)
 		{
 			EventCalendar?.NavigateCalendar(Amount);
+			var month = EventCalendar.NavigatedDate.Month;
+			var year = EventCalendar.NavigatedDate.Year;
+			await LoadEventCollectionAsync(year, month);
 		}
 		public void ChangeDateSelection(DateTime DateTime)
 		{
 			EventCalendar?.ChangeDateSelection(DateTime);
 		}
-		private void LoadEventCollection(IList<Event> events)
+		private async Task LoadEventCollectionAsync(int year, int month)
 		{
+			var events = (await CalClientSingleton.GetEventsAsync(year, month)).Events.Where(e => e.CalendarId == CurrentlySelectedCalendar.Id).ToList();
+
 			EventsBuffer.Clear();
 			EventsBuffer.AddRange(events.Select(d => new CalendarEvent
 			{
@@ -118,7 +115,6 @@ namespace CAL.ViewModels
 			foreach (var Day in EventCalendar.Days)
 			{
 				var filtered = EventsBuffer.Where(x => x.StartTime.Date == Day.DateTime.Date);
-				var idk = filtered;
 				Day.Events.ReplaceRange(filtered);
 			}
 		}
@@ -130,8 +126,9 @@ namespace CAL.ViewModels
 			try
 			{
 				var today = DateTime.Now;
-				var events = (await CalClientSingleton.GetEventsAsync(today.Year, today.Month)).Events.Where(e => e.CalendarId == CurrentlySelectedCalendar.Id).ToList();
-				LoadEventCollection(events);
+				var month = EventCalendar.NavigatedDate.Month;
+				var year = EventCalendar.NavigatedDate.Year;
+				await LoadEventCollectionAsync(year, month);
 			}
 			catch (Exception ex)
 			{
@@ -203,9 +200,9 @@ namespace CAL.ViewModels
 				SelectedEvents.Clear();
 				CurrentlySelectedCalendar = cal;
 				App.Current.Resources["ContentBackgroundColor"] = Color.Parse(CurrentlySelectedCalendar.Color);
-				var today = DateTime.Now;
-				var events = (await CalClientSingleton.GetEventsAsync(today.Year, today.Month)).Events.Where(e => e.CalendarId == CurrentlySelectedCalendar.Id).ToList();
-				LoadEventCollection(events);
+				var month = EventCalendar.NavigatedDate.Month;
+				var year = EventCalendar.NavigatedDate.Year;
+				await LoadEventCollectionAsync(year, month);
 			}
 		}
 	}
