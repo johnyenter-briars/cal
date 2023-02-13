@@ -6,9 +6,10 @@
     xmlns:local="clr-namespace:CAL.Views"
     Shell.FlyoutBehavior="Disabled">
 
-    <TabBar>
+    <TabBar Title="test2">
         <ShellContent Title="Calendar" Icon="icons8_calendar_48.png" Route="CalendarPage" ContentTemplate="{DataTemplate local:CalendarPage}" />
         <ShellContent Title="Settings" Icon="icon_feed.png" ContentTemplate="{DataTemplate local:SettingsPage}" />
+        <ShellContent Title="About" Icon="icon_about.png" ContentTemplate="{DataTemplate local:AboutPage}" />
     </TabBar>
 
     <TabBar>

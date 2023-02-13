@@ -7,7 +7,7 @@
              xmlns:controls="clr-namespace:CAL.Controls"  
              xmlns:model="clr-namespace:CAL.Client.Models.Cal;assembly=CAL.Client"  
              x:Name="browseItemsPage"
-             BackgroundColor="{StaticResource BackgroundColor}">
+             BackgroundColor="Black">
 
     <ContentPage.ToolbarItems>
         <ToolbarItem Text="Add" Command="{Binding AddEventCommand}" />
