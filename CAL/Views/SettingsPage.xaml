@@ -9,7 +9,7 @@
         <vm:SettingsViewModel />
     </ContentPage.BindingContext>
 
-    <Grid BackgroundColor="{StaticResource BackgroundColor}">
+    <Grid BackgroundColor="Black">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
@@ -17,8 +17,6 @@
 
         <ScrollView Grid.Row="1">
             <StackLayout Orientation="Vertical" Padding="30,24,30,24" Spacing="10">
-                <Label TextColor="BlueViolet" Text="{Binding BuildVersion}"   
-                   HeightRequest = "40" Padding="4,0,0,0" />
                 <Entry TextColor="BlueViolet" x:Name = "IpAddress"  Text="{Binding HostName}"  Placeholder = "IP address"
                    HeightRequest = "40"  
                    />

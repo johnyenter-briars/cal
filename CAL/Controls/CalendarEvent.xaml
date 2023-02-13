@@ -6,7 +6,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     x:Name="eventTemplate"
     >
-    <Frame BorderColor="LightGray" HasShadow="False" Padding="15" BackgroundColor="{StaticResource BackgroundColor}">
+    <Frame BorderColor="LightGray" HasShadow="False" Padding="15" BackgroundColor="Black">
         <StackLayout
         Padding="0,0,0,0"
         HorizontalOptions="FillAndExpand"
