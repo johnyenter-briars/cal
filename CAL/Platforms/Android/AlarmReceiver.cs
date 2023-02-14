@@ -20,7 +20,7 @@ namespace CAL.Platforms.Android
 
 				   var response = await calClient.GetEventsAsync(DateTime.Now.Year, DateTime.Now.Month);
 
-				   var now = DateTime.UtcNow;
+				   var now = DateTime.Now;
 
 				   foreach (var e in response.Events)
 				   {
@@ -29,7 +29,7 @@ namespace CAL.Platforms.Android
 						   continue;
 					   }
 
-					   var span = e.StartTime.ToUniversalTime().Subtract(now);
+					   var span = e.StartTime.Subtract(now);
 
 					   //if (span.Minutes >= 30 &&
 					   // span.Minutes <= 45)
@@ -39,8 +39,8 @@ namespace CAL.Platforms.Android
 					   // await calClient.UpdateEventAsync(e.ToUpdateRequest());
 					   //}
 
-					   if (span.Minutes >= 16 &&
-						   span.Minutes <= 30)
+					   if (span.TotalMinutes >= 16 &&
+						   span.TotalMinutes <= 30)
 					   {
 						   DependencyService.Get<INotificationManager>().SendNotification(e.Name, $"Upcomming Event in 16-30 mintues at: {e.StartTime}");
 						   e.NumTimesNotified += 1;
@@ -48,8 +48,8 @@ namespace CAL.Platforms.Android
 						   return;
 					   }
 
-					   if (span.Minutes <= 15 &&
-						   span.Minutes >= 0)
+					   if (span.TotalMinutes <= 15 &&
+						   span.TotalMinutes >= 0)
 					   {
 						   DependencyService.Get<INotificationManager>().SendNotification(e.Name, $"Upcomming Event in 0 - 15 now at: {e.StartTime}");
 						   e.NumTimesNotified += 1;
