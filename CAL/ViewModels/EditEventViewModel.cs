@@ -51,12 +51,11 @@ namespace CAL.ViewModels
 			}
 		}
 		private Guid _currentlySelectedCalendar;
-		private string name = "default value";
+		private string name;
 		private string description;
 		private string _color = "red";
 		private Guid id;
 		private long startTimeUnixSeconds;
-		public DateTime CurrentDate = DateTime.Now;
 		public long StartTimeUnixSeconds
 		{
 			get => startTimeUnixSeconds;
@@ -65,7 +64,7 @@ namespace CAL.ViewModels
 				startTimeUnixSeconds = value;
 				DateTime dateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc).AddSeconds(value);
 				StartSelectedDate = dateTime.ToLocalTime();
-				StartSelectedTime = dateTime.ToLocalTime().TimeOfDay;
+				//StartSelectedTime = dateTime.ToLocalTime().TimeOfDay;
 			}
 		}
 		private long endTimeUnixSeconds;
@@ -77,10 +76,10 @@ namespace CAL.ViewModels
 				endTimeUnixSeconds = value;
 				DateTime dateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc).AddSeconds(endTimeUnixSeconds);
 				EndSelectedDate = dateTime.ToLocalTime();
-				EndSelectedTime = dateTime.ToLocalTime().TimeOfDay;
+				//EndSelectedTime = dateTime.ToLocalTime().TimeOfDay;
 			}
 		}
-		private TimeSpan _startTime;
+		private TimeSpan _startTime = DateTime.Now.TimeOfDay;
 		public TimeSpan StartSelectedTime
 		{
 			get => _startTime; set
@@ -88,7 +87,7 @@ namespace CAL.ViewModels
 				SetProperty(ref _startTime, value);
 			}
 		}
-		private TimeSpan _endTime;
+		private TimeSpan _endTime = DateTime.Now.TimeOfDay.Add(TimeSpan.FromHours(1));
 		public TimeSpan EndSelectedTime
 		{
 			get => _endTime; set

@@ -72,7 +72,7 @@ namespace CAL.ViewModels
 				startTimeUnixSeconds = value;
 				DateTime dateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc).AddSeconds(startTimeUnixSeconds);
 				SeriesStartsOnSelectedDate = dateTime.ToLocalTime();
-				SubEventsStartTime = dateTime.ToLocalTime().TimeOfDay;
+				//SubEventsStartTime = dateTime.ToLocalTime().TimeOfDay;
 			}
 		}
 		private long endTimeUnixSeconds;
@@ -84,10 +84,10 @@ namespace CAL.ViewModels
 				endTimeUnixSeconds = value;
 				DateTime dateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc).AddSeconds(endTimeUnixSeconds);
 				SeriesEndsOnSelectedDate = dateTime.ToLocalTime();
-				SubEventEndTime = dateTime.ToLocalTime().TimeOfDay;
+				//SubEventEndTime = dateTime.ToLocalTime().TimeOfDay;
 			}
 		}
-		private TimeSpan _subEventStartTime;
+		private TimeSpan _subEventStartTime = DateTime.Now.TimeOfDay;
 		public TimeSpan SubEventsStartTime
 		{
 			get => _subEventStartTime; set
@@ -95,7 +95,7 @@ namespace CAL.ViewModels
 				SetProperty(ref _subEventStartTime, value);
 			}
 		}
-		private TimeSpan _subEventEndTime;
+		private TimeSpan _subEventEndTime = DateTime.Now.TimeOfDay.Add(TimeSpan.FromHours(1));
 		public TimeSpan SubEventEndTime
 		{
 			get => _subEventEndTime; set
