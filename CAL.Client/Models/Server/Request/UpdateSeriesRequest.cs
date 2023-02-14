@@ -53,6 +53,7 @@ namespace CAL.Client.Models.Server.Request
 				RepeatEveryWeek = RepeatEveryWeek,
 				RepeatOnMon = RepeatOnMon,
 				RepeatOnTues = RepeatOnTues,
+				RepeatOnWed = RepeatOnWed,
 				RepeatOnThurs = RepeatOnThurs,
 				RepeatOnFri = RepeatOnFri,
 				RepeatOnSat = RepeatOnSat,

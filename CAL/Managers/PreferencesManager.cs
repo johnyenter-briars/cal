@@ -11,6 +11,7 @@ namespace CAL.Managers
 		private static readonly string hostnameTag = "hostname";
 		private static readonly string portTag = "portKey";
 		private static readonly string defaultCalendarIdTag = "defaultCalendarId";
+		private static readonly string maxNumTimesToNotifyTag = "maxNumTimesToNotify";
 		public static string GetUserId()
 		{
 			return Preferences.Get(userIdTag, null);
@@ -31,13 +32,18 @@ namespace CAL.Managers
 		{
 			return Preferences.Get(defaultCalendarIdTag, null);
 		}
-		public static void SetSettings(string hostname, int port, string apiKey, string userId, string defaultCalendarId)
+		public static int GetMaxNumTimesToNotify()
+		{
+			return Preferences.Get(maxNumTimesToNotifyTag, 3);
+		}
+		public static void SetSettings(string hostname, int port, string apiKey, string userId, string defaultCalendarId, int maxNumTimesToNotify)
 		{
 			Preferences.Set(userIdTag, userId);
 			Preferences.Set(hostnameTag, hostname);
 			Preferences.Set(apiKeyTag, apiKey);
 			Preferences.Set(portTag, port);
 			Preferences.Set(defaultCalendarIdTag, defaultCalendarId);
+			Preferences.Set(maxNumTimesToNotifyTag, maxNumTimesToNotify);
 		}
 	}
 }

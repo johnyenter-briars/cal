@@ -40,6 +40,8 @@ namespace CAL.Client.Models.Cal
 				RepeatEveryWeek = RepeatEveryWeek,
 				RepeatOnMon = RepeatOnMon,
 				RepeatOnTues = RepeatOnTues,
+				RepeatOnWed = RepeatOnWed,
+				RepeatOnThurs = RepeatOnThurs,
 				RepeatOnFri = RepeatOnFri,
 				RepeatOnSat = RepeatOnSat,
 				RepeatOnSun = RepeatOnSun,

@@ -173,7 +173,12 @@ namespace CAL.ViewModels
 		}
 		private void EventCalendar_DaysUpdated(object sender, EventArgs e)
 		{
-			_selectedDate = ((Calendar<EventDay>)sender).SelectedDates.FirstOrDefault();
+			var currSelectedDate = ((Calendar<EventDay>)sender).SelectedDates.FirstOrDefault();
+			if (currSelectedDate != DateTime.MinValue)
+			{
+				_selectedDate = currSelectedDate;
+			}
+
 			foreach (var Day in EventCalendar.Days)
 			{
 				Day.Events.ReplaceRange(EventsBuffer.Where(x => x.StartTime.Date == Day.DateTime.Date));

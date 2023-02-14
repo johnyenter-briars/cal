@@ -1,5 +1,6 @@
 ﻿using Android.Content;
 using CAL.Client;
+using CAL.Managers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,35 +24,37 @@ namespace CAL.Platforms.Android
 
 				   foreach (var e in response.Events)
 				   {
-					   if (now.Date != e.StartTime.Date || !e.ShouldNotify)
+					   if (now.Date != e.StartTime.Date || !e.ShouldNotify || e.NumTimesNotified > PreferencesManager.GetMaxNumTimesToNotify())
 					   {
 						   continue;
 					   }
 
 					   var span = e.StartTime.ToUniversalTime().Subtract(now);
 
-					   if (span.Minutes >= 30 &&
-						   span.Minutes <= 45)
+					   //if (span.Minutes >= 30 &&
+					   // span.Minutes <= 45)
+					   //{
+					   // DependencyService.Get<INotificationManager>().SendNotification(e.Name, $"Upcomming Event in 30-50 mintues at: {e.StartTime}");
+					   // e.NumTimesNotified += 1;
+					   // await calClient.UpdateEventAsync(e.ToUpdateRequest());
+					   //}
+
+					   if (span.Minutes >= 16 &&
+						   span.Minutes <= 30)
 					   {
-						   DependencyService.Get<INotificationManager>().SendNotification(e.Name, $"Upcomming Event in 30-50 mintues at: {e.StartTime}");
+						   DependencyService.Get<INotificationManager>().SendNotification(e.Name, $"Upcomming Event in 16-30 mintues at: {e.StartTime}");
 						   e.NumTimesNotified += 1;
 						   await calClient.UpdateEventAsync(e.ToUpdateRequest());
+						   return;
 					   }
 
-					   if (span.Minutes >= 6 &&
-						   span.Minutes <= 29)
+					   if (span.Minutes <= 15 &&
+						   span.Minutes >= 0)
 					   {
-						   DependencyService.Get<INotificationManager>().SendNotification(e.Name, $"Upcomming Event in 6-29 mintues at: {e.StartTime}");
+						   DependencyService.Get<INotificationManager>().SendNotification(e.Name, $"Upcomming Event in 0 - 15 now at: {e.StartTime}");
 						   e.NumTimesNotified += 1;
 						   await calClient.UpdateEventAsync(e.ToUpdateRequest());
-					   }
-
-					   if (span.Minutes <= 5 &&
-						   span.Minutes > 0)
-					   {
-						   DependencyService.Get<INotificationManager>().SendNotification(e.Name, $"Upcomming Event starting now at: {e.StartTime}");
-						   e.NumTimesNotified += 1;
-						   await calClient.UpdateEventAsync(e.ToUpdateRequest());
+						   return;
 					   }
 				   }
 			   });
