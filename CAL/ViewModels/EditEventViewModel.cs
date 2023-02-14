@@ -9,9 +9,9 @@ using System.Text;
 
 namespace CAL.ViewModels
 {
+	[QueryProperty(nameof(Id), nameof(Id))]
 	[QueryProperty(nameof(StartTimeUnixSeconds), nameof(StartTimeUnixSeconds))]
 	[QueryProperty(nameof(EndTimeUnixSeconds), nameof(EndTimeUnixSeconds))]
-	[QueryProperty(nameof(Id), nameof(Id))]
 	[QueryProperty(nameof(Name), nameof(Name))]
 	[QueryProperty(nameof(Description), nameof(Description))]
 	[QueryProperty(nameof(CurrentlySelectedCalendar), nameof(CurrentlySelectedCalendar))]
@@ -21,6 +21,11 @@ namespace CAL.ViewModels
 	[QueryProperty(nameof(ShouldNotify), nameof(ShouldNotify))]
 	public class EditEventViewModel : BaseViewModel
 	{
+		public string Id
+		{
+			get => id.ToString();
+			set => SetProperty(ref id, new Guid(value));
+		}
 		public Color CurrentlySelectedColor
 		{
 			get
@@ -64,7 +69,14 @@ namespace CAL.ViewModels
 				startTimeUnixSeconds = value;
 				DateTime dateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc).AddSeconds(value);
 				StartSelectedDate = dateTime.ToLocalTime();
-				//StartSelectedTime = dateTime.ToLocalTime().TimeOfDay;
+				if (new Guid(Id) == Guid.Empty)
+				{
+					StartSelectedTime = DateTime.Now.TimeOfDay;
+				}
+				else
+				{
+					StartSelectedTime = dateTime.ToLocalTime().TimeOfDay;
+				}
 			}
 		}
 		private long endTimeUnixSeconds;
@@ -76,10 +88,17 @@ namespace CAL.ViewModels
 				endTimeUnixSeconds = value;
 				DateTime dateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc).AddSeconds(endTimeUnixSeconds);
 				EndSelectedDate = dateTime.ToLocalTime();
-				//EndSelectedTime = dateTime.ToLocalTime().TimeOfDay;
+				if (new Guid(Id) == Guid.Empty)
+				{
+					EndSelectedTime = DateTime.Now.TimeOfDay.Add(TimeSpan.FromHours(1));
+				}
+				else
+				{
+					EndSelectedTime = dateTime.ToLocalTime().TimeOfDay;
+				}
 			}
 		}
-		private TimeSpan _startTime = DateTime.Now.TimeOfDay;
+		private TimeSpan _startTime;
 		public TimeSpan StartSelectedTime
 		{
 			get => _startTime; set
@@ -87,7 +106,7 @@ namespace CAL.ViewModels
 				SetProperty(ref _startTime, value);
 			}
 		}
-		private TimeSpan _endTime = DateTime.Now.TimeOfDay.Add(TimeSpan.FromHours(1));
+		private TimeSpan _endTime;
 		public TimeSpan EndSelectedTime
 		{
 			get => _endTime; set
@@ -125,11 +144,6 @@ namespace CAL.ViewModels
 		private bool ValidateSave()
 		{
 			return !string.IsNullOrWhiteSpace(name);
-		}
-		public string Id
-		{
-			get => id.ToString();
-			set => SetProperty(ref id, new Guid(value));
 		}
 
 		public string Name
