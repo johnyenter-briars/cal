@@ -29,6 +29,7 @@ namespace CAL.Views
 					var calendarsForUser = await calClient.GetCalendarsForUserAsync(new Guid(PreferencesManager.GetUserId()));
 
 					var bc = (CalendarViewModel)BindingContext;
+					bc.CurrentlySelectedCalendar = calendarsForUser.Calendars.SingleOrDefault(c => c.Id == new Guid(PreferencesManager.GetDefaultCalendarId()));
 
 					foreach (var calendar in calendarsForUser.Calendars)
 					{

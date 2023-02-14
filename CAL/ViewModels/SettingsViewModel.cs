@@ -25,6 +25,8 @@ namespace CAL.ViewModels
 		public string HostName { get => hostname; set => SetProperty(ref hostname, value); }
 		private string port = PreferencesManager.GetPort().ToString();
 		public string Port { get => port; set => SetProperty(ref port, value); }
+		private string defaultCalendarId = PreferencesManager.GetDefaultCalendarId();
+		public string DefaultCalendarId { get => defaultCalendarId; set => SetProperty(ref defaultCalendarId, value); }
 		private Command saveChangesCommand;
 		public ICommand SaveChangesCommand
 		{
@@ -42,7 +44,7 @@ namespace CAL.ViewModels
 		{
 			if (int.TryParse(port, out int p))
 			{
-				PreferencesManager.SetSettings(hostname, p, apiKey, userId);
+				PreferencesManager.SetSettings(hostname, p, apiKey, userId, defaultCalendarId);
 				CalClientSingleton.UpdateSettings(PreferencesManager.GetHostname(),
 											PreferencesManager.GetPort(),
 											PreferencesManager.GetApiKey(),
