@@ -19,5 +19,7 @@ namespace CAL.Models
 		public override string ToString() => $"{Name}-LOCAL START: {StartTime}- UTC START: {StartTime.ToUniversalTime()}-{EndTime}";
 		public string SeriesName { get; set; }
 		public bool IsPartOfSeries => SeriesName != null;
+		public int NumTimesNotified { get; set; }
+		public bool ShouldNotify { get; set; }
 	}
 }

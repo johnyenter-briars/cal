@@ -55,6 +55,8 @@ namespace CAL.Client.Models.Cal
 		public Guid? SeriesId { get; set; }
 		public Guid CalendarId { get; set; }
 		public string Color { get; set; }
+		public int NumTimesNotified { get; set; }
+		public bool ShouldNotify { get; set; }
 		[JsonIgnore]
 		public EntityType EntityType => EntityType.Event;
 		public CreateEventRequest ToRequest()
@@ -69,6 +71,8 @@ namespace CAL.Client.Models.Cal
 				Name = Name,
 				CalendarId = CalendarId,
 				Color = Color,
+				NumTimesNotified = NumTimesNotified,
+				ShouldNotify = ShouldNotify,
 			};
 		}
 		public UpdateEventRequest ToUpdateRequest()
@@ -84,6 +88,8 @@ namespace CAL.Client.Models.Cal
 				Name = Name,
 				CalendarId = CalendarId,
 				Color = Color,
+				NumTimesNotified = NumTimesNotified,
+				ShouldNotify = ShouldNotify,
 			};
 		}
 

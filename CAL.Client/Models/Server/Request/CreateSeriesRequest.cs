@@ -31,6 +31,8 @@ namespace CAL.Client.Models.Server.Request
 		public Guid CalUserId { get; set; }
 		public Guid CalendarId { get; set; }
 		public string? Color { get; set; }
+		public int NumTimesNotified { get; set; }
+		public bool ShouldNotify { get; set; }
 
 		public CreateEventRequest CreateSubEventRequest(DateTime dayToAdd, Guid seriesId)
 		{
@@ -56,6 +58,8 @@ namespace CAL.Client.Models.Server.Request
 				SeriesId = seriesId,
 				CalendarId = CalendarId,
 				Color = Color,
+				NumTimesNotified = NumTimesNotified,
+				ShouldNotify = ShouldNotify,
 			};
 
 			return createEventRequest;

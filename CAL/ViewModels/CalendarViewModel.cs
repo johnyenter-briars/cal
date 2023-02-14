@@ -95,7 +95,16 @@ namespace CAL.ViewModels
 		}
 		private async Task LoadEventCollectionAsync(int year, int month)
 		{
-			var events = (await CalClientSingleton.GetEventsAsync(year, month)).Events.Where(e => e.CalendarId == CurrentlySelectedCalendar.Id).ToList();
+			List<Event> events;
+			try
+			{
+				var foo = (await CalClientSingleton.GetEventsAsync(year, month));
+				events = foo.Events.Where(e => e.CalendarId == CurrentlySelectedCalendar?.Id).ToList();
+			}
+			catch (Exception e)
+			{
+				return;
+			}
 
 			EventsBuffer.Clear();
 			EventsBuffer.AddRange(events.Select(d => new CalendarEvent
@@ -110,6 +119,8 @@ namespace CAL.ViewModels
 				CalendarId = d.CalendarId,
 				Color = Color.Parse(d.Color),
 				SeriesName = d.SeriesName,
+				NumTimesNotified = d.NumTimesNotified,
+				ShouldNotify = d.ShouldNotify,
 			}));
 
 			foreach (var Day in EventCalendar.Days)
@@ -162,7 +173,7 @@ namespace CAL.ViewModels
 		}
 		private void EventCalendar_DaysUpdated(object sender, EventArgs e)
 		{
-			SelectedDate = ((Calendar<EventDay>)sender).SelectedDates.FirstOrDefault();
+			_selectedDate = ((Calendar<EventDay>)sender).SelectedDates.FirstOrDefault();
 			foreach (var Day in EventCalendar.Days)
 			{
 				Day.Events.ReplaceRange(EventsBuffer.Where(x => x.StartTime.Date == Day.DateTime.Date));
@@ -181,7 +192,7 @@ namespace CAL.ViewModels
 
 				var color = SupportedColors.Where(c => Color.Parse(c).ToString() == e.Color.ToString()).Single();
 
-				await Shell.Current.GoToAsync($@"{nameof(EditSeriesPage)}?{nameof(EditSeriesViewModel.StartTimeUnixSeconds)}={startUnixTimeSeconds}&{nameof(EditSeriesViewModel.EndTimeUnixSeconds)}={endUnixTimeSeconds}&{nameof(EditSeriesViewModel.Id)}={series.Id}&{nameof(EditSeriesViewModel.Name)}={series.Name}&{nameof(EditSeriesViewModel.Description)}={series.Description}&{nameof(EditSeriesViewModel.RepeatEveryWeek)}={series.RepeatEveryWeek}&{nameof(EditSeriesViewModel.RepeatOnMon)}={series.RepeatOnMon}&{nameof(EditSeriesViewModel.RepeatOnTues)}={series.RepeatOnTues}&{nameof(EditSeriesViewModel.RepeatOnWed)}={series.RepeatOnWed}&{nameof(EditSeriesViewModel.RepeatOnThurs)}={series.RepeatOnThurs}&{nameof(EditSeriesViewModel.RepeatOnFri)}={series.RepeatOnFri}&{nameof(EditSeriesViewModel.RepeatOnSat)}={series.RepeatOnSat}&{nameof(EditSeriesViewModel.RepeatOnSun)}={series.RepeatOnSun}&{nameof(EditSeriesViewModel.EntityType)}={series.EntityType}&{nameof(EditSeriesViewModel.CurrentlySelectedCalendar)}={CurrentlySelectedCalendar.Id}&{nameof(EditSeriesViewModel.Color)}={color}");
+				await Shell.Current.GoToAsync($@"{nameof(EditSeriesPage)}?{nameof(EditSeriesViewModel.StartTimeUnixSeconds)}={startUnixTimeSeconds}&{nameof(EditSeriesViewModel.EndTimeUnixSeconds)}={endUnixTimeSeconds}&{nameof(EditSeriesViewModel.Id)}={series.Id}&{nameof(EditSeriesViewModel.Name)}={series.Name}&{nameof(EditSeriesViewModel.Description)}={series.Description}&{nameof(EditSeriesViewModel.RepeatEveryWeek)}={series.RepeatEveryWeek}&{nameof(EditSeriesViewModel.RepeatOnMon)}={series.RepeatOnMon}&{nameof(EditSeriesViewModel.RepeatOnTues)}={series.RepeatOnTues}&{nameof(EditSeriesViewModel.RepeatOnWed)}={series.RepeatOnWed}&{nameof(EditSeriesViewModel.RepeatOnThurs)}={series.RepeatOnThurs}&{nameof(EditSeriesViewModel.RepeatOnFri)}={series.RepeatOnFri}&{nameof(EditSeriesViewModel.RepeatOnSat)}={series.RepeatOnSat}&{nameof(EditSeriesViewModel.RepeatOnSun)}={series.RepeatOnSun}&{nameof(EditSeriesViewModel.EntityType)}={series.EntityType}&{nameof(EditSeriesViewModel.CurrentlySelectedCalendar)}={CurrentlySelectedCalendar.Id}&{nameof(EditSeriesViewModel.Color)}={color}&{nameof(EditSeriesViewModel.ShouldNotify)}={e.ShouldNotify}&{nameof(EditSeriesViewModel.NumTimesNotified)}={e.NumTimesNotified}");
 			}
 			else
 			{
@@ -190,7 +201,7 @@ namespace CAL.ViewModels
 
 				var color = SupportedColors.Where(c => Color.Parse(c).ToString() == e.Color.ToString()).Single();
 
-				await Shell.Current.GoToAsync($@"{nameof(EditEventPage)}?{nameof(EditEventViewModel.StartTimeUnixSeconds)}={startUnixTimeSeconds}&{nameof(EditEventViewModel.EndTimeUnixSeconds)}={endUnixTimeSeconds}&{nameof(EditEventViewModel.Id)}={e.Id}&{nameof(EditEventViewModel.Name)}={e.Name}&{nameof(EditEventViewModel.Description)}={e.Description}&{nameof(EditEventViewModel.EntityType)}={e.EntityType}&{nameof(EditEventViewModel.Color)}={color}");
+				await Shell.Current.GoToAsync($@"{nameof(EditEventPage)}?{nameof(EditEventViewModel.StartTimeUnixSeconds)}={startUnixTimeSeconds}&{nameof(EditEventViewModel.EndTimeUnixSeconds)}={endUnixTimeSeconds}&{nameof(EditEventViewModel.Id)}={e.Id}&{nameof(EditEventViewModel.Name)}={e.Name}&{nameof(EditEventViewModel.Description)}={e.Description}&{nameof(EditEventViewModel.EntityType)}={e.EntityType}&{nameof(EditEventViewModel.Color)}={color}&{nameof(EditEventViewModel.ShouldNotify)}={e.ShouldNotify}&{nameof(EditEventViewModel.NumTimesNotified)}={e.NumTimesNotified}");
 			}
 		}
 		private async Task SelectCalendar(object calendar)

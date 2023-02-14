@@ -17,6 +17,8 @@ namespace CAL.ViewModels
 	[QueryProperty(nameof(CurrentlySelectedCalendar), nameof(CurrentlySelectedCalendar))]
 	[QueryProperty(nameof(EntityType), nameof(EntityType))]
 	[QueryProperty(nameof(Color), nameof(Color))]
+	[QueryProperty(nameof(NumTimesNotified), nameof(NumTimesNotified))]
+	[QueryProperty(nameof(ShouldNotify), nameof(ShouldNotify))]
 	public class EditEventViewModel : BaseViewModel
 	{
 		public Color CurrentlySelectedColor
@@ -147,6 +149,18 @@ namespace CAL.ViewModels
 			get => _color;
 			set => SetProperty(ref _color, value);
 		}
+		private int numTimesNotified;
+		public int NumTimesNotified
+		{
+			get => numTimesNotified;
+			set => SetProperty(ref numTimesNotified, value);
+		}
+		private bool shouldNotify;
+		public bool ShouldNotify
+		{
+			get => shouldNotify;
+			set => SetProperty(ref shouldNotify, value);
+		}
 
 		public Command SaveCommand { get; }
 		public Command DeleteCommand { get; }
@@ -187,6 +201,8 @@ namespace CAL.ViewModels
 				CalUserId = new Guid(PreferencesManager.GetUserId()),
 				CalendarId = _currentlySelectedCalendar,
 				Color = Color,
+				NumTimesNotified = numTimesNotified,
+				ShouldNotify = shouldNotify,
 			};
 
 			if (id != Guid.Empty)

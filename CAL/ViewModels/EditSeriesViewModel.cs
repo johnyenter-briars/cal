@@ -24,6 +24,8 @@ namespace CAL.ViewModels
 	[QueryProperty(nameof(CurrentlySelectedCalendar), nameof(CurrentlySelectedCalendar))]
 	[QueryProperty(nameof(EntityType), nameof(EntityType))]
 	[QueryProperty(nameof(Color), nameof(Color))]
+	[QueryProperty(nameof(NumTimesNotified), nameof(NumTimesNotified))]
+	[QueryProperty(nameof(ShouldNotify), nameof(ShouldNotify))]
 	public class EditSeriesViewModel : BaseViewModel
 	{
 		public Color CurrentlySelectedColor
@@ -202,6 +204,18 @@ namespace CAL.ViewModels
 			get => repeatEveryWeek;
 			set => SetProperty(ref repeatEveryWeek, value);
 		}
+		private int numTimesNotified;
+		public int NumTimesNotified
+		{
+			get => numTimesNotified;
+			set => SetProperty(ref numTimesNotified, value);
+		}
+		private bool shouldNotify;
+		public bool ShouldNotify
+		{
+			get => shouldNotify;
+			set => SetProperty(ref shouldNotify, value);
+		}
 
 		public Command SaveCommand { get; }
 		public Command CancelCommand { get; }
@@ -241,6 +255,8 @@ namespace CAL.ViewModels
 					CalUserId = new Guid(PreferencesManager.GetUserId()),
 					CalendarId = _currentlySelectedCalendar,
 					Color = Color,
+					NumTimesNotified = numTimesNotified,
+					ShouldNotify = shouldNotify,
 				};
 
 				await CalClientSingleton.CreateSeriesAsync(request);
@@ -267,6 +283,8 @@ namespace CAL.ViewModels
 					CalUserId = new Guid(PreferencesManager.GetUserId()),
 					CalendarId = _currentlySelectedCalendar,
 					Color = Color,
+					NumTimesNotified = numTimesNotified,
+					ShouldNotify = shouldNotify,
 				};
 
 				await CalClientSingleton.UpdateSeriesAsync(request);

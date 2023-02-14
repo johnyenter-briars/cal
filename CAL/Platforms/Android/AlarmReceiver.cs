@@ -23,7 +23,7 @@ namespace CAL.Platforms.Android
 
 				   foreach (var e in response.Events)
 				   {
-					   if (now.Date != e.StartTime.Date)
+					   if (now.Date != e.StartTime.Date || !e.ShouldNotify)
 					   {
 						   continue;
 					   }
@@ -34,12 +34,24 @@ namespace CAL.Platforms.Android
 						   span.Minutes <= 45)
 					   {
 						   DependencyService.Get<INotificationManager>().SendNotification(e.Name, $"Upcomming Event in 30-50 mintues at: {e.StartTime}");
+						   e.NumTimesNotified += 1;
+						   await calClient.UpdateEventAsync(e.ToUpdateRequest());
+					   }
+
+					   if (span.Minutes >= 6 &&
+						   span.Minutes <= 29)
+					   {
+						   DependencyService.Get<INotificationManager>().SendNotification(e.Name, $"Upcomming Event in 6-29 mintues at: {e.StartTime}");
+						   e.NumTimesNotified += 1;
+						   await calClient.UpdateEventAsync(e.ToUpdateRequest());
 					   }
 
 					   if (span.Minutes <= 5 &&
 						   span.Minutes > 0)
 					   {
 						   DependencyService.Get<INotificationManager>().SendNotification(e.Name, $"Upcomming Event starting now at: {e.StartTime}");
+						   e.NumTimesNotified += 1;
+						   await calClient.UpdateEventAsync(e.ToUpdateRequest());
 					   }
 				   }
 			   });
