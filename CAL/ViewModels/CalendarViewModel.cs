@@ -166,6 +166,7 @@ namespace CAL.ViewModels
 		{
 			await ExecuteLoadEventsAsync();
 			SelectedEvents.Clear();
+			EventCalendar.SelectedDates.Clear();
 		}
 		private void SelectedDates_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
 		{
