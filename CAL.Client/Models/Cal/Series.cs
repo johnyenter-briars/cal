@@ -8,8 +8,8 @@ namespace CAL.Client.Models.Cal
 	public class Series
 	{
 		public Guid Id { get; set; }
-		public string Name { get; set; }
-		public string Description { get; set; }
+		public string Name { get; set; } = "";
+		public string Description { get; set; } = "";
 		public int RepeatEveryWeek { get; set; }
 		public bool RepeatOnMon { get; set; }
 		public bool RepeatOnTues { get; set; }

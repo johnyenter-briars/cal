@@ -17,7 +17,7 @@ namespace CAL.Client.Models.Server.Request
 		public Guid CalUserId { get; set; }
 		public Guid? SeriesId { get; set; }
 		public Guid CalendarId { get; set; }
-		public string? Color { get; set; }
+		public string Color { get; set; } = "";
 		public int NumTimesNotified { get; set; }
 		public bool ShouldNotify { get; set; }
 

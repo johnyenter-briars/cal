@@ -22,32 +22,25 @@ namespace CAL.Views
 
 			Task.Run(async () =>
 			{
-				try
+				await Task.Delay(1000);
+				var calClient = DependencyService.Get<ICalClient>();
+				var calendarsForUser = await calClient.GetCalendarsForUserAsync(new Guid(PreferencesManager.GetUserId()));
+
+				var bc = (CalendarViewModel)BindingContext;
+				bc.CurrentlySelectedCalendar = calendarsForUser.Calendars.SingleOrDefault(c => c.Id == new Guid(PreferencesManager.GetDefaultCalendarId()));
+
+				foreach (var calendar in calendarsForUser.Calendars)
 				{
-					await Task.Delay(1000);
-					var calClient = DependencyService.Get<ICalClient>();
-					var calendarsForUser = await calClient.GetCalendarsForUserAsync(new Guid(PreferencesManager.GetUserId()));
-
-					var bc = (CalendarViewModel)BindingContext;
-					bc.CurrentlySelectedCalendar = calendarsForUser.Calendars.SingleOrDefault(c => c.Id == new Guid(PreferencesManager.GetDefaultCalendarId()));
-
-					foreach (var calendar in calendarsForUser.Calendars)
+					ToolbarItems.Add(new ToolbarItem
 					{
-						ToolbarItems.Add(new ToolbarItem
-						{
-							Order = ToolbarItemOrder.Secondary,
-							Text = $"{calendar.Name} ({calendar.Color})",
-							Command = bc.SelectCalendarCommand,
-							CommandParameter = calendar,
-						});
-					}
+						Order = ToolbarItemOrder.Secondary,
+						Text = $"{calendar.Name} ({calendar.Color})",
+						Command = bc.SelectCalendarCommand,
+						CommandParameter = calendar,
+					});
+				}
 
-					OnAppearing();
-				}
-				catch (Exception e)
-				{
-					var idk = 10;
-				}
+				OnAppearing();
 			});
 		}
 		protected override void OnAppearing()

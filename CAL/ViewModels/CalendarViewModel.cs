@@ -95,16 +95,8 @@ namespace CAL.ViewModels
 		}
 		private async Task LoadEventCollectionAsync(int year, int month)
 		{
-			List<Event> events;
-			try
-			{
-				var foo = (await CalClientSingleton.GetEventsAsync(year, month));
-				events = foo.Events.Where(e => e.CalendarId == CurrentlySelectedCalendar?.Id).ToList();
-			}
-			catch (Exception e)
-			{
-				return;
-			}
+			var eventsOfMonth = (await CalClientSingleton.GetEventsAsync(year, month));
+			var events = eventsOfMonth.Events.Where(e => e.CalendarId == CurrentlySelectedCalendar?.Id).ToList();
 
 			EventsBuffer.Clear();
 			EventsBuffer.AddRange(events.Select(d => new CalendarEvent

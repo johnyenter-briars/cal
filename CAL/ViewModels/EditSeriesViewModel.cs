@@ -3,6 +3,7 @@ using CAL.Client.Models;
 using CAL.Client.Models.Cal;
 using CAL.Client.Models.Server.Request;
 using CAL.Managers;
+using PropertyChanged;
 using System;
 using System.Text;
 
@@ -26,6 +27,7 @@ namespace CAL.ViewModels
 	[QueryProperty(nameof(Color), nameof(Color))]
 	[QueryProperty(nameof(NumTimesNotified), nameof(NumTimesNotified))]
 	[QueryProperty(nameof(ShouldNotify), nameof(ShouldNotify))]
+	[SuppressPropertyChangedWarnings]
 	public class EditSeriesViewModel : BaseViewModel
 	{
 		public Color CurrentlySelectedColor

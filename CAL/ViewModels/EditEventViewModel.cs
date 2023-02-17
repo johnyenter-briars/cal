@@ -3,6 +3,7 @@ using CAL.Client.Models;
 using CAL.Client.Models.Cal;
 using CAL.Managers;
 using Microsoft.Maui.Graphics.Text;
+using PropertyChanged;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -19,6 +20,7 @@ namespace CAL.ViewModels
 	[QueryProperty(nameof(Color), nameof(Color))]
 	[QueryProperty(nameof(NumTimesNotified), nameof(NumTimesNotified))]
 	[QueryProperty(nameof(ShouldNotify), nameof(ShouldNotify))]
+	[SuppressPropertyChangedWarnings]
 	public class EditEventViewModel : BaseViewModel
 	{
 		public string Id
