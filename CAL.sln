@@ -5,7 +5,7 @@ VisualStudioVersion = 17.0.31611.283
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CAL", "CAL\CAL.csproj", "{93C3CA7D-EE48-4742-B342-519A5488689E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CAL.Client", "CAL.Client\CAL.Client.csproj", "{072CEF28-C667-47F3-B670-AC64F4A91F05}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CAL.Client", "CAL.Client\CAL.Client.csproj", "{072CEF28-C667-47F3-B670-AC64F4A91F05}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CAL.CLI", "CAL.CLI\CAL.CLI.csproj", "{2D6125B8-AA30-4970-B8C1-681E2A60E0CD}"
 EndProject
@@ -25,6 +25,10 @@ Global
 		{072CEF28-C667-47F3-B670-AC64F4A91F05}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{072CEF28-C667-47F3-B670-AC64F4A91F05}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{072CEF28-C667-47F3-B670-AC64F4A91F05}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2D6125B8-AA30-4970-B8C1-681E2A60E0CD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2D6125B8-AA30-4970-B8C1-681E2A60E0CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2D6125B8-AA30-4970-B8C1-681E2A60E0CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2D6125B8-AA30-4970-B8C1-681E2A60E0CD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

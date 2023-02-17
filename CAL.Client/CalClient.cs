@@ -20,7 +20,7 @@ namespace CAL.Client
 		private string _userId = "";
 		private string _hostName = "";
 		private int _port = -1;
-		private static readonly HttpClient _httpClient = new HttpClient
+		private static readonly HttpClient _httpClient = new()
 		{
 			Timeout = new TimeSpan(0, 0, 10),
 		};
@@ -34,8 +34,6 @@ namespace CAL.Client
 					Formatting = Formatting.Indented
 				};
 
-		public static HttpClient HttpClient => _httpClient;
-
 		public CalClient()
 		{
 		}
@@ -45,7 +43,6 @@ namespace CAL.Client
 		}
 		public async Task<CreateEventResponse> CreateEventAsync(CreateEventRequest createEventRequest)
 		{
-
 			return await CalServerRequest<CreateEventRequest, CreateEventResponse>(createEventRequest, "event", HttpMethod.Post);
 		}
 		public async Task<CreateSeriesResponse> CreateSeriesAsync(CreateSeriesRequest createSeriesRequest)
@@ -94,15 +91,15 @@ namespace CAL.Client
 		}
 		public async Task<EventsResponse> GetEventsAsync()
 		{
-			var events = await CalServerRequest<EventsResponse>($"event", HttpMethod.Get);
-			var series = await CalServerRequest<AllSeriesResponse>($"series", HttpMethod.Get);
+			var eventsResponse = await CalServerRequest<EventsResponse>($"event", HttpMethod.Get);
+			var seriesResponse = await CalServerRequest<AllSeriesResponse>($"series", HttpMethod.Get);
 
-			foreach (var e in events.Events)
+			foreach (var e in eventsResponse.Events)
 			{
-				e.SeriesName = series.Series.Where(s => s.Id == e.SeriesId).FirstOrDefault()?.Name ?? throw new NullReferenceException("Serles.Name");
+				e.SeriesName = seriesResponse.Series.FirstOrDefault(s => s.Id == e.SeriesId)?.Name ?? throw new Exception($"No series found with id: {e.SeriesId}");
 			}
 
-			return events;
+			return eventsResponse;
 		}
 		public async Task<SeriesResponse> GetSeriesAsync(Guid id)
 		{
@@ -127,7 +124,7 @@ namespace CAL.Client
 		}
 		private async Task<TResponse> CalServerRequest<TResponse>(string path, HttpMethod httpMethod)
 		{
-			var request = new HttpRequestMessage(httpMethod, $"http://{_hostName}:{_port}/api/" + path);
+			var request = new HttpRequestMessage(httpMethod, $"http://{_hostName}:{_port}/cal/api/" + path);
 			request.Headers.Accept.Clear();
 			request.Headers.Add("x-api-key", _apiKey);
 			request.Headers.Add("x-user-id", _userId);
@@ -143,7 +140,7 @@ namespace CAL.Client
 				return (TResponse)new TResponse().SetMessage("BadRequest").SetStatusCode(400);
 			}
 
-			var request = new HttpRequestMessage(httpMethod, $"http://{_hostName}:{_port}/api/" + path);
+			var request = new HttpRequestMessage(httpMethod, $"http://{_hostName}:{_port}/cal/api/" + path);
 			request.Headers.Accept.Clear();
 			request.Headers.Add("x-api-key", _apiKey);
 			request.Headers.Add("x-user-id", _userId);
@@ -154,7 +151,7 @@ namespace CAL.Client
 		}
 		private async Task<TResponse> SendRequest<TResponse>(HttpRequestMessage request)
 		{
-			var clientResponse = await HttpClient.SendAsync(request, CancellationToken.None);
+			var clientResponse = await _httpClient.SendAsync(request, CancellationToken.None);
 
 			if (clientResponse.IsSuccessStatusCode)
 			{
@@ -162,7 +159,7 @@ namespace CAL.Client
 			}
 			else
 			{
-				var message = $"Failure to complete action. Reason phrase: {clientResponse.ReasonPhrase}, Raw response: {await clientResponse.Content.ReadAsStringAsync()}";
+				var message = $"Failure to complete action. Reason phrase: {clientResponse.ReasonPhrase}, Raw response: {await clientResponse.Content.ReadAsStringAsync()}, Endpoint: {request.RequestUri}";
 				throw new Exception(message);
 			}
 		}
@@ -300,6 +297,19 @@ namespace CAL.Client
 			var d2 = date2.Date.AddDays(-1 * (int)cal.GetDayOfWeek(date2));
 
 			return d1 == d2;
+		}
+
+		public async Task<EventsResponse> GetEventsAsync(int year, int month)
+		{
+			var eventsResponse = await CalServerRequest<EventsResponse>($"event/{year}/{month}", HttpMethod.Get);
+			var seriesResponse = await CalServerRequest<AllSeriesResponse>($"series", HttpMethod.Get);
+
+			foreach (var e in eventsResponse.Events)
+			{
+				e.SeriesName = seriesResponse.Series.FirstOrDefault(s => s.Id == e.SeriesId)?.Name;
+			}
+
+			return eventsResponse;
 		}
 	}
 }

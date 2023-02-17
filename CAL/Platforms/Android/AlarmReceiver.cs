@@ -17,7 +17,7 @@ namespace CAL.Platforms.Android
 			   {
 				   var calClient = DependencyService.Get<ICalClient>();
 
-				   var response = await calClient.GetEventsAsync();
+				   var response = await calClient.GetEventsAsync(DateTime.Now.Year, DateTime.Now.Month);
 
 				   var now = DateTime.UtcNow;
 
