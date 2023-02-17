@@ -41,7 +41,7 @@ namespace CAL.Platforms.Android
 
 					   if (span.TotalMinutes >= 16 && span.TotalMinutes <= 30)
 					   {
-						   DependencyService.Get<INotificationManager>().SendNotification(e.Name, $"Upcomming Event in 16-30 mintues at: {e.StartTime}");
+						   DependencyService.Get<INotificationManager>().SendNotification(e.Name, $"Upcomming Event at: {e.StartTime}");
 						   e.NumTimesNotified += 1;
 						   await calClient.UpdateEventAsync(e.ToUpdateRequest());
 						   return;
@@ -49,7 +49,7 @@ namespace CAL.Platforms.Android
 
 					   if (span.TotalMinutes >= 0 && span.TotalMinutes <= 15)
 					   {
-						   DependencyService.Get<INotificationManager>().SendNotification(e.Name, $"Upcomming Event in 0 - 15 at: {e.StartTime}");
+						   DependencyService.Get<INotificationManager>().SendNotification(e.Name, $"Upcomming Event at: {e.StartTime}");
 						   e.NumTimesNotified += 1;
 						   await calClient.UpdateEventAsync(e.ToUpdateRequest());
 						   return;
