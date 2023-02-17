@@ -21,3 +21,7 @@ CAL interops with the [cal-server](https://github.com/johnyenter-briars/cal-serv
 
 ## About
 The philosophy of this project is to leverage .NET's ability to share business logic efficently, and extend shared features simply between an app and command line interface.
+
+## Known Issues on Android
+- [Pressing the return key or 'done' on the keyboard does not dismiss the keyboard](https://github.com/dotnet/maui/issues/10858)
+- Because the app makes frequent network requests using (`AlarmManager`)[https://developer.android.com/reference/android/app/AlarmManager.html] the app needs to be set to 'Unrestricted Battery Access' in device settings

@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace CAL.Platforms.Android
 {
 	[BroadcastReceiver]
-	public class AlarmReceiver : BroadcastReceiver
+	public class EventNotificationReceiver : BroadcastReceiver
 	{
 		public override void OnReceive(Context context, Intent intent)
 		{
@@ -39,8 +39,7 @@ namespace CAL.Platforms.Android
 					   // await calClient.UpdateEventAsync(e.ToUpdateRequest());
 					   //}
 
-					   if (span.TotalMinutes >= 16 &&
-						   span.TotalMinutes <= 30)
+					   if (span.TotalMinutes >= 16 && span.TotalMinutes <= 30)
 					   {
 						   DependencyService.Get<INotificationManager>().SendNotification(e.Name, $"Upcomming Event in 16-30 mintues at: {e.StartTime}");
 						   e.NumTimesNotified += 1;
@@ -48,10 +47,9 @@ namespace CAL.Platforms.Android
 						   return;
 					   }
 
-					   if (span.TotalMinutes <= 15 &&
-						   span.TotalMinutes >= 0)
+					   if (span.TotalMinutes >= 0 && span.TotalMinutes <= 15)
 					   {
-						   DependencyService.Get<INotificationManager>().SendNotification(e.Name, $"Upcomming Event in 0 - 15 now at: {e.StartTime}");
+						   DependencyService.Get<INotificationManager>().SendNotification(e.Name, $"Upcomming Event in 0 - 15 at: {e.StartTime}");
 						   e.NumTimesNotified += 1;
 						   await calClient.UpdateEventAsync(e.ToUpdateRequest());
 						   return;
