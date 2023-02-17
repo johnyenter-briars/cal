@@ -12,8 +12,8 @@ namespace CAL.Client.Models.Server.Request
 	public class UpdateSeriesRequest : IValidatable
 	{
 		public Guid Id { get; set; }
-		public string Name { get; set; }
-		public string Description { get; set; }
+		public string Name { get; set; } = "";
+		public string Description { get; set; } = "";
 		public int RepeatEveryWeek { get; set; }
 		public bool RepeatOnMon { get; set; }
 		public bool RepeatOnTues { get; set; }
@@ -40,7 +40,7 @@ namespace CAL.Client.Models.Server.Request
 		{
 			return StartsOn.Kind == DateTimeKind.Utc &&
 					EndsOn.Kind == DateTimeKind.Utc &&
-					CalUserId != null;
+					CalUserId != Guid.Empty;
 		}
 
 		public CreateSeriesRequest ToCreateSeriesRequest()

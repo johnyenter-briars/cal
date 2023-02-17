@@ -5,7 +5,7 @@ namespace CAL.Client.Models.Server.Response
 {
     public class CreateSeriesResponse : BaseResponse
     {
-        public Guid? SeriesId { get; set; }
+        public Guid SeriesId { get; set; }
     }
 }
 

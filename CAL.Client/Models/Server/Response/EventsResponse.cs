@@ -7,6 +7,6 @@ namespace CAL.Client.Models.Server.Response
 {
     public class EventsResponse : BaseResponse
     {
-        public IList<Event> Events { get; set; }
+        public List<Event> Events { get; set; } = new ();
     }
 }
