@@ -155,7 +155,7 @@ namespace CAL.Client
 
 			if (clientResponse.IsSuccessStatusCode)
 			{
-				return JsonConvert.DeserializeObject<TResponse>(await clientResponse.Content.ReadAsStringAsync());
+				return JsonConvert.DeserializeObject<TResponse>(await clientResponse.Content.ReadAsStringAsync()) ?? throw new NullReferenceException("JsonConvert.DeserializeObject<TResponse>");
 			}
 			else
 			{

@@ -12,8 +12,8 @@ namespace CAL.Client.Models.Server.Request
 	public class UpdateSeriesRequest : IValidatable
 	{
 		public Guid Id { get; set; }
-		public string Name { get; set; }
-		public string Description { get; set; }
+		public string Name { get; set; } = "";
+		public string Description { get; set; } = "";
 		public int RepeatEveryWeek { get; set; }
 		public bool RepeatOnMon { get; set; }
 		public bool RepeatOnTues { get; set; }
@@ -32,13 +32,15 @@ namespace CAL.Client.Models.Server.Request
 		public TimeSpan EventEndTime { get; set; }
 		public Guid CalUserId { get; set; }
 		public Guid CalendarId { get; set; }
-		public string? Color { get; set; }
+		public string Color { get; set; } = "";
+		public int NumTimesNotified { get; set; }
+		public bool ShouldNotify { get; set; }
 
 		public bool Validate()
 		{
 			return StartsOn.Kind == DateTimeKind.Utc &&
 					EndsOn.Kind == DateTimeKind.Utc &&
-					CalUserId != null;
+					CalUserId != Guid.Empty;
 		}
 
 		public CreateSeriesRequest ToCreateSeriesRequest()
@@ -51,6 +53,7 @@ namespace CAL.Client.Models.Server.Request
 				RepeatEveryWeek = RepeatEveryWeek,
 				RepeatOnMon = RepeatOnMon,
 				RepeatOnTues = RepeatOnTues,
+				RepeatOnWed = RepeatOnWed,
 				RepeatOnThurs = RepeatOnThurs,
 				RepeatOnFri = RepeatOnFri,
 				RepeatOnSat = RepeatOnSat,
@@ -62,6 +65,8 @@ namespace CAL.Client.Models.Server.Request
 				CalUserId = CalUserId,
 				CalendarId = CalendarId,
 				Color = Color,
+				NumTimesNotified = NumTimesNotified,
+				ShouldNotify = ShouldNotify,
 			};
 		}
 	}

@@ -3,6 +3,7 @@ using CAL.Client.Models;
 using CAL.Client.Models.Cal;
 using CAL.Client.Models.Server.Request;
 using CAL.Managers;
+using PropertyChanged;
 using System;
 using System.Text;
 
@@ -24,6 +25,9 @@ namespace CAL.ViewModels
 	[QueryProperty(nameof(CurrentlySelectedCalendar), nameof(CurrentlySelectedCalendar))]
 	[QueryProperty(nameof(EntityType), nameof(EntityType))]
 	[QueryProperty(nameof(Color), nameof(Color))]
+	[QueryProperty(nameof(NumTimesNotified), nameof(NumTimesNotified))]
+	[QueryProperty(nameof(ShouldNotify), nameof(ShouldNotify))]
+	[SuppressPropertyChangedWarnings]
 	public class EditSeriesViewModel : BaseViewModel
 	{
 		public Color CurrentlySelectedColor
@@ -70,7 +74,14 @@ namespace CAL.ViewModels
 				startTimeUnixSeconds = value;
 				DateTime dateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc).AddSeconds(startTimeUnixSeconds);
 				SeriesStartsOnSelectedDate = dateTime.ToLocalTime();
-				SubEventsStartTime = dateTime.ToLocalTime().TimeOfDay;
+				if (new Guid(Id) == Guid.Empty)
+				{
+					SubEventsStartTime = DateTime.Now.TimeOfDay;
+				}
+				else
+				{
+					SubEventsStartTime = dateTime.ToLocalTime().TimeOfDay;
+				}
 			}
 		}
 		private long endTimeUnixSeconds;
@@ -82,7 +93,14 @@ namespace CAL.ViewModels
 				endTimeUnixSeconds = value;
 				DateTime dateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc).AddSeconds(endTimeUnixSeconds);
 				SeriesEndsOnSelectedDate = dateTime.ToLocalTime();
-				SubEventEndTime = dateTime.ToLocalTime().TimeOfDay;
+				if (new Guid(Id) == Guid.Empty)
+				{
+					SubEventEndTime = DateTime.Now.TimeOfDay.Add(TimeSpan.FromHours(1));
+				}
+				else
+				{
+					SubEventEndTime = dateTime.ToLocalTime().TimeOfDay;
+				}
 			}
 		}
 		private TimeSpan _subEventStartTime;
@@ -202,6 +220,18 @@ namespace CAL.ViewModels
 			get => repeatEveryWeek;
 			set => SetProperty(ref repeatEveryWeek, value);
 		}
+		private int numTimesNotified;
+		public int NumTimesNotified
+		{
+			get => numTimesNotified;
+			set => SetProperty(ref numTimesNotified, value);
+		}
+		private bool shouldNotify;
+		public bool ShouldNotify
+		{
+			get => shouldNotify;
+			set => SetProperty(ref shouldNotify, value);
+		}
 
 		public Command SaveCommand { get; }
 		public Command CancelCommand { get; }
@@ -241,6 +271,8 @@ namespace CAL.ViewModels
 					CalUserId = new Guid(PreferencesManager.GetUserId()),
 					CalendarId = _currentlySelectedCalendar,
 					Color = Color,
+					NumTimesNotified = numTimesNotified,
+					ShouldNotify = shouldNotify,
 				};
 
 				await CalClientSingleton.CreateSeriesAsync(request);
@@ -267,6 +299,8 @@ namespace CAL.ViewModels
 					CalUserId = new Guid(PreferencesManager.GetUserId()),
 					CalendarId = _currentlySelectedCalendar,
 					Color = Color,
+					NumTimesNotified = numTimesNotified,
+					ShouldNotify = shouldNotify,
 				};
 
 				await CalClientSingleton.UpdateSeriesAsync(request);

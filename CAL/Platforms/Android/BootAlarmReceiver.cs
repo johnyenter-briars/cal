@@ -16,7 +16,7 @@ namespace CAL.Platforms.Android
 			if (intent.Action == "android.intent.action.BOOT_COMPLETED" || intent.Action == "android.intent.action.SCREEN_ON")
 			{
 				var alarmManager = context.GetSystemService(Context.AlarmService) as AlarmManager;
-				var alarmIntent = new Intent(context, typeof(AlarmReceiver));
+				var alarmIntent = new Intent(context, typeof(EventNotificationReceiver));
 				var id = int.Parse(context.GetString(Resource.String.notification_alarm_id));
 				var interval = int.Parse(context.GetString(Resource.String.notification_interval_millis));
 				var pendingIntent = PendingIntent.GetBroadcast(context, id, alarmIntent, PendingIntentFlags.Immutable);

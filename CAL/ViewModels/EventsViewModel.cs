@@ -23,30 +23,15 @@ namespace CAL.ViewModels
 		{
 			Title = "Events";
 			//Events = EventDataStore.GetAsObservable();
-			LoadEventsCommand = new Command(async () => await ExecuteLoadEventsComand());
 
 			AddEventCommand = new Command(OnAddEvent);
 
-		}
-
-		async Task<IEnumerable<Event>> GetNewData()
-		{
-			//var events = await EventDataStore.GetItemsAsync();
-
-			return null;
-		}
-		async Task ExecuteLoadEventsComand()
-		{
-			IsBusy = true;
-			//await EventDataStore.RefreshItemsAsync();
-			IsBusy = false;
 		}
 
 		public void OnAppearing()
 		{
 			IsBusy = true;
 		}
-
 		private async void OnAddEvent(object obj)
 		{
 			await Shell.Current.GoToAsync(nameof(EditEventPage));

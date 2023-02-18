@@ -17,18 +17,36 @@
 
         <ScrollView Grid.Row="1">
             <StackLayout Orientation="Vertical" Padding="30,24,30,24" Spacing="10">
+                <Label Text="Domain name / Ip Address" FontSize="Medium" />
                 <Entry TextColor="BlueViolet" x:Name = "IpAddress"  Text="{Binding HostName}"  Placeholder = "IP address"
                    HeightRequest = "40"  
                    />
+
+                <Label Text="Port" FontSize="Medium" />
                 <Entry TextColor="BlueViolet" x:Name = "Port" Text="{Binding Port}" Placeholder = "port"  
                    HeightRequest = "40"  
                         />
+
+                <Label Text="API Key" FontSize="Medium" />
                 <Entry TextColor="BlueViolet" x:Name = "ApiKey" Text="{Binding ApiKey}" Placeholder = "API Key"  
                    HeightRequest = "40"  
                         />
+
+                <Label Text="User Id" FontSize="Medium" />
                 <Entry TextColor="BlueViolet" x:Name = "UserId" Text="{Binding UserId}" Placeholder = "User Id"  
                    HeightRequest = "40"  
                         />
+
+                <Label Text="Default Calendar Id" FontSize="Medium" />
+                <Entry TextColor="BlueViolet" x:Name = "DefaultCalendarId" Text="{Binding DefaultCalendarId}" Placeholder = "Default Calendar Id"  
+                   HeightRequest = "40"  
+                        />
+
+                <Label Text="Max Number Times to Notify For an Event" FontSize="Medium"/>
+                <Entry TextColor="BlueViolet" x:Name = "MaxNumTimesNotify" Text="{Binding MaxNumTimesNotify}" Placeholder = "Max Number Times to Notify"  
+                   HeightRequest = "40"  
+                        />
+
                 <Button x:Name= "saveChangesBtn" Text = "Save Changes"   
                     Command="{Binding SaveChangesCommand}"  
                     HorizontalOptions = "FillAndExpand"/>

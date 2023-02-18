@@ -3,22 +3,31 @@ using CAL.Client.Models;
 using CAL.Client.Models.Cal;
 using CAL.Managers;
 using Microsoft.Maui.Graphics.Text;
+using PropertyChanged;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace CAL.ViewModels
 {
+	[QueryProperty(nameof(Id), nameof(Id))]
 	[QueryProperty(nameof(StartTimeUnixSeconds), nameof(StartTimeUnixSeconds))]
 	[QueryProperty(nameof(EndTimeUnixSeconds), nameof(EndTimeUnixSeconds))]
-	[QueryProperty(nameof(Id), nameof(Id))]
 	[QueryProperty(nameof(Name), nameof(Name))]
 	[QueryProperty(nameof(Description), nameof(Description))]
 	[QueryProperty(nameof(CurrentlySelectedCalendar), nameof(CurrentlySelectedCalendar))]
 	[QueryProperty(nameof(EntityType), nameof(EntityType))]
 	[QueryProperty(nameof(Color), nameof(Color))]
+	[QueryProperty(nameof(NumTimesNotified), nameof(NumTimesNotified))]
+	[QueryProperty(nameof(ShouldNotify), nameof(ShouldNotify))]
+	[SuppressPropertyChangedWarnings]
 	public class EditEventViewModel : BaseViewModel
 	{
+		public string Id
+		{
+			get => id.ToString();
+			set => SetProperty(ref id, new Guid(value));
+		}
 		public Color CurrentlySelectedColor
 		{
 			get
@@ -49,12 +58,11 @@ namespace CAL.ViewModels
 			}
 		}
 		private Guid _currentlySelectedCalendar;
-		private string name = "default value";
+		private string name;
 		private string description;
 		private string _color = "red";
 		private Guid id;
 		private long startTimeUnixSeconds;
-		public DateTime CurrentDate = DateTime.Now;
 		public long StartTimeUnixSeconds
 		{
 			get => startTimeUnixSeconds;
@@ -63,7 +71,14 @@ namespace CAL.ViewModels
 				startTimeUnixSeconds = value;
 				DateTime dateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc).AddSeconds(value);
 				StartSelectedDate = dateTime.ToLocalTime();
-				StartSelectedTime = dateTime.ToLocalTime().TimeOfDay;
+				if (new Guid(Id) == Guid.Empty)
+				{
+					StartSelectedTime = DateTime.Now.TimeOfDay;
+				}
+				else
+				{
+					StartSelectedTime = dateTime.ToLocalTime().TimeOfDay;
+				}
 			}
 		}
 		private long endTimeUnixSeconds;
@@ -75,7 +90,14 @@ namespace CAL.ViewModels
 				endTimeUnixSeconds = value;
 				DateTime dateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc).AddSeconds(endTimeUnixSeconds);
 				EndSelectedDate = dateTime.ToLocalTime();
-				EndSelectedTime = dateTime.ToLocalTime().TimeOfDay;
+				if (new Guid(Id) == Guid.Empty)
+				{
+					EndSelectedTime = DateTime.Now.TimeOfDay.Add(TimeSpan.FromHours(1));
+				}
+				else
+				{
+					EndSelectedTime = dateTime.ToLocalTime().TimeOfDay;
+				}
 			}
 		}
 		private TimeSpan _startTime;
@@ -125,11 +147,6 @@ namespace CAL.ViewModels
 		{
 			return !string.IsNullOrWhiteSpace(name);
 		}
-		public string Id
-		{
-			get => id.ToString();
-			set => SetProperty(ref id, new Guid(value));
-		}
 
 		public string Name
 		{
@@ -146,6 +163,18 @@ namespace CAL.ViewModels
 		{
 			get => _color;
 			set => SetProperty(ref _color, value);
+		}
+		private int numTimesNotified;
+		public int NumTimesNotified
+		{
+			get => numTimesNotified;
+			set => SetProperty(ref numTimesNotified, value);
+		}
+		private bool shouldNotify;
+		public bool ShouldNotify
+		{
+			get => shouldNotify;
+			set => SetProperty(ref shouldNotify, value);
 		}
 
 		public Command SaveCommand { get; }
@@ -187,6 +216,8 @@ namespace CAL.ViewModels
 				CalUserId = new Guid(PreferencesManager.GetUserId()),
 				CalendarId = _currentlySelectedCalendar,
 				Color = Color,
+				NumTimesNotified = numTimesNotified,
+				ShouldNotify = shouldNotify,
 			};
 
 			if (id != Guid.Empty)

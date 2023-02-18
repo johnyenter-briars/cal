@@ -1,9 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <resources>
 	<!--5 minutes-->
-	<!--
 	<string name="notification_interval_millis">300000</string> 
-	-->
-	<string name="notification_interval_millis">100000</string> 
 	<string name="notification_alarm_id">3</string>
 </resources>

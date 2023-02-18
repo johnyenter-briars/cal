@@ -10,8 +10,8 @@ namespace CAL.Client.Models.Server.Request
 	public class CreateSeriesRequest : IValidatable
 	{
 		public Guid? Id { get; set; }
-		public string Name { get; set; }
-		public string Description { get; set; }
+		public string Name { get; set; } = "";
+		public string Description { get; set; } = "";
 		public int RepeatEveryWeek { get; set; }
 		public bool RepeatOnMon { get; set; }
 		public bool RepeatOnTues { get; set; }
@@ -30,7 +30,9 @@ namespace CAL.Client.Models.Server.Request
 		public TimeSpan EventEndTime { get; set; }
 		public Guid CalUserId { get; set; }
 		public Guid CalendarId { get; set; }
-		public string? Color { get; set; }
+		public string Color { get; set; } = "";
+		public int NumTimesNotified { get; set; }
+		public bool ShouldNotify { get; set; }
 
 		public CreateEventRequest CreateSubEventRequest(DateTime dayToAdd, Guid seriesId)
 		{
@@ -56,6 +58,8 @@ namespace CAL.Client.Models.Server.Request
 				SeriesId = seriesId,
 				CalendarId = CalendarId,
 				Color = Color,
+				NumTimesNotified = NumTimesNotified,
+				ShouldNotify = ShouldNotify,
 			};
 
 			return createEventRequest;
@@ -65,7 +69,7 @@ namespace CAL.Client.Models.Server.Request
 		{
 			return StartsOn.Kind == DateTimeKind.Utc &&
 					EndsOn.Kind == DateTimeKind.Utc &&
-					CalUserId != null;
+					CalUserId != Guid.Empty;
 		}
 	}
 }

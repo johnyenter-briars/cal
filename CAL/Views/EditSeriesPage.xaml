@@ -96,7 +96,10 @@
                         </x:Array>
                     </Picker.ItemsSource>
                 </Picker>
-
+                <StackLayout Orientation="Horizontal">
+                    <Label Text="Should Notify" FontSize="Medium" />
+                    <CheckBox  IsChecked="{Binding ShouldNotify}" />
+                </StackLayout>
             </StackLayout>
 
         </ScrollView>

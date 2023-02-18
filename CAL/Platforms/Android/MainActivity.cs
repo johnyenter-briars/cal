@@ -14,7 +14,7 @@ public class MainActivity : MauiAppCompatActivity
 	{
 		base.OnStart();
 
-		var alarmIntent = new Intent(this, typeof(AlarmReceiver));
+		var alarmIntent = new Intent(this, typeof(EventNotificationReceiver));
 		var id = int.Parse(GetString(Resource.String.notification_alarm_id));
 		var interval = int.Parse(GetString(Resource.String.notification_interval_millis));
 
