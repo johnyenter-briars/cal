@@ -24,4 +24,4 @@ The philosophy of this project is to leverage .NET's ability to share business l
 
 ## Known Issues on Android
 - [Pressing the return key or 'done' on the keyboard does not dismiss the keyboard](https://github.com/dotnet/maui/issues/10858)
-- Because the app makes frequent network requests using (`AlarmManager`)[https://developer.android.com/reference/android/app/AlarmManager.html] the app needs to be set to 'Unrestricted Battery Access' in device settings
+- Because the app makes frequent network requests using [`AlarmManager`](https://developer.android.com/reference/android/app/AlarmManager.html) the app needs to be set to 'Unrestricted Battery Access' in device settings
