@@ -194,11 +194,15 @@ namespace CAL.ViewModels
                 EventCalendar.NavigatedDate = dateTime;
                 NavigatingToEvent = false;
                 SelectedDate = dateTime;
-                var idk = new Calendar<EventDay>();
-                idk.SelectedDates.Add(dateTime);
+                var tempDay = new Calendar<EventDay>();
+                tempDay.SelectedDates.Add(dateTime);
                 await LoadEventCollectionAsync(dateTime.Year, dateTime.Month);
-                EventCalendar_DaysUpdated(idk, null);
+                EventCalendar_DaysUpdated(tempDay, null);
                 SelectedDates_CollectionChanged(null, null);
+                EventCalendar.Days.Single(d =>
+                {
+                    return d.DateTime.Year == dateTime.Year && d.DateTime.Month == dateTime.Month && d.DateTime.Day == dateTime.Day;
+                }).IsSelected = true;
             }
             else
             {
