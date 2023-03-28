@@ -9,18 +9,34 @@
              x:Name="browseItemsPage"
              BackgroundColor="Black">
 
-    <CollectionView 
-                x:Name="EventsListView"
-                ItemsSource="{Binding Events}"
-                SelectionMode="None"
-                RemainingItemsThreshold="0"
-                RemainingItemsThresholdReachedCommand="{Binding RemainingItemsThresholdReachedCommand }"
-                VerticalScrollBarVisibility="Always"
-            >
-        <CollectionView.ItemTemplate>
-            <DataTemplate>
-                <controls:CalendarEvent CalendarEventCommand="{Binding BindingContext.EventSelectedCommand, Source={x:Reference browseItemsPage}}" />
-            </DataTemplate>
-        </CollectionView.ItemTemplate>
-    </CollectionView>
+    <StackLayout>
+        <HorizontalStackLayout HorizontalOptions="CenterAndExpand">
+            <SearchBar 
+                x:Name="searchBar"
+                Placeholder="Search events..."
+                Scale="1.2"
+                SearchCommand="{Binding PerformSearch}"
+                SearchCommandParameter="{Binding Text, Source={x:Reference searchBar}}" />
+        </HorizontalStackLayout>
+
+        <ActivityIndicator
+            IsVisible="{Binding FetchingData}"
+            IsRunning="{Binding FetchingData}"
+            Color="{StaticResource Primary}"
+        />
+
+        <ScrollView
+            IsVisible="{Binding NotFetchingData}"
+            VerticalOptions="FillAndExpand"
+            Margin="20">
+            <StackLayout BindableLayout.ItemsSource="{Binding Events}">
+                <BindableLayout.ItemTemplate>
+                    <DataTemplate>
+                        <controls:CalendarEvent CalendarEventCommand="{Binding BindingContext.EventSelectedCommand, Source={x:Reference browseItemsPage}}" />
+                    </DataTemplate>
+                </BindableLayout.ItemTemplate>
+            </StackLayout>
+        </ScrollView>
+
+    </StackLayout>
 </ContentPage>

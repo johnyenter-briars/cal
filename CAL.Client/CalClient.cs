@@ -329,5 +329,17 @@ namespace CAL.Client
 
             return eventsResponse;
         }
+        public async Task<EventsResponse> GetEventsNameAsync(string name)
+        {
+            var eventsResponse = await CalServerRequest<EventsResponse>($"event/{name}", HttpMethod.Get);
+            var seriesResponse = await CalServerRequest<AllSeriesResponse>($"series", HttpMethod.Get);
+
+            foreach (var e in eventsResponse.Events)
+            {
+                e.SeriesName = seriesResponse.Series.FirstOrDefault(s => s.Id == e.SeriesId)?.Name;
+            }
+
+            return eventsResponse;
+        }
     }
 }

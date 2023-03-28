@@ -22,6 +22,7 @@ namespace CAL.Client
         Task<CalendarsResponse> GetCalendarsForUserAsync(Guid calUserId);
         Task<EventsResponse> GetEventsAsync();
         Task<EventsResponse> GetEventsPageAsync(int page);
+        Task<EventsResponse> GetEventsNameAsync(string page);
         /// <summary>
         /// Ok yea this method isnt totally accurate - cause dates are stored as UTC on server. So a DateTime that's on the first of the month in Local, might still be in the previous month in UTC.
         /// </summary>

@@ -10,44 +10,44 @@ using System.Threading.Tasks;
 
 namespace CAL.Views
 {
-	public partial class CalendarPage : ContentPage
-	{
-		public CalendarPage()
-		{
-			InitializeComponent();
+    public partial class CalendarPage : ContentPage
+    {
+        public CalendarPage()
+        {
+            InitializeComponent();
 
-			var viewModel = new CalendarViewModel(null);
+            var viewModel = new CalendarViewModel(null);
 
-			BindingContext = viewModel;
+            BindingContext = viewModel;
 
-			Task.Run(async () =>
-			{
-				await Task.Delay(1000);
-				var calClient = DependencyService.Get<ICalClient>();
-				var calendarsForUser = await calClient.GetCalendarsForUserAsync(new Guid(PreferencesManager.GetUserId()));
+            Task.Run(async () =>
+            {
+                await Task.Delay(1000);
+                var calClient = DependencyService.Get<ICalClient>();
+                var calendarsForUser = await calClient.GetCalendarsForUserAsync(new Guid(PreferencesManager.GetUserId()));
 
-				var bc = (CalendarViewModel)BindingContext;
-				bc.CurrentlySelectedCalendar = calendarsForUser.Calendars.SingleOrDefault(c => c.Id == new Guid(PreferencesManager.GetDefaultCalendarId()));
+                var bc = (CalendarViewModel)BindingContext;
+                bc.CurrentlySelectedCalendar = calendarsForUser.Calendars.SingleOrDefault(c => c.Id == new Guid(PreferencesManager.GetDefaultCalendarId()));
 
-				foreach (var calendar in calendarsForUser.Calendars)
-				{
-					ToolbarItems.Add(new ToolbarItem
-					{
-						Order = ToolbarItemOrder.Secondary,
-						Text = $"{calendar.Name} ({calendar.Color})",
-						Command = bc.SelectCalendarCommand,
-						CommandParameter = calendar,
-					});
-				}
+                foreach (var calendar in calendarsForUser.Calendars)
+                {
+                    ToolbarItems.Add(new ToolbarItem
+                    {
+                        Order = ToolbarItemOrder.Secondary,
+                        Text = $"{calendar.Name} ({calendar.Color})",
+                        Command = bc.SelectCalendarCommand,
+                        CommandParameter = calendar,
+                    });
+                }
 
-				OnAppearing();
-			});
-		}
-		protected override void OnAppearing()
-		{
-			var bc = (CalendarViewModel)BindingContext;
+                OnAppearing();
+            });
+        }
+        protected override void OnAppearing()
+        {
+            var bc = (CalendarViewModel)BindingContext;
 
-			bc?.Refresh();
-		}
-	}
+            bc?.Refresh();
+        }
+    }
 }

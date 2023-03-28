@@ -18,7 +18,20 @@ namespace CAL.ViewModels
         public Command LoadEventsCommand { get; }
         private int currentPage = 0;
         public ICommand EventSelectedCommand => new Command(async (item) => await ExecuteEventSelectedCommand(item));
-        public ICommand RemainingItemsThresholdReachedCommand => new Command(async () => await OnCollectionViewRemainingItemsThresholdReached());
+        public ICommand PerformSearch => new Command<string>(async (string query) =>
+        {
+            ToggleIsFetchingData();
+
+            var events = await CalClientSingleton.GetEventsNameAsync(query);
+            Events.Clear();
+            foreach (var e in events.Events)
+            {
+                Events.Add(e);
+            }
+
+            ToggleIsFetchingData();
+        });
+
 
         public EventsViewModel()
         {
@@ -28,7 +41,7 @@ namespace CAL.ViewModels
 
         public async void Refresh()
         {
-            await OnLoadEvents();
+            //await OnLoadEvents();
         }
         private async Task OnLoadEvents(int page = 0)
         {
@@ -43,26 +56,30 @@ namespace CAL.ViewModels
         {
             if (item is Event e)
             {
-                //var startUnixTimeSeconds = ((DateTimeOffset)e.StartTime.ToUniversalTime()).ToUnixTimeSeconds();
-                //var endUnixTimeSeconds = ((DateTimeOffset)e.EndTime.ToUniversalTime()).ToUnixTimeSeconds();
-                //await Shell.Current.GoToAsync($@"{nameof(EditEventPage)}?{nameof(EditEventViewModel.StartTimeUnixSeconds)}={startUnixTimeSeconds}&{nameof(EditEventViewModel.EndTimeUnixSeconds)}={endUnixTimeSeconds}&{nameof(EditEventViewModel.Id)}={e.Id}&{nameof(EditEventViewModel.Name)}={e.Name}&{nameof(EditEventViewModel.Description)}={e.Description}");
+                var eventStartTime = e.StartTime;
+                var unixSeconds = ((DateTimeOffset)eventStartTime).ToUnixTimeSeconds();
+                await Shell.Current.GoToAsync($@"//{nameof(CalendarPage)}?{nameof(CalendarViewModel.NavigatingToEvent)}={true}&{nameof(CalendarViewModel.OpenDateStartTimeUnixSeconds)}={unixSeconds}&{nameof(CalendarViewModel.CurrentlySelectedCalendarId)}={e.CalendarId}");
+                //await Application.Current.;
+                //await Shell.Current.GoToAsync($"//{nameof(CalendarPage)}");
             }
         }
-        public async Task OnCollectionViewRemainingItemsThresholdReached()
+        private bool fetchingData = false;
+        public bool FetchingData
         {
-            if (fetchingNewPagedData) return;
+            get { return fetchingData; }
+            set { SetProperty(ref fetchingData, value); }
+        }
 
-            fetchingNewPagedData = true;
-
-            currentPage++;
-
-            var events = await CalClientSingleton.GetEventsPageAsync(currentPage);
-            foreach (var e in events.Events)
-            {
-                Events.Add(e);
-            }
-
-            fetchingNewPagedData = false;
+        private bool notFetchingData = true;
+        public bool NotFetchingData
+        {
+            get { return notFetchingData; }
+            set { SetProperty(ref notFetchingData, value); }
+        }
+        private void ToggleIsFetchingData()
+        {
+            FetchingData = !FetchingData;
+            NotFetchingData = !NotFetchingData;
         }
     }
 }
