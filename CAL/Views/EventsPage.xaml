@@ -1,17 +1,18 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="CAL.Views.EventsPage"
-             Title="Events"
-             xmlns:local="clr-namespace:CAL.ViewModels"  
-             xmlns:controls="clr-namespace:CAL.Controls"  
-             xmlns:model="clr-namespace:CAL.Client.Models.Cal;assembly=CAL.Client"  
-             x:Name="browseItemsPage"
-             BackgroundColor="Black">
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="CAL.Views.EventsPage"
+    Title="Events"
+    xmlns:ViewModels="clr-namespace:CAL.ViewModels"
+    xmlns:controls="clr-namespace:CAL.Controls"
+    xmlns:model="clr-namespace:CAL.Client.Models.Cal;assembly=CAL.Client"
+    x:Name="browseItemsPage"
+    x:DataType="{x:Type ViewModels:EventsViewModel}"
+    BackgroundColor="Black">
 
     <StackLayout>
         <HorizontalStackLayout HorizontalOptions="CenterAndExpand">
-            <SearchBar 
+            <SearchBar
                 x:Name="searchBar"
                 Placeholder="Search events..."
                 Scale="1.2"
@@ -22,7 +23,7 @@
         <ActivityIndicator
             IsVisible="{Binding FetchingData}"
             IsRunning="{Binding FetchingData}"
-            Color="{StaticResource Primary}"
+            Color="#512BD4"
         />
 
         <ScrollView
@@ -32,7 +33,8 @@
             <StackLayout BindableLayout.ItemsSource="{Binding Events}">
                 <BindableLayout.ItemTemplate>
                     <DataTemplate>
-                        <controls:CalendarEvent CalendarEventCommand="{Binding BindingContext.EventSelectedCommand, Source={x:Reference browseItemsPage}}" />
+                        <controls:CalendarEvent
+                            CalendarEventCommand="{Binding BindingContext.EventSelectedCommand, Source={x:Reference browseItemsPage}}" />
                     </DataTemplate>
                 </BindableLayout.ItemTemplate>
             </StackLayout>

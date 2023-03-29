@@ -53,7 +53,11 @@
 		<None Remove="Platforms\Android\Resources\drawable\icons8_trash_24.png" />
 		<None Remove="Platforms\Android\Resources\values\strings.xml" />
 		<None Remove="Resources\Images\icons8_automatic_50.png" />
+		<None Remove="Resources\Images\icons8_bursts_50.png" />
+		<None Remove="Resources\Images\icons8_calendar_1_35.png" />
+		<None Remove="Resources\Images\icons8_calendar_1_50.png" />
 		<None Remove="Resources\Images\icons8_list_view_50.png" />
+		<None Remove="Resources\Images\icons8_one_finger_50.png" />
 		<None Remove="Resources\Images\icon_about.png" />
 		<None Remove="Resources\Images\icon_feed.png" />
 		<None Remove="Resources\Images\icons8_calendar_48.png" />
