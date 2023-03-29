@@ -9,19 +9,19 @@ using System.Threading.Tasks;
 
 namespace CAL.Views
 {
-	public partial class EventsPage : ContentPage
-	{
-		EventsViewModel _viewModel;
-		public EventsPage()
-		{
-			InitializeComponent();
+    public partial class EventsPage : ContentPage
+    {
+        EventsViewModel _viewModel;
+        public EventsPage()
+        {
+            InitializeComponent();
 
-			BindingContext = _viewModel = new EventsViewModel();
-		}
-		protected override void OnAppearing()
-		{
-			base.OnAppearing();
-			_viewModel.OnAppearing();
-		}
-	}
+            BindingContext = _viewModel = new EventsViewModel();
+        }
+        protected override void OnAppearing()
+        {
+            base.OnAppearing();
+            _viewModel.Refresh();
+        }
+    }
 }

@@ -98,5 +98,6 @@ namespace CAL.Client.Models.Cal
 		public string? SeriesName { get; set; }
 
 		public bool IsPartOfSeries => SeriesName != null;
+        public bool IsSingularEvent => SeriesName == null;
 	}
 }

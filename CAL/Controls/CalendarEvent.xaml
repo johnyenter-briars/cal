@@ -1,41 +1,95 @@
-﻿<?xml version="1.0" encoding="UTF-8" ?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 <ContentView
     x:Class="CAL.Controls.CalendarEvent"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     x:Name="eventTemplate"
+    xmlns:converters="clr-namespace:CAL.Converters" 
+    xmlns:Models="clr-namespace:CAL.Client.Models.Cal;assembly=CAL.Client"
+    x:DataType="{x:Type Models:Event}"
+>
+    <ContentView.Resources>
+        <ResourceDictionary>
+            <converters:StringToColorConverter x:Key="ColorConverter" />
+        </ResourceDictionary>
+    </ContentView.Resources>
+    <Frame
+        BorderColor="#CF9FFF"
+        HasShadow="False"
+        Padding="10"
+        Margin="0, 5, 0, 5"
+        Grid.ColumnSpan="2"
+        BackgroundColor="Black"
     >
-    <Frame BorderColor="LightGray" HasShadow="False" Padding="15" BackgroundColor="Black">
-        <StackLayout
-        Padding="0,0,0,0"
-        HorizontalOptions="FillAndExpand"
-        VerticalOptions="FillAndExpand">
-            <StackLayout 
-                 Orientation="Horizontal"
-                 HorizontalOptions="Start">
-                <Label FontAttributes="Bold" FontSize="Medium" TextDecorations="Underline">
-                    <Label.FormattedText>
-                        <FormattedString>
-                            <Span Text="{Binding StartTime, StringFormat='{0:MM/dd HH\\:mm}'}" />
-                            <Span Text=" - " />
-                            <Span Text="{Binding Name}" />
-                        </FormattedString>
-                    </Label.FormattedText>
-                </Label>
-
-                <Frame IsVisible="{Binding IsPartOfSeries}"  CornerRadius="10" x:Name="circleFrame" HasShadow="False" Padding="0" Margin="0" HorizontalOptions="Center" BackgroundColor="Gray">
-                    <Image MinimumWidthRequest="10" BackgroundColor="{StaticResource Primary}" Source="icons8_multiple_25.png" />
-                </Frame>
-            </StackLayout>
-
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition Width="50" />
+            </Grid.ColumnDefinitions>
             <Label
+                Grid.Row="0"
+                Grid.Column="0"
+                FontAttributes="Bold"
+                FontSize="Medium"
+                TextDecorations="Underline"
+                Text="{Binding Name}"
+            />
+            <Label
+                Grid.Row="1"
+                Grid.Column="0"
                 FontSize="Small"
-                LineBreakMode="WordWrap"
-                Text="{Binding Description}" />
-            <StackLayout.GestureRecognizers>
-                <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped" />
-            </StackLayout.GestureRecognizers>
-        </StackLayout>
+                LineBreakMode=" WordWrap"
+                Text="{Binding StartTime, StringFormat='{0:MM/dd HH\\:mm}'}"
+            />
+            <Label
+                Grid.Row="2"
+                Grid.Column="0"
+                FontSize="Small"
+                LineBreakMode=" WordWrap"
+                Text="{Binding Description}"
+            />
+            <Frame
+                Grid.Column="1"
+                Grid.RowSpan="2"
+                IsVisible="{Binding IsPartOfSeries}"
+                CornerRadius="10"
+                HasShadow=" False" Padding="0" Margin="0" HorizontalOptions="Center"
+                BackgroundColor="Gray">
+                <Image
+                    MinimumWidthRequest="10"
+                    BackgroundColor="{Binding Color, Converter = {StaticResource ColorConverter}}"
+                    Source="icons8_bursts_50.png" >
+                    <Image.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped" />
+                    </Image.GestureRecognizers>
+                </Image>
+            </Frame>
+
+            <Frame
+                Grid.Column="1"
+                Grid.RowSpan="2"
+                IsVisible="{Binding IsSingularEvent}"
+                CornerRadius="10"
+                HasShadow=" False" Padding="0" Margin="0" HorizontalOptions="Center"
+                BackgroundColor="Gray">
+                <Image
+                    MinimumWidthRequest="20"
+                    BackgroundColor="{Binding Color, Converter = {StaticResource ColorConverter}}"
+                    Source="icons8_one_finger_50.png">
+                    <Image.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped" />
+                    </Image.GestureRecognizers>
+                </Image>
+            </Frame>
+        </Grid>
+        <Frame.GestureRecognizers>
+            <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped" />
+        </Frame.GestureRecognizers>
     </Frame>
 </ContentView>
