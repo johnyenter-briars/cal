@@ -5,9 +5,15 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     x:Name="eventTemplate"
+    xmlns:converters="clr-namespace:CAL.Converters" 
     xmlns:Models="clr-namespace:CAL.Client.Models.Cal;assembly=CAL.Client"
     x:DataType="{x:Type Models:Event}"
 >
+    <ContentView.Resources>
+        <ResourceDictionary>
+            <converters:StringToColorConverter x:Key="ColorConverter" />
+        </ResourceDictionary>
+    </ContentView.Resources>
     <Frame
         BorderColor="#CF9FFF"
         HasShadow="False"
@@ -57,7 +63,7 @@
                 BackgroundColor="Gray">
                 <Image
                     MinimumWidthRequest="10"
-                    BackgroundColor="#512BD4"
+                    BackgroundColor="{Binding Color, Converter = {StaticResource ColorConverter}}"
                     Source="icons8_bursts_50.png" >
                     <Image.GestureRecognizers>
                         <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped" />
@@ -74,7 +80,7 @@
                 BackgroundColor="Gray">
                 <Image
                     MinimumWidthRequest="20"
-                    BackgroundColor="#512BD4"
+                    BackgroundColor="{Binding Color, Converter = {StaticResource ColorConverter}}"
                     Source="icons8_one_finger_50.png">
                     <Image.GestureRecognizers>
                         <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped" />
