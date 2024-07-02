@@ -99,6 +99,8 @@
                 <StackLayout Orientation="Horizontal">
                     <Label Text="Should Notify" FontSize="Medium" />
                     <CheckBox  IsChecked="{Binding ShouldNotify}" />
+                    <Label Text="Yearly Event" FontSize="Medium" />
+                    <CheckBox  IsChecked="{Binding YearlyEvent}" />
                 </StackLayout>
             </StackLayout>
 

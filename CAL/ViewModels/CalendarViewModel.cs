@@ -2,20 +2,11 @@
 using CAL.Client.Models.Cal;
 using CAL.Models;
 using CAL.Views;
-using Microsoft.Maui.Graphics.Converters;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Windows.Input;
-using XCalendar.Core.Interfaces;
 using XCalendar.Core.Models;
-using System.Runtime.CompilerServices;
 using XCalendar.Core.Enums;
 using System.Collections.Specialized;
-using Microsoft.Maui.Graphics;
 using CAL.Managers;
 
 namespace CAL.ViewModels
@@ -98,7 +89,14 @@ namespace CAL.ViewModels
         public DateTime SelectedDate
         {
             get { return _selectedDate; }
-            set { SetProperty(ref _selectedDate, value); }
+            set
+            {
+                var oldSelectedDate = _selectedDate;
+                SetProperty(ref _selectedDate, value);
+                var monthsDiff = ((_selectedDate.Year - oldSelectedDate.Year) * 12) + _selectedDate.Month - oldSelectedDate.Month;
+
+                NavigateCalendar(monthsDiff);
+            }
         }
         public CalendarViewModel(Calendar defaultCalendar)
         {
@@ -241,7 +239,10 @@ namespace CAL.ViewModels
 
                 var color = SupportedColors.Where(c => Color.Parse(c).ToString() == e.Color.ToString()).Single();
 
-                await Shell.Current.GoToAsync($@"{nameof(EditSeriesPage)}?{nameof(EditSeriesViewModel.StartTimeUnixSeconds)}={startUnixTimeSeconds}&{nameof(EditSeriesViewModel.EndTimeUnixSeconds)}={endUnixTimeSeconds}&{nameof(EditSeriesViewModel.Id)}={series.Id}&{nameof(EditSeriesViewModel.Name)}={series.Name}&{nameof(EditSeriesViewModel.Description)}={series.Description}&{nameof(EditSeriesViewModel.RepeatEveryWeek)}={series.RepeatEveryWeek}&{nameof(EditSeriesViewModel.RepeatOnMon)}={series.RepeatOnMon}&{nameof(EditSeriesViewModel.RepeatOnTues)}={series.RepeatOnTues}&{nameof(EditSeriesViewModel.RepeatOnWed)}={series.RepeatOnWed}&{nameof(EditSeriesViewModel.RepeatOnThurs)}={series.RepeatOnThurs}&{nameof(EditSeriesViewModel.RepeatOnFri)}={series.RepeatOnFri}&{nameof(EditSeriesViewModel.RepeatOnSat)}={series.RepeatOnSat}&{nameof(EditSeriesViewModel.RepeatOnSun)}={series.RepeatOnSun}&{nameof(EditSeriesViewModel.EntityType)}={series.EntityType}&{nameof(EditSeriesViewModel.CurrentlySelectedCalendar)}={CurrentlySelectedCalendar.Id}&{nameof(EditSeriesViewModel.Color)}={color}&{nameof(EditSeriesViewModel.ShouldNotify)}={e.ShouldNotify}&{nameof(EditSeriesViewModel.NumTimesNotified)}={e.NumTimesNotified}");
+                var yearlyEvent =
+                    (!series.RepeatOnSun && !series.RepeatOnMon && !series.RepeatOnTues && !series.RepeatOnWed && !series.RepeatOnThurs && !series.RepeatOnFri && !series.RepeatOnSat && series.RepeatEveryWeek == 0);
+
+                await Shell.Current.GoToAsync($@"{nameof(EditSeriesPage)}?{nameof(EditSeriesViewModel.StartTimeUnixSeconds)}={startUnixTimeSeconds}&{nameof(EditSeriesViewModel.EndTimeUnixSeconds)}={endUnixTimeSeconds}&{nameof(EditSeriesViewModel.Id)}={series.Id}&{nameof(EditSeriesViewModel.Name)}={series.Name}&{nameof(EditSeriesViewModel.Description)}={series.Description}&{nameof(EditSeriesViewModel.RepeatEveryWeek)}={series.RepeatEveryWeek}&{nameof(EditSeriesViewModel.RepeatOnMon)}={series.RepeatOnMon}&{nameof(EditSeriesViewModel.RepeatOnTues)}={series.RepeatOnTues}&{nameof(EditSeriesViewModel.RepeatOnWed)}={series.RepeatOnWed}&{nameof(EditSeriesViewModel.RepeatOnThurs)}={series.RepeatOnThurs}&{nameof(EditSeriesViewModel.RepeatOnFri)}={series.RepeatOnFri}&{nameof(EditSeriesViewModel.RepeatOnSat)}={series.RepeatOnSat}&{nameof(EditSeriesViewModel.RepeatOnSun)}={series.RepeatOnSun}&{nameof(EditSeriesViewModel.EntityType)}={series.EntityType}&{nameof(EditSeriesViewModel.CurrentlySelectedCalendar)}={CurrentlySelectedCalendar.Id}&{nameof(EditSeriesViewModel.Color)}={color}&{nameof(EditSeriesViewModel.ShouldNotify)}={e.ShouldNotify}&{nameof(EditSeriesViewModel.NumTimesNotified)}={e.NumTimesNotified}&{nameof(EditSeriesViewModel.YearlyEvent)}={yearlyEvent}");
             }
             else
             {

@@ -47,6 +47,11 @@
                    HeightRequest = "40"  
                         />
 
+                <Label Text="Default Number of Years to Repeat a Yearly Event" FontSize="Medium"/>
+                <Entry TextColor="BlueViolet" x:Name = "DefaultYearsToRepeat" Text="{Binding DefaultYearsToRepeat}" Placeholder = "Default num years to repeat"  
+                   HeightRequest = "40"  
+                        />
+
                 <Button x:Name= "saveChangesBtn" Text = "Save Changes"   
                     Command="{Binding SaveChangesCommand}"  
                     HorizontalOptions = "FillAndExpand"/>

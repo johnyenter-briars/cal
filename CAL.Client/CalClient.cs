@@ -341,5 +341,35 @@ namespace CAL.Client
 
             return eventsResponse;
         }
+
+        public async Task<CreateSeriesResponse> CreateYearlySeriesAsync(CreateSeriesRequest createSeriesRequest, int numYearsInFuture)
+        {
+            var createSeriesResponse = await CalServerRequest<CreateSeriesRequest, CreateSeriesResponse>(
+                createSeriesRequest, "series", HttpMethod.Post);
+
+            for (var yearsToAdd = 0; yearsToAdd <= numYearsInFuture; yearsToAdd++)
+            {
+                var startsOn = createSeriesRequest.StartsOn.AddYears(yearsToAdd);
+
+                var _ = await CreateEventAsync(createSeriesRequest.CreateSubEventRequest(
+                    startsOn, (Guid)createSeriesResponse.SeriesId));
+            }
+
+            return createSeriesResponse;
+        }
+
+        public async Task<UpdateEntityResponse> UpdateYearlySeriesAsync(UpdateSeriesRequest updateSeriesRequest, int numYearsInFuture)
+        {
+            var _ = await DeleteEntityAsync(updateSeriesRequest.Id, EntityType.Series);
+
+            var created = await CreateYearlySeriesAsync(updateSeriesRequest.ToCreateSeriesRequest(), numYearsInFuture);
+
+            return new UpdateEntityResponse
+            {
+                Message = created.Message,
+                EntityId = created.SeriesId,
+                StatusCode = created.StatusCode,
+            };
+        }
     }
 }

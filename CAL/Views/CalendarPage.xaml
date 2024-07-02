@@ -7,7 +7,7 @@
     xmlns:ViewModels="clr-namespace:CAL.ViewModels"
     xmlns:Models="clr-namespace:CAL.Models"
     x:Name="This"
-    x:DataType="{x:Type ViewModels:CalendarViewModel}"
+    x:DataType="ViewModels:CalendarViewModel"
     Title="{Binding Title}"
     xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
     xmlns:xc="clr-namespace:XCalendar.Maui.Views;assembly=XCalendar.Maui"
@@ -33,6 +33,7 @@
 
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="420"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
@@ -40,8 +41,13 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <Border
+        <DatePicker
             Grid.Row="0"
+            HorizontalOptions="Center" 
+            Date="{Binding SelectedDate}" />
+
+        <Border
+            Grid.Row="1"
             Margin="10"
             Padding="10"
             BackgroundColor="{DynamicResource ContentBackgroundColor}">
@@ -79,7 +85,7 @@
                 </xc:CalendarView.NavigationViewTemplate>
 
                 <xc:CalendarView.DayTemplate>
-                    <DataTemplate x:DataType="{x:Type Models:EventDay}">
+                    <DataTemplate x:DataType="Models:EventDay">
                         <Border
                             Margin="2.5"
                             BackgroundColor="Transparent"
@@ -137,7 +143,7 @@
                                                 </HorizontalStackLayout.IsVisible>
 
                                                 <BindableLayout.ItemTemplate>
-                                                    <DataTemplate x:DataType="{x:Type Models:CalendarEvent}">
+                                                    <DataTemplate x:DataType="Models:CalendarEvent">
                                                         <BoxView
                                                             CornerRadius="100"
                                                             HeightRequest="7"
@@ -163,7 +169,7 @@
 
         </Border>
 
-        <CollectionView Grid.Row="1" 
+        <CollectionView Grid.Row="2" 
                         ItemsSource="{Binding SelectedEvents}"
                         SelectionMode="Single"
                         SelectedItem="{Binding SelectedEvent}"
@@ -185,7 +191,7 @@
             </CollectionView.ItemsLayout>
 
             <CollectionView.ItemTemplate>
-                <DataTemplate x:DataType="{x:Type Models:CalendarEvent}">
+                <DataTemplate x:DataType="Models:CalendarEvent">
                     <Border
                         Margin="5"
                         BackgroundColor="Transparent"
@@ -243,6 +249,8 @@
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
+        
+        
 
     </Grid>
 </ContentPage>
