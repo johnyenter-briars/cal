@@ -27,7 +27,7 @@
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</SupportedOSPlatformVersion>
 		<TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</TargetPlatformMinVersion>
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tizen'">6.5</SupportedOSPlatformVersion>
-		<AssemblyVersion>1.0.1.7</AssemblyVersion>
+		<AssemblyVersion>1.0.1.8</AssemblyVersion>
 		<CheckEolWorkloads>false</CheckEolWorkloads>
 	</PropertyGroup>
 
@@ -51,6 +51,7 @@
 
 	<ItemGroup>
 		<None Remove="Platforms\Android\Resources\drawable\icons8_trash_24.png" />
+		<None Remove="Platforms\Android\Resources\raw\johnyenterbriars_com.pem" />
 		<None Remove="Platforms\Android\Resources\values\strings.xml" />
 		<None Remove="Resources\Images\icons8_automatic_50.png" />
 		<None Remove="Resources\Images\icons8_bursts_50.png" />
