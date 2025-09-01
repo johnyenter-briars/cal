@@ -185,28 +185,35 @@ namespace CAL.ViewModels
         }
         public async void Refresh()
         {
-            if (NavigatingToEvent)
+            try
             {
-                await SelectCalendar(currentlySelectedCalendarId);
-                DateTime dateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Local).AddSeconds(openDateStartTimeUnixSeconds);
-                EventCalendar.NavigatedDate = dateTime;
-                NavigatingToEvent = false;
-                SelectedDate = dateTime;
-                var tempDay = new Calendar<EventDay>();
-                tempDay.SelectedDates.Add(dateTime);
-                await LoadEventCollectionAsync(dateTime.Year, dateTime.Month);
-                EventCalendar_DaysUpdated(tempDay, null);
-                SelectedDates_CollectionChanged(null, null);
-                EventCalendar.Days.Single(d =>
+                if (NavigatingToEvent)
                 {
-                    return d.DateTime.Year == dateTime.Year && d.DateTime.Month == dateTime.Month && d.DateTime.Day == dateTime.Day;
-                }).IsSelected = true;
+                    await SelectCalendar(currentlySelectedCalendarId);
+                    DateTime dateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Local).AddSeconds(openDateStartTimeUnixSeconds);
+                    EventCalendar.NavigatedDate = dateTime;
+                    NavigatingToEvent = false;
+                    SelectedDate = dateTime;
+                    var tempDay = new Calendar<EventDay>();
+                    tempDay.SelectedDates.Add(dateTime);
+                    await LoadEventCollectionAsync(dateTime.Year, dateTime.Month);
+                    EventCalendar_DaysUpdated(tempDay, null);
+                    SelectedDates_CollectionChanged(null, null);
+                    EventCalendar.Days.Single(d =>
+                    {
+                        return d.DateTime.Year == dateTime.Year && d.DateTime.Month == dateTime.Month && d.DateTime.Day == dateTime.Day;
+                    }).IsSelected = true;
+                }
+                else
+                {
+                    await ExecuteLoadEventsAsync();
+                    SelectedEvents.Clear();
+                    EventCalendar.SelectedDates.Clear();
+                }
             }
-            else
+            catch (Exception ex)
             {
-                await ExecuteLoadEventsAsync();
-                SelectedEvents.Clear();
-                EventCalendar.SelectedDates.Clear();
+                Debug.WriteLine(ex);
             }
         }
         private void SelectedDates_CollectionChanged(object _, NotifyCollectionChangedEventArgs __)

@@ -20,10 +20,7 @@ namespace CAL.Client
         private string _userId = "";
         private string _hostName = "";
         private int _port = -1;
-        private static readonly HttpClient _httpClient = new()
-        {
-            Timeout = new TimeSpan(0, 0, 10),
-        };
+        private readonly HttpClient _httpClient;
         private static readonly JsonSerializerSettings JsonSettings =
                 new JsonSerializerSettings
                 {
@@ -36,6 +33,8 @@ namespace CAL.Client
 
         public CalClient()
         {
+            HttpClientHandler insecureHandler = GetInsecureHandler();
+            _httpClient = new HttpClient(insecureHandler);
         }
         public async Task<CreateCalUserResponse> CreateCalUserAsync(CreateCalUserRequest createCalUserRequest)
         {
@@ -142,7 +141,7 @@ namespace CAL.Client
         }
         private async Task<TResponse> CalServerRequest<TResponse>(string path, HttpMethod httpMethod)
         {
-            var request = new HttpRequestMessage(httpMethod, $"http://{_hostName}:{_port}/cal/api/" + path);
+            var request = new HttpRequestMessage(httpMethod, $"https://{_hostName}/cal/api/" + path);
             request.Headers.Accept.Clear();
             request.Headers.Add("x-api-key", _apiKey);
             request.Headers.Add("x-user-id", _userId);
@@ -158,7 +157,7 @@ namespace CAL.Client
                 return (TResponse)new TResponse().SetMessage("BadRequest").SetStatusCode(400);
             }
 
-            var request = new HttpRequestMessage(httpMethod, $"http://{_hostName}:{_port}/cal/api/" + path);
+            var request = new HttpRequestMessage(httpMethod, $"https://{_hostName}/cal/api/" + path);
             request.Headers.Accept.Clear();
             request.Headers.Add("x-api-key", _apiKey);
             request.Headers.Add("x-user-id", _userId);
@@ -370,6 +369,20 @@ namespace CAL.Client
                 EntityId = created.SeriesId,
                 StatusCode = created.StatusCode,
             };
+        }
+        //https://stackoverflow.com/questions/71047509/trust-anchor-for-certification-path-not-found-in-a-net-maui-project-trying-t
+        private HttpClientHandler GetInsecureHandler()
+        {
+            HttpClientHandler handler = new HttpClientHandler();
+            handler.ServerCertificateCustomValidationCallback =
+                (message, cert, chain, errors) =>
+                    {
+                        return true;
+                        //if (cert.Issuer.Equals("CN=localhost"))
+                        //    return true;
+                        //return errors == System.Net.Security.SslPolicyErrors.None;
+                    };
+            return handler;
         }
     }
 }
