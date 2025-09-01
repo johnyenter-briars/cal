@@ -27,6 +27,9 @@
     <ContentPage.ToolbarItems>
         <ToolbarItem Text="+Series" Command="{Binding AddSeriesCommand}" />
         <ToolbarItem Text="+Event" Command="{Binding AddEventCommand}" />
+        <ToolbarItem IconImageSource="icons8_restart_50.png"
+                 Command="{Binding RefreshEventsCommand}"
+                 Text="" />
     </ContentPage.ToolbarItems>
 
     <Grid>
