@@ -52,6 +52,16 @@
                    HeightRequest = "40"  
                         />
 
+                <Label Text="The day of the week that will be considered as the start of the week."
+                    FontSize="Medium"/>
+
+
+                <Picker Title="Select Start of Week"
+                    ItemsSource="{Binding DaysOfWeek}"
+                    SelectedItem="{Binding DefaultStartOfWeek, Mode=TwoWay}"
+                    TextColor="BlueViolet"
+                    HeightRequest="40"/>
+
                 <Button x:Name= "saveChangesBtn" Text = "Save Changes"   
                     Command="{Binding SaveChangesCommand}"  
                     HorizontalOptions = "FillAndExpand"/>

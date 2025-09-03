@@ -77,6 +77,8 @@ namespace CAL.ViewModels
         {
             SelectedDates = new ObservableRangeCollection<DateTime>(),
             SelectionType = SelectionType.Single,
+            SelectionAction = SelectionAction.Replace,
+            StartOfWeek = (DayOfWeek)PreferencesManager.GetDefaultDefaultStartOfWeek(),
         };
         /// <summary>
         /// Events in the dropdown when a day(s) is selected
