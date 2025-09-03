@@ -60,12 +60,10 @@
 
             <xc:CalendarView
                 x:Name="MainCalendarView"
-                BackwardsArrowCommand="{Binding NavigateCalendarCommand}"
-                BackwardsArrowCommandParameter="{Binding EventCalendar.BackwardsNavigationAmount}"
+                LeftArrowCommand="{Binding NavigateCalendarCommand}"
                 Days="{Binding EventCalendar.Days}"
                 DaysOfWeek="{Binding EventCalendar.DayNamesOrder}"
-                ForwardsArrowCommand="{Binding NavigateCalendarCommand}"
-                ForwardsArrowCommandParameter="{Binding EventCalendar.ForwardsNavigationAmount}"
+                RightArrowCommand="{Binding NavigateCalendarCommand}"
                 NavigatedDate="{Binding EventCalendar.NavigatedDate}"
                 Style="{StaticResource DefaultCalendarViewStyle}"
                 >
@@ -75,10 +73,8 @@
                         <xc:NavigationView
                             ArrowColor="{StaticResource ContentTextColor}"
                             BackgroundColor="Transparent"
-                            BackwardsArrowCommand="{Binding BackwardsArrowCommand, Source={RelativeSource TemplatedParent}}"
-                            BackwardsArrowCommandParameter="{Binding BackwardsArrowCommandParameter, Source={RelativeSource TemplatedParent}}"
-                            ForwardsArrowCommand="{Binding ForwardsArrowCommand, Source={RelativeSource TemplatedParent}}"
-                            ForwardsArrowCommandParameter="{Binding ForwardsArrowCommandParameter, Source={RelativeSource TemplatedParent}}"
+                            LeftArrowCommand="{Binding BackwardsArrowCommand, Source={RelativeSource TemplatedParent}}"
+                            RightArrowCommand="{Binding ForwardsArrowCommandParameter, Source={RelativeSource TemplatedParent}}"
                             HeightRequest="40"
                             Style="{StaticResource DefaultNavigationViewStyle}"
                             Text="{Binding Text, Source={RelativeSource TemplatedParent}}"
@@ -99,19 +95,13 @@
                             </Border.StrokeShape>
 
                             <xc:DayView
-                                CurrentMonthCommand="{Binding BindingContext.ChangeDateSelectionCommand, Source={x:Reference This}}"
-                                CurrentMonthCommandParameter="{Binding DateTime}"
                                 DateTime="{Binding DateTime}"
                                 IsCurrentMonth="{Binding IsCurrentMonth}"
                                 IsInvalid="{Binding IsInvalid}"
                                 IsSelected="{Binding IsSelected}"
                                 IsToday="{Binding IsToday}"
-                                SelectedCommand="{Binding BindingContext.ChangeDateSelectionCommand, Source={x:Reference This}}"
-                                SelectedCommandParameter="{Binding DateTime}"
                                 Style="{StaticResource DefaultDayViewStyle}"
-                                TodayCommand="{Binding BindingContext.ChangeDateSelectionCommand, Source={x:Reference This}}"
-                                SelectedBackgroundColor="{StaticResource DaySelectedBackgroundColor}"
-                                TodayCommandParameter="{Binding DateTime}">
+                                >
 
                                 <xc:DayView.ControlTemplate>
                                     <ControlTemplate>

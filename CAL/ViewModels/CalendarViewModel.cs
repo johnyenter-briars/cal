@@ -8,6 +8,8 @@ using XCalendar.Core.Models;
 using XCalendar.Core.Enums;
 using System.Collections.Specialized;
 using CAL.Managers;
+using XCalendar.Core.Collections;
+using XCalendar.Core.Extensions;
 
 namespace CAL.ViewModels
 {
@@ -46,7 +48,7 @@ namespace CAL.ViewModels
         public Command AddEventCommand => new(OnAddEvent);
         public Command AddSeriesCommand => new(OnAddSeries);
         public Command RefreshEventsCommand => new(Refresh);
-        public ICommand SelectCalendarCommand => new Command<Calendar>(async (item) => await SelectCalendar(item));
+        public ICommand SelectCalendarCommand => new Command<CAL.Client.Models.Cal.Calendar>(async (item) => await SelectCalendar(item));
 
         private bool navigatingToEvent;
         public bool NavigatingToEvent
@@ -70,19 +72,18 @@ namespace CAL.ViewModels
         /// <summary>
         /// Represents the events selected in the current bucket (usually all events in the current month given the currently selected calendar)
         /// </summary>
-        public ObservableRangeCollection<CalendarEvent> EventsBuffer { get; } = new ObservableRangeCollection<CalendarEvent>()
-        {
-        };
+        public ObservableRangeCollection<XCalendar.Core.Models.Event> EventsBuffer { get; } = [];
         public Calendar<EventDay> EventCalendar { get; set; } = new Calendar<EventDay>()
         {
             SelectedDates = new ObservableRangeCollection<DateTime>(),
             SelectionType = SelectionType.Single,
+            SelectionAction = SelectionAction.Replace,
         };
         /// <summary>
         /// Events in the dropdown when a day(s) is selected
         /// </summary>
-        public ObservableRangeCollection<CalendarEvent> SelectedEvents { get; } = new ObservableRangeCollection<CalendarEvent>();
-        public Calendar CurrentlySelectedCalendar { get; set; }
+        public ObservableRangeCollection<XCalendar.Core.Models.Event> SelectedEvents { get; } = [];
+        public CAL.Client.Models.Cal.Calendar CurrentlySelectedCalendar { get; set; }
         public ICommand NavigateCalendarCommand { get; set; }
         public ICommand ChangeDateSelectionCommand { get; set; }
         public DateTime _selectedDate;
@@ -98,7 +99,7 @@ namespace CAL.ViewModels
                 NavigateCalendar(monthsDiff);
             }
         }
-        public CalendarViewModel(Calendar defaultCalendar)
+        public CalendarViewModel(CAL.Client.Models.Cal.Calendar defaultCalendar)
         {
             Title = "Calendar";
             CurrentlySelectedCalendar = defaultCalendar;
@@ -111,9 +112,17 @@ namespace CAL.ViewModels
 
             EventCalendar.DaysUpdated += EventCalendar_DaysUpdated;
         }
-        public async void NavigateCalendar(int Amount)
+        public async void NavigateCalendar(int amount)
         {
-            EventCalendar?.NavigateCalendar(Amount);
+            if (EventCalendar.NavigatedDate.TryAddMonths(amount, out DateTime targetDate))
+            {
+                EventCalendar.Navigate(targetDate - EventCalendar.NavigatedDate);
+            }
+            else
+            {
+                EventCalendar.Navigate(amount > 0 ? TimeSpan.MaxValue : TimeSpan.MinValue);
+            }
+
             var month = EventCalendar.NavigatedDate.Month;
             var year = EventCalendar.NavigatedDate.Year;
             await LoadEventCollectionAsync(year, month);
@@ -128,25 +137,18 @@ namespace CAL.ViewModels
             var events = eventsOfMonth.Events.Where(e => e.CalendarId == CurrentlySelectedCalendar?.Id).ToList();
 
             EventsBuffer.Clear();
-            EventsBuffer.AddRange(events.Select(d => new CalendarEvent
+            EventsBuffer.AddRange(events.Select(d => new XCalendar.Core.Models.Event
             {
-                Id = d.Id,
-                StartTime = d.StartTime,
-                EndTime = d.EndTime,
-                Name = d.Name,
+                //Id = d.Id,
+                StartDate = d.StartTime,
+                EndDate = d.EndTime,
+                Title = d.Name,
                 Description = d.Description,
-                CalUserId = d.CalUserId,
-                SeriesId = d.SeriesId,
-                CalendarId = d.CalendarId,
-                Color = Color.Parse(d.Color),
-                SeriesName = d.SeriesName,
-                NumTimesNotified = d.NumTimesNotified,
-                ShouldNotify = d.ShouldNotify,
             }));
 
             foreach (var Day in EventCalendar.Days)
             {
-                var filtered = EventsBuffer.Where(x => x.StartTime.Date == Day.DateTime.Date);
+                var filtered = EventsBuffer.Where(x => x.StartDate.Date == Day.DateTime.Date);
                 Day.Events.ReplaceRange(filtered);
             }
         }
@@ -218,7 +220,9 @@ namespace CAL.ViewModels
         }
         private void SelectedDates_CollectionChanged(object _, NotifyCollectionChangedEventArgs __)
         {
-            SelectedEvents.ReplaceRange(EventsBuffer.Where(x => EventCalendar.SelectedDates.Any(y => x.StartTime.Date == y.Date)).OrderByDescending(x => x.StartTime));
+            SelectedEvents.ReplaceRange(EventsBuffer.Where(x => EventCalendar.SelectedDates
+                .Any(y => x.StartDate.Date == y.Date))
+                .OrderByDescending(x => x.StartDate));
         }
         private void EventCalendar_DaysUpdated(object sender, EventArgs _)
         {
@@ -230,7 +234,7 @@ namespace CAL.ViewModels
 
             foreach (var Day in EventCalendar.Days)
             {
-                Day.Events.ReplaceRange(EventsBuffer.Where(x => x.StartTime.Date == Day.DateTime.Date));
+                Day.Events.ReplaceRange(EventsBuffer.Where(x => x.StartDate.Date == Day.DateTime.Date));
             }
         }
 
@@ -261,7 +265,7 @@ namespace CAL.ViewModels
                 await Shell.Current.GoToAsync($@"{nameof(EditEventPage)}?{nameof(EditEventViewModel.StartTimeUnixSeconds)}={startUnixTimeSeconds}&{nameof(EditEventViewModel.EndTimeUnixSeconds)}={endUnixTimeSeconds}&{nameof(EditEventViewModel.Id)}={e.Id}&{nameof(EditEventViewModel.Name)}={e.Name}&{nameof(EditEventViewModel.Description)}={e.Description}&{nameof(EditEventViewModel.EntityType)}={e.EntityType}&{nameof(EditEventViewModel.Color)}={color}&{nameof(EditEventViewModel.ShouldNotify)}={e.ShouldNotify}&{nameof(EditEventViewModel.NumTimesNotified)}={e.NumTimesNotified}");
             }
         }
-        private async Task SelectCalendar(Calendar calendar)
+        private async Task SelectCalendar(CAL.Client.Models.Cal.Calendar calendar)
         {
             SelectedEvents.Clear();
             CurrentlySelectedCalendar = calendar;
