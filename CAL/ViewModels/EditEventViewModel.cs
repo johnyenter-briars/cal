@@ -138,7 +138,7 @@ namespace CAL.ViewModels
         {
             SaveCommand = new Command(OnSave, ValidateSave);
             CancelCommand = new Command(OnCancel);
-            DeleteCommand = new Command(OnDelete);
+            DeleteCommand = new Command(OnDelete, ValidateDelete);
             ColorPickerChangedCommand = new Command(OnPickerSelectedIndexChanged);
             this.PropertyChanged +=
                 (_, __) => SaveCommand.ChangeCanExecute();
@@ -146,6 +146,10 @@ namespace CAL.ViewModels
         private bool ValidateSave()
         {
             return !string.IsNullOrWhiteSpace(name);
+        }
+        private bool ValidateDelete()
+        {
+            return id != default;
         }
 
         public string Name
