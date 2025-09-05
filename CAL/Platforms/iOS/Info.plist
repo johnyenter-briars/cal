@@ -33,5 +33,9 @@
         <key>NSAllowsArbitraryLoads</key>
         <true/>
     </dict>
+	<key>BGTaskSchedulerPermittedIdentifiers</key>
+	<array>
+		<string>com.jyb.cal.refresh</string>
+	</array>
 </dict>
 </plist>
