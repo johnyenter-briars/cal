@@ -17,10 +17,12 @@ public class EventsViewModel : BaseViewModel
     public ObservableCollection<Event> Events { get; } = new();       // filtered
 
     public ICommand SearchCommand { get; }
+    public ICommand ExecuteEventSelectedCommand { get; }
 
     public EventsViewModel()
     {
         SearchCommand = new Command(ApplyFilters);
+        ExecuteEventSelectedCommand = new Command<Event>(ExecuteEventSelected);
 
         Task.Run(LoadInitial);
     }
@@ -33,7 +35,6 @@ public class EventsViewModel : BaseViewModel
             {
                 _searchText = value;
                 OnPropertyChanged();
-                ApplyFilters();
             }
         }
     }
@@ -113,7 +114,7 @@ public class EventsViewModel : BaseViewModel
         foreach (var ev in filtered)
             Events.Add(ev);
     }
-    private async void ExecuteEventSelectedCommand(Event e)
+    private async void ExecuteEventSelected(Event e)
     {
         if (e.SeriesId != null)
         {
@@ -121,7 +122,7 @@ public class EventsViewModel : BaseViewModel
             var startUnixTimeSeconds = ((DateTimeOffset)series.StartsOn.Add(series.EventStartTime).ToUniversalTime()).ToUnixTimeSeconds();
             var endUnixTimeSeconds = ((DateTimeOffset)series.EndsOn.Add(series.EventEndTime).ToUniversalTime()).ToUnixTimeSeconds();
 
-            var color = SupportedColors.Where(c => Color.Parse(c).ToString() == e.Color.ToString()).Single();
+            var color = SupportedColors.Where(c => c == e.Color.ToString()).Single();
 
             var yearlyEvent =
                 (!series.RepeatOnSun && !series.RepeatOnMon && !series.RepeatOnTues && !series.RepeatOnWed && !series.RepeatOnThurs && !series.RepeatOnFri && !series.RepeatOnSat && series.RepeatEveryWeek == 0);
@@ -133,7 +134,7 @@ public class EventsViewModel : BaseViewModel
             var startUnixTimeSeconds = ((DateTimeOffset)e.StartTime.ToUniversalTime()).ToUnixTimeSeconds();
             var endUnixTimeSeconds = ((DateTimeOffset)e.EndTime.ToUniversalTime()).ToUnixTimeSeconds();
 
-            var color = SupportedColors.Where(c => Color.Parse(c).ToString() == e.Color.ToString()).Single();
+            var color = SupportedColors.Where(c => c == e.Color.ToString()).Single();
 
             await Shell.Current.GoToAsync($@"{nameof(EditEventPage)}?{nameof(EditEventViewModel.StartTimeUnixSeconds)}={startUnixTimeSeconds}&{nameof(EditEventViewModel.EndTimeUnixSeconds)}={endUnixTimeSeconds}&{nameof(EditEventViewModel.Id)}={e.Id}&{nameof(EditEventViewModel.Name)}={e.Name}&{nameof(EditEventViewModel.Description)}={e.Description}&{nameof(EditEventViewModel.EntityType)}={e.EntityType}&{nameof(EditEventViewModel.Color)}={color}&{nameof(EditEventViewModel.ShouldNotify)}={e.ShouldNotify}&{nameof(EditEventViewModel.NumTimesNotified)}={e.NumTimesNotified}");
         }

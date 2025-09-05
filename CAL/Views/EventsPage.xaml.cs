@@ -26,5 +26,12 @@ namespace CAL.Views
         {
             _viewModel.SelectedDate = null;
         }
+        private void SearchBar_SearchButtonPressed(object sender, EventArgs e)
+        {
+            if (sender is SearchBar searchBar)
+            {
+                searchBar.Unfocus();
+            }
+        }
     }
 }

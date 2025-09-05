@@ -12,12 +12,13 @@
 
     <Grid RowDefinitions="Auto,Auto,*" Padding="10" RowSpacing="10">
 
-        <!-- Search Bar -->
         <SearchBar Grid.Row="0"
                    Placeholder="Search events..."
-                   Text="{Binding SearchText}" />
+                   Text="{Binding SearchText}" 
+                   SearchCommand="{Binding SearchCommand}"
+                   SearchButtonPressed="SearchBar_SearchButtonPressed"
+                   />
 
-        <!-- Date Filter -->
         <HorizontalStackLayout Grid.Row="1" Spacing="10">
             <Label Text="Filter by date:" VerticalOptions="Center"/>
             <DatePicker Date="{Binding SelectedDate}" Format="MMM dd, yyyy"/>
@@ -43,6 +44,11 @@
                            BorderColor="{Binding Color}" 
                            CornerRadius="10" 
                            HasShadow="True">
+                        <Frame.GestureRecognizers>
+                            <TapGestureRecognizer
+                                Command="{Binding Source={RelativeSource AncestorType={x:Type ViewModels:EventsViewModel}}, Path=ExecuteEventSelectedCommand }"
+                                CommandParameter="{Binding .}" />
+                        </Frame.GestureRecognizers>
                         <Grid RowDefinitions="Auto,Auto" ColumnDefinitions="*">
                             <Label Grid.Row="0" Text="{Binding Name}" 
                                    FontAttributes="Bold" FontSize="16"
