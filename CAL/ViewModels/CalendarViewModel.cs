@@ -8,6 +8,7 @@ using XCalendar.Core.Models;
 using XCalendar.Core.Enums;
 using System.Collections.Specialized;
 using CAL.Managers;
+using static CAL.Constants;
 
 namespace CAL.ViewModels
 {
@@ -34,15 +35,6 @@ namespace CAL.ViewModels
                 openDateStartTimeUnixSeconds = value;
             }
         }
-        private static List<string> SupportedColors = new List<string> {
-                    "Red",
-                    "Blue",
-                    "Green",
-                    "Orange",
-                    "Yellow",
-                    "Purple",
-                    "Pink",
-                };
         public Command AddEventCommand => new(OnAddEvent);
         public Command AddSeriesCommand => new(OnAddSeries);
         public Command RefreshEventsCommand => new(Refresh);

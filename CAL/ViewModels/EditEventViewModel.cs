@@ -106,6 +106,8 @@ namespace CAL.ViewModels
             get => _startTime; set
             {
                 SetProperty(ref _startTime, value);
+                var endTime = _startTime + TimeSpan.FromHours(0.5);
+                EndSelectedTime = endTime;
             }
         }
         private TimeSpan _endTime;

@@ -21,7 +21,10 @@ namespace CAL.Views
         protected override void OnAppearing()
         {
             base.OnAppearing();
-            _viewModel.Refresh();
+        }
+        private void OnClearDateClicked(object sender, EventArgs e)
+        {
+            _viewModel.SelectedDate = null;
         }
     }
 }
