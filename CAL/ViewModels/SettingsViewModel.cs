@@ -31,6 +31,21 @@ namespace CAL.ViewModels
         public string MaxNumTimesNotify { get => maxNumTimesNotify; set => SetProperty(ref maxNumTimesNotify, value); }
         private string defaultYearsToRepeat = PreferencesManager.GetDefaultYearsToRepeat().ToString();
         public string DefaultYearsToRepeat { get => defaultYearsToRepeat; set => SetProperty(ref defaultYearsToRepeat, value); }
+        private DayOfWeek defaultStartOfWeek = (DayOfWeek)PreferencesManager.GetDefaultDefaultStartOfWeek();
+        public DayOfWeek DefaultStartOfWeek { get => defaultStartOfWeek; set => SetProperty(ref defaultStartOfWeek, value); }
+        public IList<DayOfWeek> DaysOfWeek { get; } = [.. (DayOfWeek[])Enum.GetValues(typeof(DayOfWeek))];
+
+        public string DefaultStartOfWeekText
+        {
+            get => defaultStartOfWeek.ToString();
+            set
+            {
+                if (Enum.TryParse(value, true, out DayOfWeek parsed))
+                {
+                    DefaultStartOfWeek = parsed;
+                }
+            }
+        }
         private Command saveChangesCommand;
         public ICommand SaveChangesCommand
         {
@@ -46,9 +61,21 @@ namespace CAL.ViewModels
         }
         private void SaveChanges()
         {
-            if (int.TryParse(port, out int p) && int.TryParse(maxNumTimesNotify, out int n) && int.TryParse(defaultYearsToRepeat, out int dy))
+            if (int.TryParse(port, out int p) && 
+                int.TryParse(maxNumTimesNotify, out int n) && 
+                int.TryParse(defaultYearsToRepeat, out int dy))
             {
-                PreferencesManager.SetSettings(hostname, p, apiKey, userId, defaultCalendarId, n, dy);
+                PreferencesManager.SetSettings(
+                    hostname, 
+                    p, 
+                    apiKey, 
+                    userId, 
+                    defaultCalendarId, 
+                    n, 
+                    dy, 
+                    (int)DefaultStartOfWeek
+                );
+
                 CalClientSingleton.UpdateSettings(PreferencesManager.GetHostname(),
                                             PreferencesManager.GetPort(),
                                             PreferencesManager.GetApiKey(),

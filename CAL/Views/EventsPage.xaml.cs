@@ -21,7 +21,17 @@ namespace CAL.Views
         protected override void OnAppearing()
         {
             base.OnAppearing();
-            _viewModel.Refresh();
+        }
+        private void OnClearDateClicked(object sender, EventArgs e)
+        {
+            _viewModel.SelectedDate = null;
+        }
+        private void SearchBar_SearchButtonPressed(object sender, EventArgs e)
+        {
+            if (sender is SearchBar searchBar)
+            {
+                searchBar.Unfocus();
+            }
         }
     }
 }
