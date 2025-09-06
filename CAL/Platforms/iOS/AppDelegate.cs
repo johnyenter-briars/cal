@@ -22,7 +22,14 @@ public class AppDelegate : MauiUIApplicationDelegate
                 Console.WriteLine(approved
                     ? "Notification approval granted"
                     : "Notification approval denied");
+
+                if (approved)
+                {
+                    SendLaunchNotification();
+                }
             });
+
+        UNUserNotificationCenter.Current.Delegate = new NotificationDelegate();
 
         return base.FinishedLaunching(app, options);
     }
@@ -97,6 +104,34 @@ public class AppDelegate : MauiUIApplicationDelegate
                 completed = true;
             }
         }
+    }
+
+    void SendLaunchNotification()
+    {
+        var content = new UNMutableNotificationContent
+        {
+            Title = "App Launched",
+            Body = "Your app just launched 🚀",
+            Sound = UNNotificationSound.Default
+        };
+
+        // Show notification after 1 second
+        var trigger = UNTimeIntervalNotificationTrigger.CreateTrigger(15, false);
+        var request = UNNotificationRequest.FromIdentifier(Guid.NewGuid().ToString(), content, trigger);
+
+        UNUserNotificationCenter.Current.AddNotificationRequestAsync(request)
+            .ContinueWith(task =>
+            {
+                var foo = 10;
+                if (task.Exception != null)
+                {
+                    Console.WriteLine($"Failed to schedule notification: {task.Exception}");
+                }
+                else
+                {
+                    Console.WriteLine("Launch notification scheduled");
+                }
+            });
     }
 }
 
