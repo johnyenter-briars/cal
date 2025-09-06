@@ -1,4 +1,6 @@
 ﻿using BackgroundTasks;
+using CAL.Client;
+using CAL.Managers;
 using Foundation;
 using UIKit;
 using UserNotifications;
@@ -22,11 +24,6 @@ public class AppDelegate : MauiUIApplicationDelegate
                 Console.WriteLine(approved
                     ? "Notification approval granted"
                     : "Notification approval denied");
-
-                if (approved)
-                {
-                    SendLaunchNotification();
-                }
             });
 
         UNUserNotificationCenter.Current.Delegate = new NotificationDelegate();
@@ -39,8 +36,8 @@ public class AppDelegate : MauiUIApplicationDelegate
 
         var request = new BGProcessingTaskRequest("com.jyb.cal.processing")
         {
-            RequiresNetworkConnectivity = true, // set true if you hit server
-            RequiresExternalPower = false        // set true if you want it only when plugged in
+            RequiresNetworkConnectivity = true,
+            RequiresExternalPower = false
         };
 
         NSError error;
@@ -86,16 +83,6 @@ public class AppDelegate : MauiUIApplicationDelegate
             // Do background work here
             await Task.Delay(2000); // Simulate work
 
-            var content = new UNMutableNotificationContent
-            {
-                Title = "Background Processing",
-                Body = "Task ran successfully in background 🛠️",
-                Sound = UNNotificationSound.Default
-            };
-
-            var trigger = UNTimeIntervalNotificationTrigger.CreateTrigger(1, false);
-            var request = UNNotificationRequest.FromIdentifier(Guid.NewGuid().ToString(), content, trigger);
-            await UNUserNotificationCenter.Current.AddNotificationRequestAsync(request);
 
             Console.WriteLine("Processing task completed and notification sent.");
 
@@ -115,33 +102,64 @@ public class AppDelegate : MauiUIApplicationDelegate
             }
         }
     }
+    async Task CheckForNotifications()
+    {
+        var calClient = DependencyService.Get<ICalClient>();
 
-    void SendLaunchNotification()
+        var response = await calClient.GetEventsAsync(DateTime.Now.Year, DateTime.Now.Month);
+
+        var now = DateTime.Now;
+
+        foreach (var e in response.Events)
+        {
+            if (now.Date != e.StartTime.Date || !e.ShouldNotify || e.NumTimesNotified > PreferencesManager.GetMaxNumTimesToNotify())
+            {
+                continue;
+            }
+
+            var span = e.StartTime.Subtract(now);
+
+            //if (span.Minutes >= 30 &&
+            // span.Minutes <= 45)
+            //{
+            // DependencyService.Get<INotificationManager>().SendNotification(e.Name, $"Upcomming Event in 30-50 mintues at: {e.StartTime}");
+            // e.NumTimesNotified += 1;
+            // await calClient.UpdateEventAsync(e.ToUpdateRequest());
+            //}
+
+            if (span.TotalMinutes >= 16 && span.TotalMinutes <= 30)
+            {
+                await SendNotification(e.Name, $"Upcomming Event at: {e.StartTime:HH:mm}", null);
+                e.NumTimesNotified += 1;
+                await calClient.UpdateEventAsync(e.ToUpdateRequest());
+                return;
+            }
+
+            if (span.TotalMinutes >= 0 && span.TotalMinutes <= 15)
+            {
+                await SendNotification(e.Name, $"Upcomming Event at: {e.StartTime:HH:mm}", null);
+                e.NumTimesNotified += 1;
+                await calClient.UpdateEventAsync(e.ToUpdateRequest());
+                return;
+            }
+        }
+
+    }
+
+    async Task SendNotification(string title, string message, DateTime? notifyTime = null)
     {
         var content = new UNMutableNotificationContent
         {
-            Title = "App Launched",
-            Body = "Your app just launched -test 🚀",
+            Title = title,
+            Body = message,
             Sound = UNNotificationSound.Default
         };
 
-        // Show notification after 1 second
-        var trigger = UNTimeIntervalNotificationTrigger.CreateTrigger(15, false);
+        var trigger = UNTimeIntervalNotificationTrigger.CreateTrigger(1, false);
+
         var request = UNNotificationRequest.FromIdentifier(Guid.NewGuid().ToString(), content, trigger);
 
-        UNUserNotificationCenter.Current.AddNotificationRequestAsync(request)
-            .ContinueWith(task =>
-            {
-                var foo = 10;
-                if (task.Exception != null)
-                {
-                    Console.WriteLine($"Failed to schedule notification: {task.Exception}");
-                }
-                else
-                {
-                    Console.WriteLine("Launch notification scheduled");
-                }
-            });
+        await UNUserNotificationCenter.Current.AddNotificationRequestAsync(request);
     }
 }
 
