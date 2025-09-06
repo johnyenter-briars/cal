@@ -13,7 +13,7 @@ public class AppDelegate : MauiUIApplicationDelegate
     public override bool FinishedLaunching(UIApplication app, NSDictionary options)
     {
         RegisterBackgroundTasks();
-        ScheduleAppRefresh();
+        ScheduleProcessingTask();
 
         UNUserNotificationCenter.Current.RequestAuthorization(
             UNAuthorizationOptions.Alert | UNAuthorizationOptions.Badge | UNAuthorizationOptions.Sound,
@@ -33,38 +33,45 @@ public class AppDelegate : MauiUIApplicationDelegate
 
         return base.FinishedLaunching(app, options);
     }
-
-    void ScheduleAppRefresh()
+    void ScheduleProcessingTask()
     {
-        var request = new BGAppRefreshTaskRequest("com.jyb.cal.refresh")
+        Console.WriteLine("Scheduling background processing task...");
+
+        var request = new BGProcessingTaskRequest("com.jyb.cal.processing")
         {
-            EarliestBeginDate = NSDate.FromTimeIntervalSinceNow(15 * 60)  //Man I hope this works : (
+            RequiresNetworkConnectivity = true, // set true if you hit server
+            RequiresExternalPower = false        // set true if you want it only when plugged in
         };
 
         NSError error;
         BGTaskScheduler.Shared.Submit(request, out error);
 
         if (error != null)
-            Console.WriteLine($"Error scheduling refresh: {error}");
+            Console.WriteLine($"Error scheduling background processing: {error}");
+        else
+            Console.WriteLine("Background processing task scheduled.");
     }
 
     void RegisterBackgroundTasks()
     {
-        BGTaskScheduler.Shared.Register("com.jyb.cal.refresh", null, task =>
+        Console.WriteLine("Registering background tasks...");
+
+        BGTaskScheduler.Shared.Register("com.jyb.cal.processing", null, task =>
         {
-            if (task is BGAppRefreshTask refreshTask)
+            Console.WriteLine("Background processing task triggered!");
+            if (task is BGProcessingTask processingTask)
             {
-                _ = HandleAppRefreshAsync(refreshTask);
+                _ = HandleProcessingTaskAsync(processingTask);
             }
         });
     }
-
-    async Task HandleAppRefreshAsync(BGAppRefreshTask task)
+    async Task HandleProcessingTaskAsync(BGProcessingTask task)
     {
-        var completed = false;
+        bool completed = false;
 
         task.ExpirationHandler = () =>
         {
+            Console.WriteLine("Processing task expired!");
             if (!completed)
             {
                 task.SetTaskCompleted(success: false);
@@ -74,21 +81,23 @@ public class AppDelegate : MauiUIApplicationDelegate
 
         try
         {
-            ScheduleAppRefresh();
+            ScheduleProcessingTask(); // reschedule for next time
 
-            // call server and show notification(s)
-            await Task.Delay(2000);
+            // Do background work here
+            await Task.Delay(2000); // Simulate work
+
             var content = new UNMutableNotificationContent
             {
-                Title = "foo bar",
-                Body = "bing bong",
+                Title = "Background Processing",
+                Body = "Task ran successfully in background 🛠️",
                 Sound = UNNotificationSound.Default
             };
 
             var trigger = UNTimeIntervalNotificationTrigger.CreateTrigger(1, false);
             var request = UNNotificationRequest.FromIdentifier(Guid.NewGuid().ToString(), content, trigger);
-
             await UNUserNotificationCenter.Current.AddNotificationRequestAsync(request);
+
+            Console.WriteLine("Processing task completed and notification sent.");
 
             if (!completed)
             {
@@ -98,6 +107,7 @@ public class AppDelegate : MauiUIApplicationDelegate
         }
         catch (Exception ex)
         {
+            Console.WriteLine($"Processing task failed: {ex}");
             if (!completed)
             {
                 task.SetTaskCompleted(success: false);
@@ -111,7 +121,7 @@ public class AppDelegate : MauiUIApplicationDelegate
         var content = new UNMutableNotificationContent
         {
             Title = "App Launched",
-            Body = "Your app just launched 🚀",
+            Body = "Your app just launched -test 🚀",
             Sound = UNNotificationSound.Default
         };
 
