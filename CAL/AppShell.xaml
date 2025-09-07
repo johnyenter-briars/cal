@@ -7,11 +7,11 @@
     Shell.FlyoutBehavior="Disabled">
 
     <TabBar Title="test2">
-        <ShellContent Title="Calendar" Icon="icons8_calendar_48.png" Route="CalendarPage" ContentTemplate="{DataTemplate local:CalendarPage}" />
-        <ShellContent Title="Events" Icon="icons8_list_view_50.png" ContentTemplate="{DataTemplate local:EventsPage}" />
-        <ShellContent Title="Profile" Icon="icons8_name_50.png" ContentTemplate="{DataTemplate local:ProfilePage}" />
-        <ShellContent Title="Settings" Icon="icons8_automatic_50.png" ContentTemplate="{DataTemplate local:SettingsPage}" />
-        <ShellContent Title="About" Icon="icon_about.png" ContentTemplate="{DataTemplate local:AboutPage}" />
+        <ShellContent Icon="icons8_calendar_48.png" Route="CalendarPage" ContentTemplate="{DataTemplate local:CalendarPage}" />
+        <ShellContent Icon="icons8_list_view_50.png" ContentTemplate="{DataTemplate local:EventsPage}" />
+        <ShellContent Icon="icons8_name_50.png" ContentTemplate="{DataTemplate local:ProfilePage}" />
+        <ShellContent Icon="icons8_automatic_50.png" ContentTemplate="{DataTemplate local:SettingsPage}" />
+        <ShellContent Icon="icon_about.png" ContentTemplate="{DataTemplate local:AboutPage}" />
     </TabBar>
 
     <TabBar>

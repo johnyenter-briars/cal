@@ -12,58 +12,60 @@
     </ContentPage.BindingContext>
 
     <ContentPage.Content>
-        <ScrollView>
-            <StackLayout Spacing="3" Padding="15">
-                <StackLayout Orientation="Horizontal">
-                    <ImageButton BackgroundColor="HotPink"  Source="icons8_trash_24" Command="{Binding DeleteCommand}"  HorizontalOptions="FillAndExpand"/>
-                    <Button Text="Cancel" Command="{Binding CancelCommand}" HorizontalOptions="FillAndExpand"></Button>
-                    <Button Text="Save" Command="{Binding SaveCommand}" HorizontalOptions="FillAndExpand"></Button>
-                </StackLayout>
-                <Label Text="Name" FontSize="Medium" />
-                <Entry 
+        <Grid RowDefinitions="*,Auto">
+            <ScrollView Grid.Row="0">
+                <StackLayout Spacing="3" Padding="15">
+                    <Label Text="Name" FontSize="Medium" />
+                    <Entry 
                 Text="{Binding Name, Mode=TwoWay}" 
                 FontSize="Medium" />
-                <Label Text="Start Date" FontSize="Medium" />
-                <DatePicker 
+                    <Label Text="Start Date" FontSize="Medium" />
+                    <DatePicker 
                 Date="{Binding StartSelectedDate}" />
-                <Label Text="Start Time" FontSize="Medium" />
-                <TimePicker 
+                    <Label Text="Start Time" FontSize="Medium" />
+                    <TimePicker 
                 Time="{Binding StartSelectedTime, Mode=TwoWay}" />
-                <Label Text="End Date" FontSize="Medium" />
-                <DatePicker 
+                    <Label Text="End Date" FontSize="Medium" />
+                    <DatePicker 
                 Date="{Binding EndSelectedDate}" />
-                <Label Text="End Time" FontSize="Medium" />
-                <TimePicker 
+                    <Label Text="End Time" FontSize="Medium" />
+                    <TimePicker 
                 Time="{Binding EndSelectedTime}" />
-                <Label Text="Description" FontSize="Medium" />
-                <Frame BorderColor="LightGray" HasShadow="False" Padding="15" BackgroundColor="Black">
-                    <Editor 
+                    <Label Text="Description" FontSize="Medium" />
+                    <Frame BorderColor="LightGray" HasShadow="False" Padding="15" BackgroundColor="Black">
+                        <Editor 
                     Text="{Binding Description, Mode=TwoWay}" 
                     AutoSize="TextChanges" 
                     FontSize="Medium" 
                     Margin="0" />
-                </Frame>
-                <Picker x:Name="picker"
+                    </Frame>
+                    <Picker x:Name="picker"
                     SelectedIndexChanged="picker_SelectedIndexChanged"
                     BackgroundColor="{Binding CurrentlySelectedColor}"
                     Title="Select a Color">
-                    <Picker.ItemsSource>
-                        <x:Array Type="{x:Type x:String}">
-                            <x:String>Red</x:String>
-                            <x:String>Blue</x:String>
-                            <x:String>Green</x:String>
-                            <x:String>Orange</x:String>
-                            <x:String>Yellow</x:String>
-                            <x:String>Purple</x:String>
-                            <x:String>Pink</x:String>
-                        </x:Array>
-                    </Picker.ItemsSource>
-                </Picker>
-                <StackLayout Orientation="Horizontal">
-                    <Label Text="Should Notify" FontSize="Medium" />
-                    <CheckBox  IsChecked="{Binding ShouldNotify}" />
+                        <Picker.ItemsSource>
+                            <x:Array Type="{x:Type x:String}">
+                                <x:String>Red</x:String>
+                                <x:String>Blue</x:String>
+                                <x:String>Green</x:String>
+                                <x:String>Orange</x:String>
+                                <x:String>Yellow</x:String>
+                                <x:String>Purple</x:String>
+                                <x:String>Pink</x:String>
+                            </x:Array>
+                        </Picker.ItemsSource>
+                    </Picker>
+                    <StackLayout Orientation="Horizontal">
+                        <Label Text="Should Notify" FontSize="Medium" />
+                        <CheckBox  IsChecked="{Binding ShouldNotify}" />
+                    </StackLayout>
                 </StackLayout>
+            </ScrollView>
+            <StackLayout Grid.Row="1" Orientation="Horizontal">
+                <ImageButton BackgroundColor="IndianRed" Margin="5, 0, 5, 0" Source="icons8_trash_24" Command="{Binding DeleteCommand}"  HorizontalOptions="FillAndExpand"/>
+                <Button Text="Cancel" BackgroundColor="#31255e" Margin="5, 0, 5, 0" Command="{Binding CancelCommand}" HorizontalOptions="FillAndExpand"></Button>
+                <Button Text="Save" Command="{Binding SaveCommand}" Margin="5, 0, 5, 0" HorizontalOptions="FillAndExpand"></Button>
             </StackLayout>
-        </ScrollView>
+        </Grid>
     </ContentPage.Content>
 </ContentPage>
