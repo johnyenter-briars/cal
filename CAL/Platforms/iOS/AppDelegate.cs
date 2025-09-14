@@ -80,9 +80,7 @@ public class AppDelegate : MauiUIApplicationDelegate
         {
             ScheduleProcessingTask(); // reschedule for next time
 
-            // Do background work here
-            await Task.Delay(2000); // Simulate work
-
+            await CheckForNotifications();
 
             Console.WriteLine("Processing task completed and notification sent.");
 
@@ -105,45 +103,20 @@ public class AppDelegate : MauiUIApplicationDelegate
     async Task CheckForNotifications()
     {
         var calClient = DependencyService.Get<ICalClient>();
+        var calUserId = new Guid(PreferencesManager.GetUserId());
 
-        var response = await calClient.GetEventsAsync(DateTime.Now.Year, DateTime.Now.Month);
-
-        var now = DateTime.Now;
+        var response = await calClient.GetUpcommingEventsAsync(calUserId);
 
         foreach (var e in response.Events)
         {
-            if (now.Date != e.StartTime.Date || !e.ShouldNotify || e.NumTimesNotified > PreferencesManager.GetMaxNumTimesToNotify())
+            await SendNotification(e.Name, $"Upcomming Event at: {e.StartTime:HH:mm}");
+
+            await calClient.CreateNotificationAsync(new Client.Models.Server.Request.CreateNotificationRequest
             {
-                continue;
-            }
-
-            var span = e.StartTime.Subtract(now);
-
-            //if (span.Minutes >= 30 &&
-            // span.Minutes <= 45)
-            //{
-            // DependencyService.Get<INotificationManager>().SendNotification(e.Name, $"Upcomming Event in 30-50 mintues at: {e.StartTime}");
-            // e.NumTimesNotified += 1;
-            // await calClient.UpdateEventAsync(e.ToUpdateRequest());
-            //}
-
-            if (span.TotalMinutes >= 16 && span.TotalMinutes <= 30)
-            {
-                await SendNotification(e.Name, $"Upcomming Event at: {e.StartTime:HH:mm}", null);
-                e.NumTimesNotified += 1;
-                await calClient.UpdateEventAsync(e.ToUpdateRequest());
-                return;
-            }
-
-            if (span.TotalMinutes >= 0 && span.TotalMinutes <= 15)
-            {
-                await SendNotification(e.Name, $"Upcomming Event at: {e.StartTime:HH:mm}", null);
-                e.NumTimesNotified += 1;
-                await calClient.UpdateEventAsync(e.ToUpdateRequest());
-                return;
-            }
+                CalUserId = calUserId,
+                EventId = e.Id,
+            });
         }
-
     }
 
     async Task SendNotification(string title, string message, DateTime? notifyTime = null)
