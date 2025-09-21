@@ -175,7 +175,6 @@
                         ItemsSource="{Binding SelectedEvents}"
                         SelectionMode="Single"
                         SelectedItem="{Binding SelectedEvent}"
-                        
                         >
 
             <CollectionView.EmptyView>
@@ -192,12 +191,20 @@
                 <LinearItemsLayout Orientation="Vertical" />
             </CollectionView.ItemsLayout>
 
+            <CollectionView.ItemSizingStrategy>
+                MeasureFirstItem
+            </CollectionView.ItemSizingStrategy>
+
+
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="Models:CalendarEvent">
                     <Border
                         Margin="5"
                         BackgroundColor="Transparent"
-                        StrokeThickness="0">
+                        StrokeThickness="0"
+                        VerticalOptions="Start"
+                        HorizontalOptions="Fill"
+                        >
 
                         <Border.StrokeShape>
                             <RoundRectangle CornerRadius="10"/>
@@ -254,8 +261,8 @@
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
-        
-        
+
+
 
     </Grid>
 </ContentPage>
