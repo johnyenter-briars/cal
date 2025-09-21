@@ -37,7 +37,8 @@ public class AppDelegate : MauiUIApplicationDelegate
         var request = new BGProcessingTaskRequest("com.jyb.cal.processing")
         {
             RequiresNetworkConnectivity = true,
-            RequiresExternalPower = false
+            RequiresExternalPower = false,
+            EarliestBeginDate = NSDate.FromTimeIntervalSinceNow(15 * 60); // 15 min
         };
 
         NSError error;
