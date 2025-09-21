@@ -38,7 +38,7 @@ public class AppDelegate : MauiUIApplicationDelegate
         {
             RequiresNetworkConnectivity = true,
             RequiresExternalPower = false,
-            EarliestBeginDate = NSDate.FromTimeIntervalSinceNow(15 * 60); // 15 min
+            EarliestBeginDate = NSDate.FromTimeIntervalSinceNow(15 * 60), // 15 min
         };
 
         NSError error;
