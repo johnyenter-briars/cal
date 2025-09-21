@@ -93,7 +93,11 @@ public class AppDelegate : MauiUIApplicationDelegate
             ScheduleProcessingTask();
 
             // Check for upcoming events
-            await CheckForNotifications();
+            //await CheckForNotifications();
+            await SendNotification(
+                title: "Upcoming Event",
+                message: $"testing"
+            );
 
             Console.WriteLine("Background task completed successfully.");
 
