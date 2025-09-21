@@ -192,9 +192,11 @@
             </CollectionView.ItemsLayout>
 
             <CollectionView.ItemSizingStrategy>
-                MeasureFirstItem
+                <OnPlatform x:TypeArguments="ItemSizingStrategy">
+                    <On Platform="iOS">MeasureFirstItem</On>
+                    <On Platform="Android">MeasureAllItems</On>
+                </OnPlatform>
             </CollectionView.ItemSizingStrategy>
-
 
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="Models:CalendarEvent">
@@ -210,7 +212,9 @@
                             <RoundRectangle CornerRadius="10"/>
                         </Border.StrokeShape>
 
-                        <Grid>
+                        <Grid
+                            HeightRequest="90"
+                            >
 
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="20"/>
@@ -227,7 +231,6 @@
                                 Padding="10"
                                 BackgroundColor="#5D3FD3"
                                 Spacing="2"
-                                HeightRequest="90"
                                 VerticalOptions="Start">
 
                                 <Label
