@@ -189,7 +189,7 @@
             </CollectionView.EmptyView>
 
             <CollectionView.ItemsLayout>
-                <GridItemsLayout Orientation="Vertical" Span="1"/>
+                <LinearItemsLayout Orientation="Vertical" />
             </CollectionView.ItemsLayout>
 
             <CollectionView.ItemTemplate>
@@ -218,7 +218,10 @@
                             <VerticalStackLayout
                                 Grid.Column="1"
                                 Padding="10"
-                                BackgroundColor="#5D3FD3">
+                                BackgroundColor="#5D3FD3"
+                                Spacing="2"
+                                HeightRequest="90"
+                                VerticalOptions="Start">
 
                                 <Label
                                     FontAttributes="Bold"
