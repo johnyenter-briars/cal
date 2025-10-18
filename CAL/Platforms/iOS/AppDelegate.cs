@@ -123,34 +123,18 @@ public class AppDelegate : MauiUIApplicationDelegate
 
     async Task CheckForNotifications()
     {
-        await SendNotification(
-            title: "Checking for upcoming events...",
-            message: "Checking for upcoming events..."
-        );
-
         var calClient = DependencyService.Get<ICalClient>();
         var calUserId = new Guid(PreferencesManager.GetUserId());
-
-        await SendNotification(
-            title: "Got dependencies",
-            message: $"got dependencies"
-        );
 
         var response = await calClient.GetUpcommingEventsAsync(calUserId);
 
         if (response.Events.Count == 0)
         {
-            await SendNotification(
-                title: "No upcoming events found.",
-                message: $"No upcoming events found."
-            );
             return;
         }
 
         foreach (var e in response.Events)
         {
-            Console.WriteLine($"Scheduling notification for event: {e.Name} at {e.StartTime}");
-
             await SendNotification(
                 title: "Upcoming Event",
                 message: $"{e.Name} at {e.StartTime:HH:mm}"
