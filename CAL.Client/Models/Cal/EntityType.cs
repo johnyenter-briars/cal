@@ -10,5 +10,6 @@ namespace CAL.Client.Models.Cal
         Series,
         CalUser,
         Calendar,
+        Notification,
     }
 }

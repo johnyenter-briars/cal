@@ -106,6 +106,8 @@ namespace CAL.ViewModels
             get => _startTime; set
             {
                 SetProperty(ref _startTime, value);
+                var endTime = _startTime + TimeSpan.FromHours(0.5);
+                EndSelectedTime = endTime;
             }
         }
         private TimeSpan _endTime;
@@ -138,7 +140,7 @@ namespace CAL.ViewModels
         {
             SaveCommand = new Command(OnSave, ValidateSave);
             CancelCommand = new Command(OnCancel);
-            DeleteCommand = new Command(OnDelete);
+            DeleteCommand = new Command(OnDelete, ValidateDelete);
             ColorPickerChangedCommand = new Command(OnPickerSelectedIndexChanged);
             this.PropertyChanged +=
                 (_, __) => SaveCommand.ChangeCanExecute();
@@ -146,6 +148,10 @@ namespace CAL.ViewModels
         private bool ValidateSave()
         {
             return !string.IsNullOrWhiteSpace(name);
+        }
+        private bool ValidateDelete()
+        {
+            return id != default;
         }
 
         public string Name

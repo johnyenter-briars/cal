@@ -289,7 +289,18 @@ namespace CAL.Client
 
         public async Task<DeletedEntityResponse> DeleteEntityAsync(Guid entityId, EntityType entityType)
         {
+            if (entityType == EntityType.Event)
+            {
+                var response = await GetNotificationsForEventAsync(entityId);
+
+                foreach(var n in response.Notifications)
+                {
+                    await DeleteEntityAsync(n.Id, EntityType.Notification);
+                }
+            }
+
             var lowerCase = entityType.ToString().ToLower();
+
             return await CalServerRequest<DeletedEntityResponse>($"{lowerCase}/{entityId}", HttpMethod.Delete) as DeletedEntityResponse;
         }
 
@@ -319,6 +330,24 @@ namespace CAL.Client
         public async Task<EventsResponse> GetEventsAsync(int year, int month)
         {
             var eventsResponse = await CalServerRequest<EventsResponse>($"event/{year}/{month}", HttpMethod.Get);
+            var seriesResponse = await CalServerRequest<AllSeriesResponse>($"series", HttpMethod.Get);
+
+            foreach (var e in eventsResponse.Events)
+            {
+                e.SeriesName = seriesResponse.Series.FirstOrDefault(s => s.Id == e.SeriesId)?.Name;
+            }
+
+            return eventsResponse;
+        }
+        public async Task<NotificationsResponse> GetNotificationsForEventAsync(Guid eventId)
+        {
+            var response = await CalServerRequest<NotificationsResponse>($"notification/event/{eventId}", HttpMethod.Get);
+
+            return response;
+        }
+        public async Task<EventsResponse> GetUpcommingEventsAsync(Guid calUserId)
+        {
+            var eventsResponse = await CalServerRequest<EventsResponse>($"event/upcomming/{calUserId}", HttpMethod.Get);
             var seriesResponse = await CalServerRequest<AllSeriesResponse>($"series", HttpMethod.Get);
 
             foreach (var e in eventsResponse.Events)
@@ -383,6 +412,11 @@ namespace CAL.Client
                         //return errors == System.Net.Security.SslPolicyErrors.None;
                     };
             return handler;
+        }
+
+        public async Task<CreateNotificationResponse> CreateNotificationAsync(CreateNotificationRequest createNotificationRequest)
+        {
+            return await CalServerRequest<CreateNotificationRequest, CreateNotificationResponse>(createNotificationRequest, "notification", HttpMethod.Post);
         }
     }
 }

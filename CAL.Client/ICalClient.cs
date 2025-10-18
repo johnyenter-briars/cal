@@ -31,6 +31,7 @@ namespace CAL.Client
         /// <param name="month"></param>
         /// <returns></returns>
         Task<EventsResponse> GetEventsAsync(int year, int month);
+        Task<EventsResponse> GetUpcommingEventsAsync(Guid calUserId);
         Task<CalUserResponse> GetCalUserAsync(Guid id);
         Task<SeriesResponse> GetSeriesAsync(Guid id);
         Task<List<Event>> GetEventsForDayAsync(int dayOfCurrentMonth);
@@ -38,6 +39,7 @@ namespace CAL.Client
         Task<UpdateEntityResponse> UpdateYearlySeriesAsync(UpdateSeriesRequest updateSeriesRequest, int numYearsInFuture);
         Task<UpdateEntityResponse> UpdateSeriesAsync(UpdateSeriesRequest updateEventRequest);
         Task<DeletedEntityResponse> DeleteEntityAsync(Guid entityId, EntityType entityType);
+        Task<CreateNotificationResponse> CreateNotificationAsync(CreateNotificationRequest createNotificationRequest);
     }
 }
 

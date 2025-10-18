@@ -12,99 +12,101 @@
     </ContentPage.BindingContext>
 
     <ContentPage.Content>
-        <ScrollView>
-            <StackLayout Spacing="3" Padding="15">
-                <StackLayout Orientation="Horizontal">
-                    <ImageButton BackgroundColor="HotPink"  Source="icons8_trash_24" Command="{Binding DeleteCommand}"  HorizontalOptions="FillAndExpand"/>
-                    <Button Text="Cancel" Command="{Binding CancelCommand}" HorizontalOptions="FillAndExpand"></Button>
-                    <Button Text="Save" Command="{Binding SaveCommand}" HorizontalOptions="FillAndExpand"></Button>
-                </StackLayout>
-                <Label Text="Name" FontSize="Medium" />
-                <Entry 
+        <Grid RowDefinitions="*,Auto">
+            <ScrollView Grid.Row="0">
+                <StackLayout Spacing="3" Padding="15">
+                    <Label Text="Name" FontSize="Medium" />
+                    <Entry 
                 Text="{Binding Name, Mode=TwoWay}" 
                 FontSize="Medium" />
-                <Label Text="Series Start Date" FontSize="Medium" />
-                <DatePicker 
+                    <Label Text="Series Start Date" FontSize="Medium" />
+                    <DatePicker 
                 Date="{Binding SeriesStartsOnSelectedDate}" />
 
-                <Label Text="Series End Date" FontSize="Medium" />
-                <DatePicker 
+                    <Label Text="Series End Date" FontSize="Medium" />
+                    <DatePicker 
                 Date="{Binding SeriesEndsOnSelectedDate}" />
 
-                <Label Text="Event Start Time" FontSize="Medium" />
-                <TimePicker 
+                    <Label Text="Event Start Time" FontSize="Medium" />
+                    <TimePicker 
                 Time="{Binding SubEventsStartTime, Mode=TwoWay}" />
 
-                <Label Text="Event End Time" FontSize="Medium" />
-                <TimePicker 
+                    <Label Text="Event End Time" FontSize="Medium" />
+                    <TimePicker 
                 Time="{Binding SubEventEndTime}" />
 
-                <Label Text="Description" FontSize="Medium" />
-                <Frame BorderColor="LightGray" HasShadow="False" Padding="15" BackgroundColor="Black">
-                    <Editor 
+                    <Label Text="Description" FontSize="Medium" />
+                    <Frame BorderColor="LightGray" HasShadow="False" Padding="15" BackgroundColor="Black">
+                        <Editor 
                     Text="{Binding Description, Mode=TwoWay}" 
                     AutoSize="TextChanges" 
                     FontSize="Medium" 
                     Margin="0" />
-                </Frame>
-                <StackLayout Orientation="Horizontal">
-                    <Label Text="Reoccurs on Mon" FontSize="Medium" />
-                    <CheckBox IsChecked="{Binding RepeatOnMon }"></CheckBox>
-                </StackLayout>
-                <StackLayout Orientation="Horizontal">
-                    <Label Text="Reoccurs on Tues" FontSize="Medium" />
-                    <CheckBox IsChecked="{Binding RepeatOnTues }"></CheckBox>
-                </StackLayout>
-                <StackLayout Orientation="Horizontal">
-                    <Label Text="Reoccurs on Wed" FontSize="Medium" />
-                    <CheckBox IsChecked="{Binding RepeatOnWed }"></CheckBox>
-                </StackLayout>
-                <StackLayout Orientation="Horizontal">
-                    <Label Text="Reoccurs on Thurs" FontSize="Medium" />
-                    <CheckBox IsChecked="{Binding RepeatOnThurs }"></CheckBox>
-                </StackLayout>
-                <StackLayout Orientation="Horizontal">
-                    <Label Text="Reoccurs on Fri" FontSize="Medium" />
-                    <CheckBox IsChecked="{Binding RepeatOnFri }"></CheckBox>
-                </StackLayout>
-                <StackLayout Orientation="Horizontal">
-                    <Label Text="Reoccurs on Sat" FontSize="Medium" />
-                    <CheckBox IsChecked="{Binding RepeatOnSat }"></CheckBox>
-                </StackLayout>
-                <StackLayout Orientation="Horizontal">
-                    <Label Text="Reoccurs on Sun" FontSize="Medium" />
-                    <CheckBox IsChecked="{Binding RepeatOnSun }"></CheckBox>
-                </StackLayout>
+                    </Frame>
+                    <StackLayout Orientation="Horizontal">
+                        <Label Text="Reoccurs on Mon" FontSize="Medium" />
+                        <CheckBox IsChecked="{Binding RepeatOnMon }"></CheckBox>
+                    </StackLayout>
+                    <StackLayout Orientation="Horizontal">
+                        <Label Text="Reoccurs on Tues" FontSize="Medium" />
+                        <CheckBox IsChecked="{Binding RepeatOnTues }"></CheckBox>
+                    </StackLayout>
+                    <StackLayout Orientation="Horizontal">
+                        <Label Text="Reoccurs on Wed" FontSize="Medium" />
+                        <CheckBox IsChecked="{Binding RepeatOnWed }"></CheckBox>
+                    </StackLayout>
+                    <StackLayout Orientation="Horizontal">
+                        <Label Text="Reoccurs on Thurs" FontSize="Medium" />
+                        <CheckBox IsChecked="{Binding RepeatOnThurs }"></CheckBox>
+                    </StackLayout>
+                    <StackLayout Orientation="Horizontal">
+                        <Label Text="Reoccurs on Fri" FontSize="Medium" />
+                        <CheckBox IsChecked="{Binding RepeatOnFri }"></CheckBox>
+                    </StackLayout>
+                    <StackLayout Orientation="Horizontal">
+                        <Label Text="Reoccurs on Sat" FontSize="Medium" />
+                        <CheckBox IsChecked="{Binding RepeatOnSat }"></CheckBox>
+                    </StackLayout>
+                    <StackLayout Orientation="Horizontal">
+                        <Label Text="Reoccurs on Sun" FontSize="Medium" />
+                        <CheckBox IsChecked="{Binding RepeatOnSun }"></CheckBox>
+                    </StackLayout>
 
-                <Label Text="Repeat ever # Weeks" FontSize="Medium" />
-                <Entry Keyboard="Numeric" 
+                    <Label Text="Repeat ever # Weeks" FontSize="Medium" />
+                    <Entry Keyboard="Numeric" 
                     Text="{Binding RepeatEveryWeek, Mode=TwoWay}" 
                        />
-                <Picker x:Name="picker"
+                    <Picker x:Name="picker"
                     SelectedIndexChanged="picker_SelectedIndexChanged"
                     BackgroundColor="{Binding CurrentlySelectedColor}"
                     Title="Select a Color">
-                    <Picker.ItemsSource>
-                        <x:Array Type="{x:Type x:String}">
-                            <x:String>Red</x:String>
-                            <x:String>Blue</x:String>
-                            <x:String>Green</x:String>
-                            <x:String>Orange</x:String>
-                            <x:String>Yellow</x:String>
-                            <x:String>Purple</x:String>
-                            <x:String>Pink</x:String>
-                        </x:Array>
-                    </Picker.ItemsSource>
-                </Picker>
-                <StackLayout Orientation="Horizontal">
-                    <Label Text="Should Notify" FontSize="Medium" />
-                    <CheckBox  IsChecked="{Binding ShouldNotify}" />
-                    <Label Text="Yearly Event" FontSize="Medium" />
-                    <CheckBox  IsChecked="{Binding YearlyEvent}" />
+                        <Picker.ItemsSource>
+                            <x:Array Type="{x:Type x:String}">
+                                <x:String>Red</x:String>
+                                <x:String>Blue</x:String>
+                                <x:String>Green</x:String>
+                                <x:String>Orange</x:String>
+                                <x:String>Yellow</x:String>
+                                <x:String>Purple</x:String>
+                                <x:String>Pink</x:String>
+                            </x:Array>
+                        </Picker.ItemsSource>
+                    </Picker>
+                    <StackLayout Orientation="Horizontal">
+                        <Label Text="Should Notify" FontSize="Medium" />
+                        <CheckBox  IsChecked="{Binding ShouldNotify}" />
+                        <Label Text="Yearly Event" FontSize="Medium" />
+                        <CheckBox  IsChecked="{Binding YearlyEvent}" />
+                    </StackLayout>
                 </StackLayout>
-            </StackLayout>
 
-        </ScrollView>
+            </ScrollView>
+            <StackLayout Grid.Row="1" Orientation="Horizontal">
+                <ImageButton BackgroundColor="IndianRed" Margin="5, 0, 5, 0" Source="icons8_trash_24" Command="{Binding DeleteCommand}"  HorizontalOptions="FillAndExpand"/>
+                <Button Text="Cancel" BackgroundColor="#31255e" Margin="5, 0, 5, 0" Command="{Binding CancelCommand}" HorizontalOptions="FillAndExpand"></Button>
+                <Button Text="Save" Command="{Binding SaveCommand}" Margin="5, 0, 5, 0" HorizontalOptions="FillAndExpand"></Button>
+            </StackLayout>
+        </Grid>
     </ContentPage.Content>
 
 </ContentPage>

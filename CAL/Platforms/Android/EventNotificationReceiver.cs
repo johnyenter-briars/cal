@@ -9,53 +9,29 @@ using System.Threading.Tasks;
 
 namespace CAL.Platforms.Android
 {
-	[BroadcastReceiver]
-	public class EventNotificationReceiver : BroadcastReceiver
-	{
-		public override void OnReceive(Context context, Intent intent)
-		{
-			Task.Run(async () =>
-			   {
-				   var calClient = DependencyService.Get<ICalClient>();
+    [BroadcastReceiver]
+    public class EventNotificationReceiver : BroadcastReceiver
+    {
+        public override void OnReceive(Context context, Intent intent)
+        {
+            Task.Run(async () =>
+               {
+                   var calClient = DependencyService.Get<ICalClient>();
+                   var calUserId = new Guid(PreferencesManager.GetUserId());
 
-				   var response = await calClient.GetEventsAsync(DateTime.Now.Year, DateTime.Now.Month);
+                   var response = await calClient.GetUpcommingEventsAsync(calUserId);
 
-				   var now = DateTime.Now;
+                   foreach (var e in response.Events)
+                   {
+                       DependencyService.Get<INotificationManager>().SendNotification(e.Name, $"Upcomming Event at: {e.StartTime:HH:mm}");
 
-				   foreach (var e in response.Events)
-				   {
-					   if (now.Date != e.StartTime.Date || !e.ShouldNotify || e.NumTimesNotified > PreferencesManager.GetMaxNumTimesToNotify())
-					   {
-						   continue;
-					   }
-
-					   var span = e.StartTime.Subtract(now);
-
-					   //if (span.Minutes >= 30 &&
-					   // span.Minutes <= 45)
-					   //{
-					   // DependencyService.Get<INotificationManager>().SendNotification(e.Name, $"Upcomming Event in 30-50 mintues at: {e.StartTime}");
-					   // e.NumTimesNotified += 1;
-					   // await calClient.UpdateEventAsync(e.ToUpdateRequest());
-					   //}
-
-					   if (span.TotalMinutes >= 16 && span.TotalMinutes <= 30)
-					   {
-						   DependencyService.Get<INotificationManager>().SendNotification(e.Name, $"Upcomming Event at: {e.StartTime:HH:mm}");
-						   e.NumTimesNotified += 1;
-						   await calClient.UpdateEventAsync(e.ToUpdateRequest());
-						   return;
-					   }
-
-					   if (span.TotalMinutes >= 0 && span.TotalMinutes <= 15)
-					   {
-						   DependencyService.Get<INotificationManager>().SendNotification(e.Name, $"Upcomming Event at: {e.StartTime:HH:mm}");
-						   e.NumTimesNotified += 1;
-						   await calClient.UpdateEventAsync(e.ToUpdateRequest());
-						   return;
-					   }
-				   }
-			   });
-		}
-	}
+                       await calClient.CreateNotificationAsync(new Client.Models.Server.Request.CreateNotificationRequest
+                       {
+                           CalUserId = calUserId,
+                           EventId = e.Id,
+                       });
+                   }
+               });
+        }
+    }
 }

@@ -29,16 +29,23 @@ namespace CAL.Views
                 var bc = (CalendarViewModel)BindingContext;
                 bc.CurrentlySelectedCalendar = calendarsForUser.Calendars.SingleOrDefault(c => c.Id == new Guid(PreferencesManager.GetDefaultCalendarId()));
 
-                foreach (var calendar in calendarsForUser.Calendars)
+                ToolbarItems.Add(new ToolbarItem
                 {
-                    ToolbarItems.Add(new ToolbarItem
+                    Text = "Calendars",
+                    IconImageSource = "icons8_calendar_50.png",
+                    Command = new Command(async () =>
                     {
-                        Order = ToolbarItemOrder.Secondary,
-                        Text = $"{calendar.Name} ({calendar.Color})",
-                        Command = bc.SelectCalendarCommand,
-                        CommandParameter = calendar,
-                    });
-                }
+                        var selected = await DisplayActionSheet("Select Calendar", "Cancel", null,
+                            calendarsForUser.Calendars.Select(c => $"{c.Name} ({c.Color})").ToArray());
+
+                        if (selected != null && selected != "Cancel")
+                        {
+                            var cal = calendarsForUser.Calendars.First(c => $"{c.Name} ({c.Color})" == selected);
+                            bc.SelectCalendarCommand.Execute(cal);
+                        }
+                    })
+                });
+
 
                 OnAppearing();
             });
