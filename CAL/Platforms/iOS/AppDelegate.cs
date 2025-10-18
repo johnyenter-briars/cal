@@ -125,7 +125,7 @@ public class AppDelegate : MauiUIApplicationDelegate
     {
         await SendNotification(
             title: "Checking for upcoming events...",
-            message: "Checking for upcoming events...",
+            message: "Checking for upcoming events..."
         );
 
         var calClient = DependencyService.Get<ICalClient>();
