@@ -16,9 +16,6 @@ public class AppDelegate : MauiUIApplicationDelegate
     {
         Console.WriteLine("App finished launching");
 
-        //Notifications too hard. Plus doesn't work in low power mode. : (
-        return base.FinishedLaunching(app, options);
-
         // Request notification permissions
         UNUserNotificationCenter.Current.RequestAuthorization(
             UNAuthorizationOptions.Alert | UNAuthorizationOptions.Badge | UNAuthorizationOptions.Sound,
@@ -96,11 +93,11 @@ public class AppDelegate : MauiUIApplicationDelegate
             ScheduleProcessingTask();
 
             // Check for upcoming events
-            //await CheckForNotifications();
-            await SendNotification(
-                title: "Upcoming Event",
-                message: $"testing"
-            );
+            await CheckForNotifications();
+            //await SendNotification(
+            //    title: "Upcoming Event",
+            //    message: $"testing"
+            //);
 
             Console.WriteLine("Background task completed successfully.");
 
@@ -112,7 +109,10 @@ public class AppDelegate : MauiUIApplicationDelegate
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Background task failed: {ex}");
+            await SendNotification(
+                title: "Upcoming Event",
+                message: $"Background task failed: {ex}"
+            );
             if (!completed)
             {
                 task.SetTaskCompleted(false);
@@ -128,11 +128,19 @@ public class AppDelegate : MauiUIApplicationDelegate
         var calClient = DependencyService.Get<ICalClient>();
         var calUserId = new Guid(PreferencesManager.GetUserId());
 
+        await SendNotification(
+            title: "Got dependencies",
+            message: $"got dependencies"
+        );
+
         var response = await calClient.GetUpcommingEventsAsync(calUserId);
 
         if (response.Events.Count == 0)
         {
-            Console.WriteLine("No upcoming events found.");
+            await SendNotification(
+                title: "No upcoming events found.",
+                message: $"No upcoming events found."
+            );
             return;
         }
 
