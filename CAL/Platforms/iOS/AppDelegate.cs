@@ -123,7 +123,10 @@ public class AppDelegate : MauiUIApplicationDelegate
 
     async Task CheckForNotifications()
     {
-        Console.WriteLine("Checking for upcoming events...");
+        await SendNotification(
+            title: "Checking for upcoming events...",
+            message: "Checking for upcoming events...",
+        );
 
         var calClient = DependencyService.Get<ICalClient>();
         var calUserId = new Guid(PreferencesManager.GetUserId());
