@@ -16,6 +16,9 @@ public class AppDelegate : MauiUIApplicationDelegate
     {
         Console.WriteLine("App finished launching");
 
+        //Notifications too hard. Plus doesn't work in low power mode. : (
+        return base.FinishedLaunching(app, options);
+
         // Request notification permissions
         UNUserNotificationCenter.Current.RequestAuthorization(
             UNAuthorizationOptions.Alert | UNAuthorizationOptions.Badge | UNAuthorizationOptions.Sound,
