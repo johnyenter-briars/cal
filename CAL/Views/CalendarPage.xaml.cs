@@ -5,6 +5,7 @@ using CAL.ViewModels;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -22,32 +23,50 @@ namespace CAL.Views
 
             Task.Run(async () =>
             {
-                await Task.Delay(1000);
-                var calClient = DependencyService.Get<ICalClient>();
-                var calendarsForUser = await calClient.GetCalendarsForUserAsync(new Guid(PreferencesManager.GetUserId()));
-
-                var bc = (CalendarViewModel)BindingContext;
-                bc.CurrentlySelectedCalendar = calendarsForUser.Calendars.SingleOrDefault(c => c.Id == new Guid(PreferencesManager.GetDefaultCalendarId()));
-
-                ToolbarItems.Add(new ToolbarItem
+                try
                 {
-                    Text = "Calendars",
-                    IconImageSource = "icons8_calendar_50.png",
-                    Command = new Command(async () =>
+                    await Task.Delay(1000);
+                    var calClient = DependencyService.Get<ICalClient>();
+                    var calendarsForUser = await calClient.GetCalendarsForUserAsync(new Guid(PreferencesManager.GetUserId()));
+
+                    await MainThread.InvokeOnMainThreadAsync(() =>
                     {
-                        var selected = await DisplayActionSheet("Select Calendar", "Cancel", null,
-                            calendarsForUser.Calendars.Select(c => $"{c.Name} ({c.Color})").ToArray());
+                        var bc = (CalendarViewModel)BindingContext;
+                        bc.CurrentlySelectedCalendar = calendarsForUser.Calendars.SingleOrDefault(c => c.Id == new Guid(PreferencesManager.GetDefaultCalendarId()));
 
-                        if (selected != null && selected != "Cancel")
+                        ToolbarItems.Add(new ToolbarItem
                         {
-                            var cal = calendarsForUser.Calendars.First(c => $"{c.Name} ({c.Color})" == selected);
-                            bc.SelectCalendarCommand.Execute(cal);
-                        }
-                    })
-                });
+                            Text = "Calendars",
+                            IconImageSource = "icons8_calendar_50.png",
+                            Command = new Command(async () =>
+                            {
+                                var selected = await DisplayActionSheet("Select Calendar", "Cancel", null,
+                                    calendarsForUser.Calendars.Select(c => $"{c.Name} ({c.Color})").ToArray());
+
+                                if (selected != null && selected != "Cancel")
+                                {
+                                    var cal = calendarsForUser.Calendars.First(c => $"{c.Name} ({c.Color})" == selected);
+                                    bc.SelectCalendarCommand.Execute(cal);
+                                }
+                            })
+                        });
+                    });
 
 
-                OnAppearing();
+                    await MainThread.InvokeOnMainThreadAsync(OnAppearing);
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(ex);
+
+                    await MainThread.InvokeOnMainThreadAsync(async () =>
+                    {
+                        await DisplayAlert(
+                            "Network Error",
+                            $"Unable to reach the calendar server. Please check your connection and try again.\n\nDetails: {ex.Message}",
+                            "OK");
+                    });
+                }
             });
         }
         protected override void OnAppearing()

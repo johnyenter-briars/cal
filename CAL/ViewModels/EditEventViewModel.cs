@@ -200,7 +200,13 @@ namespace CAL.ViewModels
         }
         private async void OnDelete()
         {
-            await CalClientSingleton.DeleteEntityAsync(id, _entityType);
+            var (_, success) = await Fallback(() => CalClientSingleton.DeleteEntityAsync(id, _entityType));
+
+            if (!success)
+            {
+                return;
+            }
+
             await Shell.Current.GoToAsync("..");
         }
 
@@ -228,11 +234,21 @@ namespace CAL.ViewModels
 
             if (id != Guid.Empty)
             {
-                await CalClientSingleton.UpdateEventAsync(newEvent.ToUpdateRequest());
+                var (_, success) = await Fallback(() => CalClientSingleton.UpdateEventAsync(newEvent.ToUpdateRequest()));
+
+                if (!success)
+                {
+                    return;
+                }
             }
             else
             {
-                await CalClientSingleton.CreateEventAsync(newEvent.ToRequest());
+                var (_, success) = await Fallback(() => CalClientSingleton.CreateEventAsync(newEvent.ToRequest()));
+
+                if (!success)
+                {
+                    return;
+                }
             }
 
             await Shell.Current.GoToAsync("..");

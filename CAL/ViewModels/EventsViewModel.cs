@@ -59,7 +59,12 @@ public class EventsViewModel : BaseViewModel
 
         try
         {
-            var response = await CalClientSingleton.GetEventsAsync();
+            var (response, success) = await Fallback(() => CalClientSingleton.GetEventsAsync());
+
+            if (!success)
+            {
+                return;
+            }
 
             if (response.StatusCode != 200)
             {
@@ -118,7 +123,14 @@ public class EventsViewModel : BaseViewModel
     {
         if (e.SeriesId != null)
         {
-            var series = (await CalClientSingleton.GetSeriesAsync((Guid)e.SeriesId)).Series;
+            var (seriesResponse, success) = await Fallback(() => CalClientSingleton.GetSeriesAsync((Guid)e.SeriesId));
+
+            if (!success)
+            {
+                return;
+            }
+
+            var series = seriesResponse.Series;
             var startUnixTimeSeconds = ((DateTimeOffset)series.StartsOn.Add(series.EventStartTime).ToUniversalTime()).ToUnixTimeSeconds();
             var endUnixTimeSeconds = ((DateTimeOffset)series.EndsOn.Add(series.EventEndTime).ToUniversalTime()).ToUnixTimeSeconds();
 

@@ -23,12 +23,18 @@ public class ProfileViewModel : BaseViewModel
         {
             var userId = PreferencesManager.GetUserId();
 
-            var calUserResponse = await CalClientSingleton.GetCalUserAsync(new Guid(userId));
+            var (calUserResponse, success) = await Fallback(() => CalClientSingleton.GetCalUserAsync(new Guid(userId)));
+
+            if (!success)
+            {
+                return;
+            }
 
             CalUser = calUserResponse.User;
         }
         catch (Exception ex)
         {
+            await FailsafeService.ShowFailureAlert("Network Error", ex);
         }
     }
 }

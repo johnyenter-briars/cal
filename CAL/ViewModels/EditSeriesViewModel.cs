@@ -302,7 +302,12 @@ namespace CAL.ViewModels
                         ShouldNotify = shouldNotify,
                     };
 
-                    await CalClientSingleton.UpdateYearlySeriesAsync(request, years);
+                    var (_, success) = await Fallback(() => CalClientSingleton.UpdateYearlySeriesAsync(request, years));
+
+                    if (!success)
+                    {
+                        return;
+                    }
                 }
                 else
                 {
@@ -329,7 +334,12 @@ namespace CAL.ViewModels
                         ShouldNotify = shouldNotify,
                     };
 
-                    await CalClientSingleton.CreateYearlySeriesAsync(request, years);
+                    var (_, success) = await Fallback(() => CalClientSingleton.CreateYearlySeriesAsync(request, years));
+
+                    if (!success)
+                    {
+                        return;
+                    }
                 }
             }
             else
@@ -359,7 +369,12 @@ namespace CAL.ViewModels
                         ShouldNotify = shouldNotify,
                     };
 
-                    await CalClientSingleton.CreateSeriesAsync(request);
+                    var (_, success) = await Fallback(() => CalClientSingleton.CreateSeriesAsync(request));
+
+                    if (!success)
+                    {
+                        return;
+                    }
                 }
                 else
                 {
@@ -387,7 +402,12 @@ namespace CAL.ViewModels
                         ShouldNotify = shouldNotify,
                     };
 
-                    await CalClientSingleton.UpdateSeriesAsync(request);
+                    var (_, success) = await Fallback(() => CalClientSingleton.UpdateSeriesAsync(request));
+
+                    if (!success)
+                    {
+                        return;
+                    }
                 }
             }
 
@@ -396,7 +416,13 @@ namespace CAL.ViewModels
         }
         private async void OnDelete()
         {
-            await CalClientSingleton.DeleteEntityAsync(id, _entityType);
+            var (_, success) = await Fallback(() => CalClientSingleton.DeleteEntityAsync(id, _entityType));
+
+            if (!success)
+            {
+                return;
+            }
+
             await Shell.Current.GoToAsync("..");
         }
         private void OnPickerSelectedIndexChanged(object sender)

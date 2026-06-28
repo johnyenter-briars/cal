@@ -116,9 +116,16 @@ namespace CAL.ViewModels
         {
             EventCalendar?.ChangeDateSelection(DateTime);
         }
-        private async Task LoadEventCollectionAsync(int year, int month)
+        private async Task<bool> LoadEventCollectionAsync(int year, int month)
         {
-            var eventsOfMonth = (await CalClientSingleton.GetEventsAsync(year, month));
+            var (eventsOfMonth, success) = await Fallback(
+                () => CalClientSingleton.GetEventsAsync(year, month));
+
+            if (!success)
+            {
+                return false;
+            }
+
             var events = eventsOfMonth.Events.Where(e => e.CalendarId == CurrentlySelectedCalendar?.Id).ToList();
 
             EventsBuffer.Clear();
@@ -143,6 +150,8 @@ namespace CAL.ViewModels
                 var filtered = EventsBuffer.Where(x => x.StartTime.Date == Day.DateTime.Date);
                 Day.Events.ReplaceRange(filtered);
             }
+
+            return true;
         }
 
         private async Task ExecuteLoadEventsAsync()
@@ -158,7 +167,7 @@ namespace CAL.ViewModels
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                await FailsafeService.ShowFailureAlert("Network Error", ex);
             }
             finally
             {
@@ -183,14 +192,20 @@ namespace CAL.ViewModels
             {
                 if (NavigatingToEvent)
                 {
-                    await SelectCalendar(currentlySelectedCalendarId);
+                    if (!await SelectCalendar(currentlySelectedCalendarId))
+                    {
+                        return;
+                    }
                     DateTime dateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Local).AddSeconds(openDateStartTimeUnixSeconds);
                     EventCalendar.NavigatedDate = dateTime;
                     NavigatingToEvent = false;
                     SelectedDate = dateTime;
                     var tempDay = new Calendar<EventDay>();
                     tempDay.SelectedDates.Add(dateTime);
-                    await LoadEventCollectionAsync(dateTime.Year, dateTime.Month);
+                    if (!await LoadEventCollectionAsync(dateTime.Year, dateTime.Month))
+                    {
+                        return;
+                    }
                     EventCalendar_DaysUpdated(tempDay, null);
                     SelectedDates_CollectionChanged(null, null);
                     EventCalendar.Days.Single(d =>
@@ -207,7 +222,7 @@ namespace CAL.ViewModels
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                await FailsafeService.ShowFailureAlert("Network Error", ex);
             }
         }
         private void SelectedDates_CollectionChanged(object _, NotifyCollectionChangedEventArgs __)
@@ -234,7 +249,15 @@ namespace CAL.ViewModels
 
             if (e.SeriesId != null)
             {
-                var series = (await DependencyService.Get<ICalClient>().GetSeriesAsync((Guid)e.SeriesId)).Series;
+                var (seriesResponse, success) = await Fallback(
+                    () => DependencyService.Get<ICalClient>().GetSeriesAsync((Guid)e.SeriesId));
+
+                if (!success)
+                {
+                    return;
+                }
+
+                var series = seriesResponse.Series;
                 var startUnixTimeSeconds = ((DateTimeOffset)series.StartsOn.Add(series.EventStartTime).ToUniversalTime()).ToUnixTimeSeconds();
                 var endUnixTimeSeconds = ((DateTimeOffset)series.EndsOn.Add(series.EventEndTime).ToUniversalTime()).ToUnixTimeSeconds();
 
@@ -255,22 +278,30 @@ namespace CAL.ViewModels
                 await Shell.Current.GoToAsync($@"{nameof(EditEventPage)}?{nameof(EditEventViewModel.StartTimeUnixSeconds)}={startUnixTimeSeconds}&{nameof(EditEventViewModel.EndTimeUnixSeconds)}={endUnixTimeSeconds}&{nameof(EditEventViewModel.Id)}={e.Id}&{nameof(EditEventViewModel.Name)}={e.Name}&{nameof(EditEventViewModel.Description)}={e.Description}&{nameof(EditEventViewModel.EntityType)}={e.EntityType}&{nameof(EditEventViewModel.Color)}={color}&{nameof(EditEventViewModel.ShouldNotify)}={e.ShouldNotify}&{nameof(EditEventViewModel.NumTimesNotified)}={e.NumTimesNotified}");
             }
         }
-        private async Task SelectCalendar(Calendar calendar)
+        private async Task<bool> SelectCalendar(Calendar calendar)
         {
             SelectedEvents.Clear();
             CurrentlySelectedCalendar = calendar;
             App.Current.Resources["ContentBackgroundColor"] = Color.Parse(CurrentlySelectedCalendar.Color);
             var month = EventCalendar.NavigatedDate.Month;
             var year = EventCalendar.NavigatedDate.Year;
-            await LoadEventCollectionAsync(year, month);
+            return await LoadEventCollectionAsync(year, month);
         }
-        private async Task SelectCalendar(string calendarId)
+        private async Task<bool> SelectCalendar(string calendarId)
         {
             SelectedEvents.Clear();
-            var calendars = await CalClientSingleton.GetCalendarsForUserAsync(new Guid(PreferencesManager.GetUserId()));
+            var (calendars, success) = await Fallback(
+                () => CalClientSingleton.GetCalendarsForUserAsync(new Guid(PreferencesManager.GetUserId())));
+
+            if (!success)
+            {
+                return false;
+            }
+
             var selectedCalendar = calendars.Calendars.FirstOrDefault(c => c.Id == new Guid(calendarId));
             App.Current.Resources["ContentBackgroundColor"] = Color.Parse(selectedCalendar.Color);
             CurrentlySelectedCalendar = selectedCalendar;
+            return true;
         }
     }
 }
