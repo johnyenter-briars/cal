@@ -4,6 +4,10 @@ Simple calendar mangement.
 
 CAL provides a multitude of methods for calendar management across different interfaces. Currently CAL supports a cross-platform app and a command line interface.
 
+## TODO:
+- Also delete notifications related to events when deleting events / series
+
+
 ### Built With
 
 * [MAUI](https://learn.microsoft.com/en-us/dotnet/maui/what-is-maui?view=net-maui-7.0)
