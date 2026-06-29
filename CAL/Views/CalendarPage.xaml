@@ -196,6 +196,7 @@
                                                 Grid.Row="1"
                                                 BindableLayout.ItemsSource="{Binding Events}"
                                                 HorizontalOptions="Center"
+                                                Margin="0,-10,0,0"
                                                 Spacing="2">
                                                 <HorizontalStackLayout.IsVisible>
                                                     <MultiBinding Converter="{StaticResource AllTrueConverter}">
