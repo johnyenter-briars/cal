@@ -4,9 +4,19 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:local="clr-namespace:CAL.Views"
+    Shell.BackgroundColor="{StaticResource SurfaceColor}"
     Shell.FlyoutBehavior="Disabled">
 
-    <TabBar Title="CAL">
+    <TabBar
+        Title="CAL"
+        Shell.BackgroundColor="{StaticResource SurfaceColor}"
+        Shell.ForegroundColor="{StaticResource PrimaryTextColor}"
+        Shell.TitleColor="{StaticResource PrimaryTextColor}"
+        Shell.UnselectedColor="{StaticResource MutedTextColor}"
+        Shell.TabBarBackgroundColor="{StaticResource SurfaceColor}"
+        Shell.TabBarForegroundColor="{StaticResource PrimaryColor}"
+        Shell.TabBarTitleColor="{StaticResource PrimaryTextColor}"
+        Shell.TabBarUnselectedColor="{StaticResource MutedTextColor}">
         <ShellContent Title="Calendar" Icon="icons8_calendar_48.png" Route="CalendarPage" ContentTemplate="{DataTemplate local:CalendarPage}" />
         <ShellContent Title="Events" Icon="icons8_list_view_50.png" ContentTemplate="{DataTemplate local:EventsPage}" />
         <ShellContent Title="Profile" Icon="icons8_name_50.png" ContentTemplate="{DataTemplate local:ProfilePage}" />
