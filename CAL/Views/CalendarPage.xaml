@@ -42,7 +42,7 @@
                     <RoundRectangle CornerRadius="12" />
                 </Border.StrokeShape>
 
-                <Grid ColumnDefinitions="*,38" ColumnSpacing="8" HeightRequest="38">
+                <Grid ColumnDefinitions="*,38,38" ColumnSpacing="8" HeightRequest="38">
                     <Border
                         BackgroundColor="{StaticResource InputBackgroundColor}"
                         Padding="10,0"
@@ -51,18 +51,29 @@
                         <Border.StrokeShape>
                             <RoundRectangle CornerRadius="10" />
                         </Border.StrokeShape>
-                        <DatePicker
-                            BackgroundColor="Transparent"
-                            Date="{Binding SelectedDate}"
-                            Format="MMMM yyyy"
-                            HeightRequest="36"
-                            HorizontalOptions="Fill"
-                            VerticalOptions="Center" />
+                        <Label
+                            FontAttributes="Bold"
+                            FontSize="15"
+                            Text="{Binding SelectedMonthYear}"
+                            TextColor="{StaticResource PrimaryTextColor}"
+                            VerticalTextAlignment="Center" />
                     </Border>
 
                     <ImageButton
-                        x:Name="CalendarToggleButton"
                         Grid.Column="1"
+                        BackgroundColor="{StaticResource SurfaceAltColor}"
+                        BorderColor="{StaticResource MutedBorderColor}"
+                        BorderWidth="1"
+                        Command="{Binding OpenMonthPickerCommand}"
+                        CornerRadius="10"
+                        HeightRequest="38"
+                        Padding="7"
+                        Source="icons8_calendar_50.png"
+                        WidthRequest="38" />
+
+                    <ImageButton
+                        x:Name="CalendarToggleButton"
+                        Grid.Column="2"
                         BackgroundColor="{StaticResource SurfaceAltColor}"
                         BorderColor="{StaticResource MutedBorderColor}"
                         BorderWidth="1"
@@ -258,5 +269,52 @@
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
+
+        <Grid
+            Grid.RowSpan="3"
+            BackgroundColor="#99000000"
+            IsVisible="{Binding IsMonthPickerOpen}">
+            <Grid.GestureRecognizers>
+                <TapGestureRecognizer Command="{Binding CloseMonthPickerCommand}" />
+            </Grid.GestureRecognizers>
+
+            <Border
+                BackgroundColor="{StaticResource SurfaceColor}"
+                HorizontalOptions="Center"
+                Padding="16"
+                VerticalOptions="Center"
+                WidthRequest="280">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="8" />
+                </Border.StrokeShape>
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer />
+                </Border.GestureRecognizers>
+
+                <VerticalStackLayout Spacing="12">
+                    <Label Text="Jump to Month" Style="{StaticResource TitleLabelStyle}" FontSize="18" />
+
+                    <Grid ColumnDefinitions="*,96" ColumnSpacing="10">
+                        <VerticalStackLayout Spacing="6">
+                            <Label Text="Month" Style="{StaticResource SectionLabelStyle}" Margin="0" />
+                            <Picker
+                                ItemsSource="{Binding MonthOptions}"
+                                SelectedIndex="{Binding PendingMonthIndex, Mode=TwoWay}"
+                                Title="Month" />
+                        </VerticalStackLayout>
+
+                        <VerticalStackLayout Grid.Column="1" Spacing="6">
+                            <Label Text="Year" Style="{StaticResource SectionLabelStyle}" Margin="0" />
+                            <Picker
+                                ItemsSource="{Binding YearOptions}"
+                                SelectedItem="{Binding PendingYear, Mode=TwoWay}"
+                                Title="Year" />
+                        </VerticalStackLayout>
+                    </Grid>
+
+                    <Button Command="{Binding SubmitMonthPickerCommand}" Text="Submit" />
+                </VerticalStackLayout>
+            </Border>
+        </Grid>
     </Grid>
 </ContentPage>

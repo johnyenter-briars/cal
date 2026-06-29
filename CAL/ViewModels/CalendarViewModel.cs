@@ -39,6 +39,9 @@ namespace CAL.ViewModels
         public Command AddSeriesCommand => new(OnAddSeries);
         public Command RefreshEventsCommand => new(Refresh);
         public ICommand SelectCalendarCommand => new Command<Calendar>(async (item) => await SelectCalendar(item));
+        public ICommand OpenMonthPickerCommand => new Command(OpenMonthPicker);
+        public ICommand SubmitMonthPickerCommand => new Command(SubmitMonthPicker);
+        public ICommand CloseMonthPickerCommand => new Command(CloseMonthPicker);
 
         private bool navigatingToEvent;
         public bool NavigatingToEvent
@@ -79,7 +82,73 @@ namespace CAL.ViewModels
         public Calendar CurrentlySelectedCalendar { get; set; }
         public ICommand NavigateCalendarCommand { get; set; }
         public ICommand ChangeDateSelectionCommand { get; set; }
+        public List<string> MonthOptions { get; } = new()
+        {
+            "Jan",
+            "Feb",
+            "Mar",
+            "Apr",
+            "May",
+            "Jun",
+            "Jul",
+            "Aug",
+            "Sep",
+            "Oct",
+            "Nov",
+            "Dec",
+        };
+        public List<int> YearOptions { get; } = Enumerable
+            .Range(DateTime.Now.Year - 10, 21)
+            .ToList();
+        private bool updatingMonthPicker;
+        private bool isMonthPickerOpen;
+        public bool IsMonthPickerOpen
+        {
+            get => isMonthPickerOpen;
+            set => SetProperty(ref isMonthPickerOpen, value);
+        }
+        private int selectedMonthIndex;
+        public int SelectedMonthIndex
+        {
+            get => selectedMonthIndex;
+            set
+            {
+                if (!SetProperty(ref selectedMonthIndex, value) || updatingMonthPicker)
+                {
+                    return;
+                }
+
+                NavigateToMonthPickerDate();
+            }
+        }
+        private int selectedYear;
+        public int SelectedYear
+        {
+            get => selectedYear;
+            set
+            {
+                if (!SetProperty(ref selectedYear, value) || updatingMonthPicker)
+                {
+                    return;
+                }
+
+                NavigateToMonthPickerDate();
+            }
+        }
+        private int pendingMonthIndex;
+        public int PendingMonthIndex
+        {
+            get => pendingMonthIndex;
+            set => SetProperty(ref pendingMonthIndex, value);
+        }
+        private int pendingYear;
+        public int PendingYear
+        {
+            get => pendingYear;
+            set => SetProperty(ref pendingYear, value);
+        }
         public DateTime _selectedDate;
+        public string SelectedMonthYear => _selectedDate.ToString("MMMM yyyy");
         public DateTime SelectedDate
         {
             get { return _selectedDate; }
@@ -87,6 +156,8 @@ namespace CAL.ViewModels
             {
                 var oldSelectedDate = _selectedDate;
                 SetProperty(ref _selectedDate, value);
+                OnPropertyChanged(nameof(SelectedMonthYear));
+                SyncMonthPicker(value);
                 var monthsDiff = ((_selectedDate.Year - oldSelectedDate.Year) * 12) + _selectedDate.Month - oldSelectedDate.Month;
 
                 NavigateCalendar(monthsDiff);
@@ -97,6 +168,10 @@ namespace CAL.ViewModels
             Title = "Calendar";
             CurrentlySelectedCalendar = defaultCalendar;
             _selectedDate = DateTime.Now;
+            selectedMonthIndex = _selectedDate.Month - 1;
+            selectedYear = _selectedDate.Year;
+            pendingMonthIndex = selectedMonthIndex;
+            pendingYear = selectedYear;
 
             NavigateCalendarCommand = new Command<int>(NavigateCalendar);
             ChangeDateSelectionCommand = new Command<DateTime>(ChangeDateSelection);
@@ -105,11 +180,43 @@ namespace CAL.ViewModels
 
             EventCalendar.DaysUpdated += EventCalendar_DaysUpdated;
         }
+        private void NavigateToMonthPickerDate()
+        {
+            if (selectedYear == default || selectedMonthIndex < 0)
+            {
+                return;
+            }
+
+            SelectedDate = new DateTime(selectedYear, selectedMonthIndex + 1, 1);
+        }
+        private void OpenMonthPicker()
+        {
+            PendingMonthIndex = SelectedMonthIndex;
+            PendingYear = SelectedYear;
+            IsMonthPickerOpen = true;
+        }
+        private void CloseMonthPicker()
+        {
+            IsMonthPickerOpen = false;
+        }
+        private void SubmitMonthPicker()
+        {
+            SelectedDate = new DateTime(PendingYear, PendingMonthIndex + 1, 1);
+            IsMonthPickerOpen = false;
+        }
+        private void SyncMonthPicker(DateTime date)
+        {
+            updatingMonthPicker = true;
+            SelectedMonthIndex = date.Month - 1;
+            SelectedYear = date.Year;
+            updatingMonthPicker = false;
+        }
         public async void NavigateCalendar(int Amount)
         {
             EventCalendar?.NavigateCalendar(Amount);
             var month = EventCalendar.NavigatedDate.Month;
             var year = EventCalendar.NavigatedDate.Year;
+            SyncMonthPicker(EventCalendar.NavigatedDate);
             await LoadEventCollectionAsync(year, month);
         }
         public void ChangeDateSelection(DateTime DateTime)
