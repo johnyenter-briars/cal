@@ -74,7 +74,7 @@
                     DaysOfWeek="{Binding EventCalendar.DayNamesOrder}"
                     ForwardsArrowCommand="{Binding NavigateCalendarCommand}"
                     ForwardsArrowCommandParameter="{Binding EventCalendar.ForwardsNavigationAmount}"
-                    HeightRequest="360"
+                    HeightRequest="350"
                     NavigatedDate="{Binding EventCalendar.NavigatedDate}"
                     Style="{StaticResource DefaultCalendarViewStyle}">
 
