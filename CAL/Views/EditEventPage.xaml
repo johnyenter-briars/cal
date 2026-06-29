@@ -50,23 +50,40 @@
                 <Border Style="{StaticResource CardBorderStyle}">
                     <VerticalStackLayout Spacing="10">
                         <Label Text="Appearance" Style="{StaticResource SectionLabelStyle}" />
-                        <Picker
-                            x:Name="picker"
-                            BackgroundColor="{Binding CurrentlySelectedColor}"
-                            SelectedIndexChanged="picker_SelectedIndexChanged"
-                            Title="Select a Color">
-                            <Picker.ItemsSource>
-                                <x:Array Type="{x:Type x:String}">
-                                    <x:String>Red</x:String>
-                                    <x:String>Blue</x:String>
-                                    <x:String>Green</x:String>
-                                    <x:String>Orange</x:String>
-                                    <x:String>Yellow</x:String>
-                                    <x:String>Purple</x:String>
-                                    <x:String>Pink</x:String>
-                                </x:Array>
-                            </Picker.ItemsSource>
-                        </Picker>
+                        <Border BackgroundColor="{StaticResource InputBackgroundColor}" Stroke="{StaticResource MutedBorderColor}" StrokeThickness="1" Padding="10,0">
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="8" />
+                            </Border.StrokeShape>
+                            <Grid ColumnDefinitions="28,*" ColumnSpacing="10">
+                                <Border
+                                    BackgroundColor="{Binding CurrentlySelectedColor}"
+                                    HeightRequest="18"
+                                    VerticalOptions="Center"
+                                    WidthRequest="18">
+                                    <Border.StrokeShape>
+                                        <RoundRectangle CornerRadius="9" />
+                                    </Border.StrokeShape>
+                                </Border>
+                                <Picker
+                                    x:Name="picker"
+                                    Grid.Column="1"
+                                    BackgroundColor="Transparent"
+                                    SelectedIndexChanged="picker_SelectedIndexChanged"
+                                    Title="Select a Color">
+                                    <Picker.ItemsSource>
+                                        <x:Array Type="{x:Type x:String}">
+                                            <x:String>Red</x:String>
+                                            <x:String>Blue</x:String>
+                                            <x:String>Green</x:String>
+                                            <x:String>Orange</x:String>
+                                            <x:String>Yellow</x:String>
+                                            <x:String>Purple</x:String>
+                                            <x:String>Pink</x:String>
+                                        </x:Array>
+                                    </Picker.ItemsSource>
+                                </Picker>
+                            </Grid>
+                        </Border>
 
                         <Grid ColumnDefinitions="*,Auto" Padding="0,4">
                             <Label Text="Notify before this event" VerticalOptions="Center" />
