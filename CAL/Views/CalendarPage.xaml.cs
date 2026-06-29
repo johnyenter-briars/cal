@@ -13,6 +13,8 @@ namespace CAL.Views
 {
     public partial class CalendarPage : ContentPage
     {
+        private bool calendarExpanded = true;
+
         public CalendarPage()
         {
             InitializeComponent();
@@ -74,6 +76,15 @@ namespace CAL.Views
             var bc = (CalendarViewModel)BindingContext;
 
             bc?.Refresh();
+        }
+
+        private void CalendarToggleButton_Clicked(object sender, EventArgs e)
+        {
+            calendarExpanded = !calendarExpanded;
+
+            CalendarPanel.IsVisible = calendarExpanded;
+            CalendarRow.Height = calendarExpanded ? GridLength.Auto : new GridLength(0);
+            CalendarToggleButton.Text = calendarExpanded ? "⌃" : "⌄";
         }
     }
 }

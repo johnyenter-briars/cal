@@ -24,16 +24,33 @@
         <ToolbarItem IconImageSource="icons8_restart_50.png" Command="{Binding RefreshEventsCommand}" />
     </ContentPage.ToolbarItems>
 
-    <Grid Padding="16" RowDefinitions="Auto,Auto,*" RowSpacing="14">
-        <Grid Grid.Row="0" ColumnDefinitions="*,Auto" ColumnSpacing="12">
+    <Grid Padding="16" RowSpacing="14">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition x:Name="CalendarRow" Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0" ColumnDefinitions="*,Auto,44,*" ColumnSpacing="8">
             <DatePicker
                 Grid.Column="1"
                 Date="{Binding SelectedDate}"
                 Format="MMM d"
                 WidthRequest="132" />
+
+            <Button
+                x:Name="CalendarToggleButton"
+                Grid.Column="2"
+                Padding="0"
+                Clicked="CalendarToggleButton_Clicked"
+                FontAttributes="Bold"
+                FontSize="18"
+                HeightRequest="42"
+                Text="⌃"
+                WidthRequest="42" />
         </Grid>
 
-        <Border Grid.Row="1" Style="{StaticResource CardBorderStyle}" Padding="8">
+        <Border x:Name="CalendarPanel" Grid.Row="1" Style="{StaticResource CardBorderStyle}" Padding="8">
             <Grid RowDefinitions="Auto,*" RowSpacing="4">
                 <Grid ColumnDefinitions="*,*,*,*,*,*,*" Padding="6,0,6,2">
                     <Label Text="Sun" TextColor="{StaticResource MutedTextColor}" FontAttributes="Bold" FontSize="12" HorizontalTextAlignment="Center" />
