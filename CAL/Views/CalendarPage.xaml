@@ -31,25 +31,49 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <Grid Grid.Row="0" ColumnDefinitions="*,Auto,44,*" ColumnSpacing="8">
-            <DatePicker
-                Grid.Column="1"
-                Date="{Binding SelectedDate}"
-                Format="MMM d"
-                WidthRequest="132" />
+        <Grid Grid.Row="0">
+            <Border
+                BackgroundColor="{StaticResource SurfaceColor}"
+                HorizontalOptions="Fill"
+                Padding="8,4"
+                Stroke="{StaticResource MutedBorderColor}"
+                StrokeThickness="1">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="12" />
+                </Border.StrokeShape>
 
-            <ImageButton
-                x:Name="CalendarToggleButton"
-                Grid.Column="2"
-                BackgroundColor="{StaticResource SurfaceAltColor}"
-                BorderColor="{StaticResource MutedBorderColor}"
-                BorderWidth="1"
-                CornerRadius="8"
-                Padding="0"
-                Clicked="CalendarToggleButton_Clicked"
-                HeightRequest="42"
-                Source="chevron_up.png"
-                WidthRequest="42" />
+                <Grid ColumnDefinitions="*,38" ColumnSpacing="8" HeightRequest="38">
+                    <Border
+                        BackgroundColor="{StaticResource InputBackgroundColor}"
+                        Padding="10,0"
+                        Stroke="{StaticResource MutedBorderColor}"
+                        StrokeThickness="1">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="10" />
+                        </Border.StrokeShape>
+                        <DatePicker
+                            BackgroundColor="Transparent"
+                            Date="{Binding SelectedDate}"
+                            Format="MMMM yyyy"
+                            HeightRequest="36"
+                            HorizontalOptions="Fill"
+                            VerticalOptions="Center" />
+                    </Border>
+
+                    <ImageButton
+                        x:Name="CalendarToggleButton"
+                        Grid.Column="1"
+                        BackgroundColor="{StaticResource SurfaceAltColor}"
+                        BorderColor="{StaticResource MutedBorderColor}"
+                        BorderWidth="1"
+                        Clicked="CalendarToggleButton_Clicked"
+                        CornerRadius="10"
+                        HeightRequest="38"
+                        Padding="7"
+                        Source="chevron_up.png"
+                        WidthRequest="38" />
+                </Grid>
+            </Border>
         </Grid>
 
         <Border x:Name="CalendarPanel" Grid.Row="1" Style="{StaticResource CardBorderStyle}" Padding="2,2,2,2">
@@ -69,17 +93,41 @@
 
                 <xc:CalendarView.NavigationViewTemplate>
                     <ControlTemplate>
-                        <Grid RowDefinitions="36,20" RowSpacing="0">
-                            <xc:NavigationView
-                                ArrowColor="{StaticResource PrimaryColor}"
-                                BackwardsArrowCommand="{Binding BackwardsArrowCommand, Source={RelativeSource TemplatedParent}}"
-                                BackwardsArrowCommandParameter="{Binding BackwardsArrowCommandParameter, Source={RelativeSource TemplatedParent}}"
-                                ForwardsArrowCommand="{Binding ForwardsArrowCommand, Source={RelativeSource TemplatedParent}}"
-                                ForwardsArrowCommandParameter="{Binding ForwardsArrowCommandParameter, Source={RelativeSource TemplatedParent}}"
-                                HeightRequest="36"
-                                Style="{StaticResource DefaultNavigationViewStyle}"
-                                Text="{Binding Text, Source={RelativeSource TemplatedParent}}"
-                                TextColor="{StaticResource PrimaryTextColor}" />
+                        <Grid RowDefinitions="42,18" RowSpacing="0" Margin="0,-4,0,0">
+                            <Grid ColumnDefinitions="*,44,112,44,*" HeightRequest="42">
+                                <ImageButton
+                                    Grid.Column="1"
+                                    BackgroundColor="Transparent"
+                                    Command="{Binding BackwardsArrowCommand, Source={RelativeSource TemplatedParent}}"
+                                    CommandParameter="{Binding BackwardsArrowCommandParameter, Source={RelativeSource TemplatedParent}}"
+                                    HeightRequest="36"
+                                    Padding="6"
+                                    Source="chevron_left.png"
+                                    VerticalOptions="Center"
+                                    WidthRequest="36" />
+
+                                <Label
+                                    Grid.Column="2"
+                                    FontAttributes="Bold"
+                                    FontSize="16"
+                                    HorizontalTextAlignment="Center"
+                                    LineBreakMode="WordWrap"
+                                    MaxLines="2"
+                                    Text="{Binding Text, Source={RelativeSource TemplatedParent}}"
+                                    TextColor="{StaticResource PrimaryTextColor}"
+                                    VerticalTextAlignment="Center" />
+
+                                <ImageButton
+                                    Grid.Column="3"
+                                    BackgroundColor="Transparent"
+                                    Command="{Binding ForwardsArrowCommand, Source={RelativeSource TemplatedParent}}"
+                                    CommandParameter="{Binding ForwardsArrowCommandParameter, Source={RelativeSource TemplatedParent}}"
+                                    HeightRequest="36"
+                                    Padding="6"
+                                    Source="chevron_right.png"
+                                    VerticalOptions="Center"
+                                    WidthRequest="36" />
+                            </Grid>
 
                             <Grid Grid.Row="1" ColumnDefinitions="*,*,*,*,*,*,*" Padding="4,0">
                                 <Label Text="Sun" TextColor="{StaticResource MutedTextColor}" FontAttributes="Bold" FontSize="12" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
