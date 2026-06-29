@@ -1,63 +1,91 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
     x:Class="CAL.Views.EventsPage"
-    Title="Events"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:ViewModels="clr-namespace:CAL.ViewModels"
-    xmlns:controls="clr-namespace:CAL.Controls"
     xmlns:model="clr-namespace:CAL.Client.Models.Cal;assembly=CAL.Client"
     x:Name="browseItemsPage"
     x:DataType="{x:Type ViewModels:EventsViewModel}"
-    BackgroundColor="Black">
+    Title="Events">
 
-    <Grid RowDefinitions="Auto,Auto,*" Padding="10" RowSpacing="10">
+    <Grid Padding="16" RowDefinitions="Auto,Auto,*" RowSpacing="14">
+        <VerticalStackLayout Grid.Row="0" Spacing="8">
+            <Label Text="Events" Style="{StaticResource TitleLabelStyle}" />
+            <SearchBar
+                Placeholder="Search events"
+                SearchButtonPressed="SearchBar_SearchButtonPressed"
+                SearchCommand="{Binding SearchCommand}"
+                Text="{Binding SearchText}" />
+        </VerticalStackLayout>
 
-        <SearchBar Grid.Row="0"
-                   Placeholder="Search events..."
-                   Text="{Binding SearchText}" 
-                   SearchCommand="{Binding SearchCommand}"
-                   SearchButtonPressed="SearchBar_SearchButtonPressed"
-                   />
-
-        <HorizontalStackLayout Grid.Row="1" Spacing="10">
-            <Label Text="Filter by date:" VerticalOptions="Center"/>
-            <DatePicker Date="{Binding SelectedDate}" Format="MMM dd, yyyy"/>
-            <Button Text="Clear" 
-                    Command="{Binding SearchCommand}" 
+        <Border Grid.Row="1" Style="{StaticResource CardBorderStyle}" Padding="12">
+            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
+                <VerticalStackLayout Spacing="4">
+                    <Label Text="Filter date" Style="{StaticResource SectionLabelStyle}" Margin="0" />
+                    <DatePicker Date="{Binding SelectedDate}" Format="MMM dd, yyyy" />
+                </VerticalStackLayout>
+                <Button
+                    Grid.Column="1"
+                    Command="{Binding SearchCommand}"
                     CommandParameter="{x:Null}"
-                    Clicked="OnClearDateClicked"/>
-        </HorizontalStackLayout>
+                    Clicked="OnClearDateClicked"
+                    Text="Clear"
+                    WidthRequest="86"
+                    VerticalOptions="End" />
+            </Grid>
+        </Border>
 
-        <CollectionView Grid.Row="2"
-                        ItemsSource="{Binding Events}"
-                        RemainingItemsThreshold="5"
-                        >
+        <CollectionView
+            Grid.Row="2"
+            ItemsSource="{Binding Events}"
+            RemainingItemsThreshold="5">
             <CollectionView.ItemsLayout>
-                <GridItemsLayout Orientation="Vertical"
-                                 Span="2" />
+                <GridItemsLayout Orientation="Vertical" Span="2" HorizontalItemSpacing="10" VerticalItemSpacing="10" />
             </CollectionView.ItemsLayout>
+
+            <CollectionView.EmptyView>
+                <Border Style="{StaticResource CardBorderStyle}">
+                    <VerticalStackLayout Spacing="4" HorizontalOptions="Center">
+                        <Label Text="No matching events" Style="{StaticResource TitleLabelStyle}" HorizontalTextAlignment="Center" />
+                        <Label Text="Try another search or date." TextColor="{StaticResource MutedTextColor}" HorizontalTextAlignment="Center" />
+                    </VerticalStackLayout>
+                </Border>
+            </CollectionView.EmptyView>
 
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="model:Event">
-                    <Frame Margin="5" Padding="10" 
-                           BackgroundColor="{StaticResource CalendarBackgroundColor}" 
-                           BorderColor="{Binding Color}" 
-                           CornerRadius="10" 
-                           HasShadow="True">
-                        <Frame.GestureRecognizers>
+                    <Border Style="{StaticResource CardBorderStyle}" Padding="0">
+                        <Border.GestureRecognizers>
                             <TapGestureRecognizer
-                                Command="{Binding Source={RelativeSource AncestorType={x:Type ViewModels:EventsViewModel}}, Path=ExecuteEventSelectedCommand }"
+                                Command="{Binding Source={RelativeSource AncestorType={x:Type ViewModels:EventsViewModel}}, Path=ExecuteEventSelectedCommand}"
                                 CommandParameter="{Binding .}" />
-                        </Frame.GestureRecognizers>
-                        <Grid RowDefinitions="Auto,Auto" ColumnDefinitions="*">
-                            <Label Grid.Row="0" Text="{Binding Name}" 
-                                   FontAttributes="Bold" FontSize="16"
-                                   TextColor="{StaticResource ContentTextColor}"
-                                   />
-                            <Label Grid.Row="1" Text="{Binding StartTime, StringFormat='{0:MMM dd, yyyy}'}"
-                                   FontSize="14" TextColor="{StaticResource ContentTextColor}"/>
+                        </Border.GestureRecognizers>
+
+                        <Grid RowDefinitions="5,Auto,Auto,Auto" Padding="0,0,0,12" MinimumHeightRequest="132">
+                            <BoxView Grid.Row="0" Color="{Binding Color}" />
+                            <Label
+                                Grid.Row="1"
+                                Margin="12,12,12,2"
+                                FontAttributes="Bold"
+                                FontSize="16"
+                                MaxLines="2"
+                                Text="{Binding Name}"
+                                TextColor="{StaticResource PrimaryTextColor}" />
+                            <Label
+                                Grid.Row="2"
+                                Margin="12,0"
+                                FontSize="13"
+                                Text="{Binding StartTime, StringFormat='{0:MMM dd, yyyy}'}"
+                                TextColor="{StaticResource MutedTextColor}" />
+                            <Label
+                                Grid.Row="3"
+                                Margin="12,2,12,0"
+                                FontSize="13"
+                                Text="{Binding StartTime, StringFormat='{0:HH:mm}'}"
+                                TextColor="{StaticResource PrimaryColor}" />
                         </Grid>
-                    </Frame>
+                    </Border>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>

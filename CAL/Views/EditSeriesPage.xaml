@@ -1,112 +1,117 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="CAL.Views.EditSeriesPage"
-             Shell.PresentationMode="ModalAnimated"
-             Title="New Event"
-             BackgroundColor="Black"
-             xmlns:vm="clr-namespace:CAL.ViewModels"
-             >
+<?xml version="1.0" encoding="UTF-8" ?>
+<ContentPage
+    x:Class="CAL.Views.EditSeriesPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:vm="clr-namespace:CAL.ViewModels"
+    Shell.PresentationMode="ModalAnimated"
+    Title="Series">
+
     <ContentPage.BindingContext>
         <vm:EditSeriesViewModel />
     </ContentPage.BindingContext>
 
-    <ContentPage.Content>
-        <Grid RowDefinitions="*,Auto">
-            <ScrollView Grid.Row="0">
-                <StackLayout Spacing="3" Padding="15">
-                    <Label Text="Name" FontSize="Medium" />
-                    <Entry 
-                Text="{Binding Name, Mode=TwoWay}" 
-                FontSize="Medium" />
-                    <Label Text="Series Start Date" FontSize="Medium" />
-                    <DatePicker 
-                Date="{Binding SeriesStartsOnSelectedDate}" />
+    <Grid RowDefinitions="*,Auto">
+        <ScrollView Grid.Row="0">
+            <VerticalStackLayout Padding="16" Spacing="14">
+                <Label Text="Series Details" Style="{StaticResource TitleLabelStyle}" />
 
-                    <Label Text="Series End Date" FontSize="Medium" />
-                    <DatePicker 
-                Date="{Binding SeriesEndsOnSelectedDate}" />
+                <Border Style="{StaticResource CardBorderStyle}">
+                    <VerticalStackLayout Spacing="8">
+                        <Label Text="Name" Style="{StaticResource SectionLabelStyle}" />
+                        <Entry Text="{Binding Name, Mode=TwoWay}" Placeholder="Series name" />
 
-                    <Label Text="Event Start Time" FontSize="Medium" />
-                    <TimePicker 
-                Time="{Binding SubEventsStartTime, Mode=TwoWay}" />
+                        <Label Text="Description" Style="{StaticResource SectionLabelStyle}" />
+                        <Editor Text="{Binding Description, Mode=TwoWay}" Placeholder="Notes, agenda, location" />
+                    </VerticalStackLayout>
+                </Border>
 
-                    <Label Text="Event End Time" FontSize="Medium" />
-                    <TimePicker 
-                Time="{Binding SubEventEndTime}" />
+                <Border Style="{StaticResource CardBorderStyle}">
+                    <Grid RowDefinitions="Auto,Auto" ColumnDefinitions="*,*" ColumnSpacing="10" RowSpacing="10">
+                        <VerticalStackLayout Spacing="6">
+                            <Label Text="Series Start" Style="{StaticResource SectionLabelStyle}" />
+                            <DatePicker Date="{Binding SeriesStartsOnSelectedDate}" />
+                        </VerticalStackLayout>
+                        <VerticalStackLayout Grid.Column="1" Spacing="6">
+                            <Label Text="Series End" Style="{StaticResource SectionLabelStyle}" />
+                            <DatePicker Date="{Binding SeriesEndsOnSelectedDate}" />
+                        </VerticalStackLayout>
+                        <VerticalStackLayout Grid.Row="1" Spacing="6">
+                            <Label Text="Event Start" Style="{StaticResource SectionLabelStyle}" />
+                            <TimePicker Time="{Binding SubEventsStartTime, Mode=TwoWay}" />
+                        </VerticalStackLayout>
+                        <VerticalStackLayout Grid.Row="1" Grid.Column="1" Spacing="6">
+                            <Label Text="Event End" Style="{StaticResource SectionLabelStyle}" />
+                            <TimePicker Time="{Binding SubEventEndTime}" />
+                        </VerticalStackLayout>
+                    </Grid>
+                </Border>
 
-                    <Label Text="Description" FontSize="Medium" />
-                    <Frame BorderColor="LightGray" HasShadow="False" Padding="15" BackgroundColor="Black">
-                        <Editor 
-                    Text="{Binding Description, Mode=TwoWay}" 
-                    AutoSize="TextChanges" 
-                    FontSize="Medium" 
-                    Margin="0" />
-                    </Frame>
-                    <StackLayout Orientation="Horizontal">
-                        <Label Text="Reoccurs on Mon" FontSize="Medium" />
-                        <CheckBox IsChecked="{Binding RepeatOnMon }"></CheckBox>
-                    </StackLayout>
-                    <StackLayout Orientation="Horizontal">
-                        <Label Text="Reoccurs on Tues" FontSize="Medium" />
-                        <CheckBox IsChecked="{Binding RepeatOnTues }"></CheckBox>
-                    </StackLayout>
-                    <StackLayout Orientation="Horizontal">
-                        <Label Text="Reoccurs on Wed" FontSize="Medium" />
-                        <CheckBox IsChecked="{Binding RepeatOnWed }"></CheckBox>
-                    </StackLayout>
-                    <StackLayout Orientation="Horizontal">
-                        <Label Text="Reoccurs on Thurs" FontSize="Medium" />
-                        <CheckBox IsChecked="{Binding RepeatOnThurs }"></CheckBox>
-                    </StackLayout>
-                    <StackLayout Orientation="Horizontal">
-                        <Label Text="Reoccurs on Fri" FontSize="Medium" />
-                        <CheckBox IsChecked="{Binding RepeatOnFri }"></CheckBox>
-                    </StackLayout>
-                    <StackLayout Orientation="Horizontal">
-                        <Label Text="Reoccurs on Sat" FontSize="Medium" />
-                        <CheckBox IsChecked="{Binding RepeatOnSat }"></CheckBox>
-                    </StackLayout>
-                    <StackLayout Orientation="Horizontal">
-                        <Label Text="Reoccurs on Sun" FontSize="Medium" />
-                        <CheckBox IsChecked="{Binding RepeatOnSun }"></CheckBox>
-                    </StackLayout>
+                <Border Style="{StaticResource CardBorderStyle}">
+                    <VerticalStackLayout Spacing="10">
+                        <Label Text="Repeats" Style="{StaticResource SectionLabelStyle}" />
 
-                    <Label Text="Repeat ever # Weeks" FontSize="Medium" />
-                    <Entry Keyboard="Numeric" 
-                    Text="{Binding RepeatEveryWeek, Mode=TwoWay}" 
-                       />
-                    <Picker x:Name="picker"
-                    SelectedIndexChanged="picker_SelectedIndexChanged"
-                    BackgroundColor="{Binding CurrentlySelectedColor}"
-                    Title="Select a Color">
-                        <Picker.ItemsSource>
-                            <x:Array Type="{x:Type x:String}">
-                                <x:String>Red</x:String>
-                                <x:String>Blue</x:String>
-                                <x:String>Green</x:String>
-                                <x:String>Orange</x:String>
-                                <x:String>Yellow</x:String>
-                                <x:String>Purple</x:String>
-                                <x:String>Pink</x:String>
-                            </x:Array>
-                        </Picker.ItemsSource>
-                    </Picker>
-                    <StackLayout Orientation="Horizontal">
-                        <Label Text="Should Notify" FontSize="Medium" />
-                        <CheckBox  IsChecked="{Binding ShouldNotify}" />
-                        <Label Text="Yearly Event" FontSize="Medium" />
-                        <CheckBox  IsChecked="{Binding YearlyEvent}" />
-                    </StackLayout>
-                </StackLayout>
+                        <Grid ColumnDefinitions="*,Auto,*,Auto" RowDefinitions="Auto,Auto,Auto,Auto" ColumnSpacing="8" RowSpacing="8">
+                            <Label Text="Monday" VerticalOptions="Center" />
+                            <CheckBox Grid.Column="1" IsChecked="{Binding RepeatOnMon}" />
+                            <Label Grid.Column="2" Text="Tuesday" VerticalOptions="Center" />
+                            <CheckBox Grid.Column="3" IsChecked="{Binding RepeatOnTues}" />
 
-            </ScrollView>
-            <StackLayout Grid.Row="1" Orientation="Horizontal">
-                <ImageButton BackgroundColor="IndianRed" Margin="5, 0, 5, 0" Source="icons8_trash_24" Command="{Binding DeleteCommand}"  HorizontalOptions="FillAndExpand"/>
-                <Button Text="Cancel" BackgroundColor="#31255e" Margin="5, 0, 5, 0" Command="{Binding CancelCommand}" HorizontalOptions="FillAndExpand"></Button>
-                <Button Text="Save" Command="{Binding SaveCommand}" Margin="5, 0, 5, 0" HorizontalOptions="FillAndExpand"></Button>
-            </StackLayout>
+                            <Label Grid.Row="1" Text="Wednesday" VerticalOptions="Center" />
+                            <CheckBox Grid.Row="1" Grid.Column="1" IsChecked="{Binding RepeatOnWed}" />
+                            <Label Grid.Row="1" Grid.Column="2" Text="Thursday" VerticalOptions="Center" />
+                            <CheckBox Grid.Row="1" Grid.Column="3" IsChecked="{Binding RepeatOnThurs}" />
+
+                            <Label Grid.Row="2" Text="Friday" VerticalOptions="Center" />
+                            <CheckBox Grid.Row="2" Grid.Column="1" IsChecked="{Binding RepeatOnFri}" />
+                            <Label Grid.Row="2" Grid.Column="2" Text="Saturday" VerticalOptions="Center" />
+                            <CheckBox Grid.Row="2" Grid.Column="3" IsChecked="{Binding RepeatOnSat}" />
+
+                            <Label Grid.Row="3" Text="Sunday" VerticalOptions="Center" />
+                            <CheckBox Grid.Row="3" Grid.Column="1" IsChecked="{Binding RepeatOnSun}" />
+                            <Label Grid.Row="3" Grid.Column="2" Text="Yearly Event" VerticalOptions="Center" />
+                            <CheckBox Grid.Row="3" Grid.Column="3" IsChecked="{Binding YearlyEvent}" />
+                        </Grid>
+
+                        <Label Text="Repeat Every # Weeks" Style="{StaticResource SectionLabelStyle}" />
+                        <Entry Keyboard="Numeric" Text="{Binding RepeatEveryWeek, Mode=TwoWay}" />
+                    </VerticalStackLayout>
+                </Border>
+
+                <Border Style="{StaticResource CardBorderStyle}">
+                    <VerticalStackLayout Spacing="10">
+                        <Label Text="Appearance" Style="{StaticResource SectionLabelStyle}" />
+                        <Picker
+                            x:Name="picker"
+                            BackgroundColor="{Binding CurrentlySelectedColor}"
+                            SelectedIndexChanged="picker_SelectedIndexChanged"
+                            Title="Select a Color">
+                            <Picker.ItemsSource>
+                                <x:Array Type="{x:Type x:String}">
+                                    <x:String>Red</x:String>
+                                    <x:String>Blue</x:String>
+                                    <x:String>Green</x:String>
+                                    <x:String>Orange</x:String>
+                                    <x:String>Yellow</x:String>
+                                    <x:String>Purple</x:String>
+                                    <x:String>Pink</x:String>
+                                </x:Array>
+                            </Picker.ItemsSource>
+                        </Picker>
+
+                        <Grid ColumnDefinitions="*,Auto" Padding="0,4">
+                            <Label Text="Notify for generated events" VerticalOptions="Center" />
+                            <CheckBox Grid.Column="1" IsChecked="{Binding ShouldNotify}" />
+                        </Grid>
+                    </VerticalStackLayout>
+                </Border>
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <Grid Grid.Row="1" Padding="16,10" ColumnDefinitions="52,*,*" ColumnSpacing="10" BackgroundColor="{StaticResource SurfaceColor}">
+            <ImageButton BackgroundColor="{StaticResource DangerColor}" Command="{Binding DeleteCommand}" Source="icons8_trash_24" />
+            <Button Grid.Column="1" BackgroundColor="{StaticResource SurfaceAltColor}" TextColor="{StaticResource PrimaryTextColor}" Command="{Binding CancelCommand}" Text="Cancel" />
+            <Button Grid.Column="2" Command="{Binding SaveCommand}" Text="Save" />
         </Grid>
-    </ContentPage.Content>
-
+    </Grid>
 </ContentPage>

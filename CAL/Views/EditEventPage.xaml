@@ -1,71 +1,86 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="CAL.Views.EditEventPage"
-             Shell.PresentationMode="ModalAnimated"
-             Title="New Event"
-             BackgroundColor="Black"
-             xmlns:vm="clr-namespace:CAL.ViewModels"
-             >
+<?xml version="1.0" encoding="UTF-8" ?>
+<ContentPage
+    x:Class="CAL.Views.EditEventPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:vm="clr-namespace:CAL.ViewModels"
+    Shell.PresentationMode="ModalAnimated"
+    Title="Event">
+
     <ContentPage.BindingContext>
         <vm:EditEventViewModel />
     </ContentPage.BindingContext>
 
-    <ContentPage.Content>
-        <Grid RowDefinitions="*,Auto">
-            <ScrollView Grid.Row="0">
-                <StackLayout Spacing="3" Padding="15">
-                    <Label Text="Name" FontSize="Medium" />
-                    <Entry 
-                Text="{Binding Name, Mode=TwoWay}" 
-                FontSize="Medium" />
-                    <Label Text="Start Date" FontSize="Medium" />
-                    <DatePicker 
-                Date="{Binding StartSelectedDate}" />
-                    <Label Text="Start Time" FontSize="Medium" />
-                    <TimePicker 
-                Time="{Binding StartSelectedTime, Mode=TwoWay}" />
-                    <Label Text="End Date" FontSize="Medium" />
-                    <DatePicker 
-                Date="{Binding EndSelectedDate}" />
-                    <Label Text="End Time" FontSize="Medium" />
-                    <TimePicker 
-                Time="{Binding EndSelectedTime}" />
-                    <Label Text="Description" FontSize="Medium" />
-                    <Frame BorderColor="LightGray" HasShadow="False" Padding="15" BackgroundColor="Black">
-                        <Editor 
-                    Text="{Binding Description, Mode=TwoWay}" 
-                    AutoSize="TextChanges" 
-                    FontSize="Medium" 
-                    Margin="0" />
-                    </Frame>
-                    <Picker x:Name="picker"
-                    SelectedIndexChanged="picker_SelectedIndexChanged"
-                    BackgroundColor="{Binding CurrentlySelectedColor}"
-                    Title="Select a Color">
-                        <Picker.ItemsSource>
-                            <x:Array Type="{x:Type x:String}">
-                                <x:String>Red</x:String>
-                                <x:String>Blue</x:String>
-                                <x:String>Green</x:String>
-                                <x:String>Orange</x:String>
-                                <x:String>Yellow</x:String>
-                                <x:String>Purple</x:String>
-                                <x:String>Pink</x:String>
-                            </x:Array>
-                        </Picker.ItemsSource>
-                    </Picker>
-                    <StackLayout Orientation="Horizontal">
-                        <Label Text="Should Notify" FontSize="Medium" />
-                        <CheckBox  IsChecked="{Binding ShouldNotify}" />
-                    </StackLayout>
-                </StackLayout>
-            </ScrollView>
-            <StackLayout Grid.Row="1" Orientation="Horizontal">
-                <ImageButton BackgroundColor="IndianRed" Margin="5, 0, 5, 0" Source="icons8_trash_24" Command="{Binding DeleteCommand}"  HorizontalOptions="FillAndExpand"/>
-                <Button Text="Cancel" BackgroundColor="#31255e" Margin="5, 0, 5, 0" Command="{Binding CancelCommand}" HorizontalOptions="FillAndExpand"></Button>
-                <Button Text="Save" Command="{Binding SaveCommand}" Margin="5, 0, 5, 0" HorizontalOptions="FillAndExpand"></Button>
-            </StackLayout>
+    <Grid RowDefinitions="*,Auto">
+        <ScrollView Grid.Row="0">
+            <VerticalStackLayout Padding="16" Spacing="14">
+                <Label Text="Event Details" Style="{StaticResource TitleLabelStyle}" />
+
+                <Border Style="{StaticResource CardBorderStyle}">
+                    <VerticalStackLayout Spacing="8">
+                        <Label Text="Name" Style="{StaticResource SectionLabelStyle}" />
+                        <Entry Text="{Binding Name, Mode=TwoWay}" Placeholder="Event name" />
+
+                        <Label Text="Description" Style="{StaticResource SectionLabelStyle}" />
+                        <Editor Text="{Binding Description, Mode=TwoWay}" Placeholder="Notes, agenda, location" />
+                    </VerticalStackLayout>
+                </Border>
+
+                <Border Style="{StaticResource CardBorderStyle}">
+                    <Grid RowDefinitions="Auto,Auto" ColumnDefinitions="*,*" ColumnSpacing="10" RowSpacing="10">
+                        <VerticalStackLayout Spacing="6">
+                            <Label Text="Start Date" Style="{StaticResource SectionLabelStyle}" />
+                            <DatePicker Date="{Binding StartSelectedDate}" />
+                        </VerticalStackLayout>
+                        <VerticalStackLayout Grid.Column="1" Spacing="6">
+                            <Label Text="Start Time" Style="{StaticResource SectionLabelStyle}" />
+                            <TimePicker Time="{Binding StartSelectedTime, Mode=TwoWay}" />
+                        </VerticalStackLayout>
+                        <VerticalStackLayout Grid.Row="1" Spacing="6">
+                            <Label Text="End Date" Style="{StaticResource SectionLabelStyle}" />
+                            <DatePicker Date="{Binding EndSelectedDate}" />
+                        </VerticalStackLayout>
+                        <VerticalStackLayout Grid.Row="1" Grid.Column="1" Spacing="6">
+                            <Label Text="End Time" Style="{StaticResource SectionLabelStyle}" />
+                            <TimePicker Time="{Binding EndSelectedTime}" />
+                        </VerticalStackLayout>
+                    </Grid>
+                </Border>
+
+                <Border Style="{StaticResource CardBorderStyle}">
+                    <VerticalStackLayout Spacing="10">
+                        <Label Text="Appearance" Style="{StaticResource SectionLabelStyle}" />
+                        <Picker
+                            x:Name="picker"
+                            BackgroundColor="{Binding CurrentlySelectedColor}"
+                            SelectedIndexChanged="picker_SelectedIndexChanged"
+                            Title="Select a Color">
+                            <Picker.ItemsSource>
+                                <x:Array Type="{x:Type x:String}">
+                                    <x:String>Red</x:String>
+                                    <x:String>Blue</x:String>
+                                    <x:String>Green</x:String>
+                                    <x:String>Orange</x:String>
+                                    <x:String>Yellow</x:String>
+                                    <x:String>Purple</x:String>
+                                    <x:String>Pink</x:String>
+                                </x:Array>
+                            </Picker.ItemsSource>
+                        </Picker>
+
+                        <Grid ColumnDefinitions="*,Auto" Padding="0,4">
+                            <Label Text="Notify before this event" VerticalOptions="Center" />
+                            <CheckBox Grid.Column="1" IsChecked="{Binding ShouldNotify}" />
+                        </Grid>
+                    </VerticalStackLayout>
+                </Border>
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <Grid Grid.Row="1" Padding="16,10" ColumnDefinitions="52,*,*" ColumnSpacing="10" BackgroundColor="{StaticResource SurfaceColor}">
+            <ImageButton BackgroundColor="{StaticResource DangerColor}" Command="{Binding DeleteCommand}" Source="icons8_trash_24" />
+            <Button Grid.Column="1" BackgroundColor="{StaticResource SurfaceAltColor}" TextColor="{StaticResource PrimaryTextColor}" Command="{Binding CancelCommand}" Text="Cancel" />
+            <Button Grid.Column="2" Command="{Binding SaveCommand}" Text="Save" />
         </Grid>
-    </ContentPage.Content>
+    </Grid>
 </ContentPage>
