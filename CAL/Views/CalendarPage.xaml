@@ -52,21 +52,10 @@
                 WidthRequest="42" />
         </Grid>
 
-        <Border x:Name="CalendarPanel" Grid.Row="1" Style="{StaticResource CardBorderStyle}" Padding="8">
-            <Grid RowDefinitions="Auto,*" RowSpacing="4">
-                <Grid ColumnDefinitions="*,*,*,*,*,*,*" Padding="6,0,6,2">
-                    <Label Text="Sun" TextColor="{StaticResource MutedTextColor}" FontAttributes="Bold" FontSize="12" HorizontalTextAlignment="Center" />
-                    <Label Grid.Column="1" Text="Mon" TextColor="{StaticResource MutedTextColor}" FontAttributes="Bold" FontSize="12" HorizontalTextAlignment="Center" />
-                    <Label Grid.Column="2" Text="Tue" TextColor="{StaticResource MutedTextColor}" FontAttributes="Bold" FontSize="12" HorizontalTextAlignment="Center" />
-                    <Label Grid.Column="3" Text="Wed" TextColor="{StaticResource MutedTextColor}" FontAttributes="Bold" FontSize="12" HorizontalTextAlignment="Center" />
-                    <Label Grid.Column="4" Text="Thu" TextColor="{StaticResource MutedTextColor}" FontAttributes="Bold" FontSize="12" HorizontalTextAlignment="Center" />
-                    <Label Grid.Column="5" Text="Fri" TextColor="{StaticResource MutedTextColor}" FontAttributes="Bold" FontSize="12" HorizontalTextAlignment="Center" />
-                    <Label Grid.Column="6" Text="Sat" TextColor="{StaticResource MutedTextColor}" FontAttributes="Bold" FontSize="12" HorizontalTextAlignment="Center" />
-                </Grid>
-
+        <Border x:Name="CalendarPanel" Grid.Row="1" Style="{StaticResource CardBorderStyle}" Padding="2,2,2,2">
+            <Grid>
                 <xc:CalendarView
                     x:Name="MainCalendarView"
-                    Grid.Row="1"
                     BackwardsArrowCommand="{Binding NavigateCalendarCommand}"
                     BackwardsArrowCommandParameter="{Binding EventCalendar.BackwardsNavigationAmount}"
                     DayNamesHeightRequest="0"
@@ -80,22 +69,35 @@
 
                 <xc:CalendarView.NavigationViewTemplate>
                     <ControlTemplate>
-                        <xc:NavigationView
-                            ArrowColor="{StaticResource PrimaryColor}"
-                            BackwardsArrowCommand="{Binding BackwardsArrowCommand, Source={RelativeSource TemplatedParent}}"
-                            BackwardsArrowCommandParameter="{Binding BackwardsArrowCommandParameter, Source={RelativeSource TemplatedParent}}"
-                            ForwardsArrowCommand="{Binding ForwardsArrowCommand, Source={RelativeSource TemplatedParent}}"
-                            ForwardsArrowCommandParameter="{Binding ForwardsArrowCommandParameter, Source={RelativeSource TemplatedParent}}"
-                            Style="{StaticResource DefaultNavigationViewStyle}"
-                            Text="{Binding Text, Source={RelativeSource TemplatedParent}}"
-                            TextColor="{StaticResource PrimaryTextColor}" />
+                        <Grid RowDefinitions="36,20" RowSpacing="0">
+                            <xc:NavigationView
+                                ArrowColor="{StaticResource PrimaryColor}"
+                                BackwardsArrowCommand="{Binding BackwardsArrowCommand, Source={RelativeSource TemplatedParent}}"
+                                BackwardsArrowCommandParameter="{Binding BackwardsArrowCommandParameter, Source={RelativeSource TemplatedParent}}"
+                                ForwardsArrowCommand="{Binding ForwardsArrowCommand, Source={RelativeSource TemplatedParent}}"
+                                ForwardsArrowCommandParameter="{Binding ForwardsArrowCommandParameter, Source={RelativeSource TemplatedParent}}"
+                                HeightRequest="36"
+                                Style="{StaticResource DefaultNavigationViewStyle}"
+                                Text="{Binding Text, Source={RelativeSource TemplatedParent}}"
+                                TextColor="{StaticResource PrimaryTextColor}" />
+
+                            <Grid Grid.Row="1" ColumnDefinitions="*,*,*,*,*,*,*" Padding="4,0">
+                                <Label Text="Sun" TextColor="{StaticResource MutedTextColor}" FontAttributes="Bold" FontSize="12" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
+                                <Label Grid.Column="1" Text="Mon" TextColor="{StaticResource MutedTextColor}" FontAttributes="Bold" FontSize="12" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
+                                <Label Grid.Column="2" Text="Tue" TextColor="{StaticResource MutedTextColor}" FontAttributes="Bold" FontSize="12" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
+                                <Label Grid.Column="3" Text="Wed" TextColor="{StaticResource MutedTextColor}" FontAttributes="Bold" FontSize="12" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
+                                <Label Grid.Column="4" Text="Thu" TextColor="{StaticResource MutedTextColor}" FontAttributes="Bold" FontSize="12" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
+                                <Label Grid.Column="5" Text="Fri" TextColor="{StaticResource MutedTextColor}" FontAttributes="Bold" FontSize="12" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
+                                <Label Grid.Column="6" Text="Sat" TextColor="{StaticResource MutedTextColor}" FontAttributes="Bold" FontSize="12" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
+                            </Grid>
+                        </Grid>
                     </ControlTemplate>
                 </xc:CalendarView.NavigationViewTemplate>
 
                 <xc:CalendarView.DayTemplate>
                     <DataTemplate x:DataType="Models:EventDay">
                         <Border
-                            Margin="2"
+                            Margin="1"
                             BackgroundColor="Transparent"
                             HeightRequest="46"
                             WidthRequest="46">
