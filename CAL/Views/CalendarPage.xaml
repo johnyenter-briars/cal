@@ -38,15 +38,17 @@
                 Format="MMM d"
                 WidthRequest="132" />
 
-            <Button
+            <ImageButton
                 x:Name="CalendarToggleButton"
                 Grid.Column="2"
+                BackgroundColor="{StaticResource SurfaceAltColor}"
+                BorderColor="{StaticResource MutedBorderColor}"
+                BorderWidth="1"
+                CornerRadius="8"
                 Padding="0"
                 Clicked="CalendarToggleButton_Clicked"
-                FontAttributes="Bold"
-                FontSize="18"
                 HeightRequest="42"
-                Text="⌃"
+                Source="chevron_up.png"
                 WidthRequest="42" />
         </Grid>
 

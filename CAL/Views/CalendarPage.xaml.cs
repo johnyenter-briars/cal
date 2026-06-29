@@ -107,7 +107,7 @@ namespace CAL.Views
                 CalendarRow.Height = new GridLength(0);
             }
 
-            CalendarToggleButton.Text = calendarExpanded ? "⌃" : "⌄";
+            CalendarToggleButton.Source = calendarExpanded ? "chevron_up.png" : "chevron_down.png";
             CalendarToggleButton.IsEnabled = true;
         }
     }
