@@ -160,6 +160,7 @@
         </Border>
 
         <CollectionView
+            x:Name="EventsList"
             Grid.Row="2"
             ItemsSource="{Binding SelectedEvents}"
             SelectedItem="{Binding SelectedEvent}"

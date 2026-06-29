@@ -78,13 +78,37 @@ namespace CAL.Views
             bc?.Refresh();
         }
 
-        private void CalendarToggleButton_Clicked(object sender, EventArgs e)
+        private async void CalendarToggleButton_Clicked(object sender, EventArgs e)
         {
             calendarExpanded = !calendarExpanded;
 
-            CalendarPanel.IsVisible = calendarExpanded;
-            CalendarRow.Height = calendarExpanded ? GridLength.Auto : new GridLength(0);
+            CalendarToggleButton.IsEnabled = false;
+
+            if (calendarExpanded)
+            {
+                CalendarPanel.IsVisible = true;
+                CalendarRow.Height = GridLength.Auto;
+                CalendarPanel.Opacity = 0;
+                EventsList.Opacity = 0.75;
+
+                await Task.WhenAll(
+                    CalendarPanel.FadeTo(1, 180, Easing.CubicOut),
+                    EventsList.FadeTo(1, 180, Easing.CubicOut));
+            }
+            else
+            {
+                EventsList.Opacity = 0.75;
+
+                await Task.WhenAll(
+                    CalendarPanel.FadeTo(0, 160, Easing.CubicIn),
+                    EventsList.FadeTo(1, 160, Easing.CubicOut));
+
+                CalendarPanel.IsVisible = false;
+                CalendarRow.Height = new GridLength(0);
+            }
+
             CalendarToggleButton.Text = calendarExpanded ? "⌃" : "⌄";
+            CalendarToggleButton.IsEnabled = true;
         }
     }
 }
