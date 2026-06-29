@@ -183,11 +183,14 @@
                                     <ControlTemplate>
                                         <Grid BindingContext="{Binding BindingContext, Source={RelativeSource TemplatedParent}}" RowSpacing="0">
                                             <Grid.RowDefinitions>
-                                                <RowDefinition Height="*" />
-                                                <RowDefinition Height="10" />
+                                                <RowDefinition Height="29" />
+                                                <RowDefinition Height="17" />
                                             </Grid.RowDefinitions>
 
-                                            <ContentPresenter Grid.Row="0" VerticalOptions="Center" />
+                                            <ContentPresenter
+                                                Grid.Row="0"
+                                                Margin="0,2,0,0"
+                                                VerticalOptions="Start" />
 
                                             <HorizontalStackLayout
                                                 Grid.Row="1"
