@@ -26,10 +26,6 @@
 
     <Grid Padding="16" RowDefinitions="Auto,Auto,*" RowSpacing="14">
         <Grid Grid.Row="0" ColumnDefinitions="*,Auto" ColumnSpacing="12">
-            <VerticalStackLayout Spacing="2" VerticalOptions="Center">
-                <Label Text="Calendar" Style="{StaticResource TitleLabelStyle}" />
-                <Label Text="Plan the day and scan upcoming work." TextColor="{StaticResource MutedTextColor}" FontSize="13" />
-            </VerticalStackLayout>
             <DatePicker
                 Grid.Column="1"
                 Date="{Binding SelectedDate}"
