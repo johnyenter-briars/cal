@@ -13,6 +13,11 @@
 
     <Grid RowDefinitions="*,Auto">
         <ScrollView Grid.Row="0">
+            <ScrollView.Triggers>
+                <DataTrigger TargetType="ScrollView" Binding="{Binding IsBusy}" Value="True">
+                    <Setter Property="Opacity" Value="0.35" />
+                </DataTrigger>
+            </ScrollView.Triggers>
             <VerticalStackLayout Padding="16" Spacing="14">
                 <Label Text="Series Details" Style="{StaticResource TitleLabelStyle}" />
 
@@ -126,9 +131,38 @@
         </ScrollView>
 
         <Grid Grid.Row="1" Padding="16,10" ColumnDefinitions="52,*,*" ColumnSpacing="10" BackgroundColor="{StaticResource SurfaceColor}">
+            <Grid.Triggers>
+                <DataTrigger TargetType="Grid" Binding="{Binding IsBusy}" Value="True">
+                    <Setter Property="Opacity" Value="0.35" />
+                    <Setter Property="InputTransparent" Value="True" />
+                </DataTrigger>
+            </Grid.Triggers>
             <ImageButton BackgroundColor="{StaticResource DangerColor}" Command="{Binding DeleteCommand}" Source="icons8_trash_24" />
             <Button Grid.Column="1" BackgroundColor="{StaticResource SurfaceAltColor}" TextColor="{StaticResource PrimaryTextColor}" Command="{Binding CancelCommand}" Text="Cancel" />
             <Button Grid.Column="2" Command="{Binding SaveCommand}" Text="Save" />
+        </Grid>
+
+        <Grid
+            Grid.RowSpan="2"
+            BackgroundColor="#99000000"
+            InputTransparent="False"
+            IsVisible="{Binding IsBusy}">
+            <Border
+                BackgroundColor="{StaticResource SurfaceAltColor}"
+                HeightRequest="92"
+                HorizontalOptions="Center"
+                Padding="20"
+                VerticalOptions="Center"
+                WidthRequest="92">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="8" />
+                </Border.StrokeShape>
+                <ActivityIndicator
+                    Color="{StaticResource PrimaryColor}"
+                    HeightRequest="44"
+                    IsRunning="{Binding IsBusy}"
+                    WidthRequest="44" />
+            </Border>
         </Grid>
     </Grid>
 </ContentPage>
