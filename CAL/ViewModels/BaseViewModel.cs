@@ -1,6 +1,7 @@
 ﻿using CAL.Client;
 using CAL.Client.Models;
 using CAL.Client.Models.Cal;
+using CAL.Services;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -12,6 +13,7 @@ namespace CAL.ViewModels
     {
         //public IDataStore<Event> EventDataStore => DependencyService.Get<IDataStore<Event>>();
         protected ICalClient CalClientSingleton = DependencyService.Get<ICalClient>();
+        protected readonly FailsafeService FailsafeService = new FailsafeService();
         bool isBusy = false;
         public bool IsBusy
         {
@@ -39,6 +41,19 @@ namespace CAL.ViewModels
         {
             get { return notFetchingData; }
             set { SetProperty(ref notFetchingData, value); }
+        }
+
+        protected Task<(T ResultObject, bool Success)> Fallback<T>(
+            Func<Task<T>> callback,
+            T defaultValueIfFailed = default,
+            string title = null)
+        {
+            return FailsafeService.Fallback(callback, defaultValueIfFailed, title);
+        }
+
+        protected Task<bool> Fallback(Func<Task> callback, string title = null)
+        {
+            return FailsafeService.Fallback(callback, title);
         }
 
         protected bool SetProperty<T>(ref T backingStore, T value,

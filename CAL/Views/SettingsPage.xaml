@@ -1,72 +1,53 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="CAL.Views.SettingsPage"
-             xmlns:vm="clr-namespace:CAL.ViewModels"
-             Title="{Binding Title}">
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="CAL.Views.SettingsPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:vm="clr-namespace:CAL.ViewModels"
+    Title="{Binding Title}">
 
     <ContentPage.BindingContext>
         <vm:SettingsViewModel />
     </ContentPage.BindingContext>
 
-    <Grid BackgroundColor="Black">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
+    <Grid RowDefinitions="*,Auto">
+        <ScrollView Grid.Row="0">
+            <VerticalStackLayout Padding="16" Spacing="14">
+                <Label Text="Settings" Style="{StaticResource TitleLabelStyle}" />
 
-        <ScrollView Grid.Row="1">
-            <StackLayout Orientation="Vertical" Padding="30,24,30,24" Spacing="10">
-                <Label Text="Domain name / Ip Address" FontSize="Medium" />
-                <Entry TextColor="BlueViolet" x:Name = "IpAddress"  Text="{Binding HostName}"  Placeholder = "IP address"
-                   HeightRequest = "40"  
-                   />
+                <Border Style="{StaticResource CardBorderStyle}">
+                    <VerticalStackLayout Spacing="8">
+                        <Label Text="Server" Style="{StaticResource SectionLabelStyle}" />
+                        <Entry x:Name="IpAddress" Text="{Binding HostName}" Placeholder="Domain name or IP address" />
+                        <Entry x:Name="Port" Text="{Binding Port}" Placeholder="Port" Keyboard="Numeric" />
+                        <Entry x:Name="ApiKey" Text="{Binding ApiKey}" Placeholder="API key" />
+                    </VerticalStackLayout>
+                </Border>
 
-                <Label Text="Port" FontSize="Medium" />
-                <Entry TextColor="BlueViolet" x:Name = "Port" Text="{Binding Port}" Placeholder = "port"  
-                   HeightRequest = "40"  
-                        />
+                <Border Style="{StaticResource CardBorderStyle}">
+                    <VerticalStackLayout Spacing="8">
+                        <Label Text="User" Style="{StaticResource SectionLabelStyle}" />
+                        <Entry x:Name="UserId" Text="{Binding UserId}" Placeholder="User ID" />
+                        <Entry x:Name="DefaultCalendarId" Text="{Binding DefaultCalendarId}" Placeholder="Default calendar ID" />
+                    </VerticalStackLayout>
+                </Border>
 
-                <Label Text="API Key" FontSize="Medium" />
-                <Entry TextColor="BlueViolet" x:Name = "ApiKey" Text="{Binding ApiKey}" Placeholder = "API Key"  
-                   HeightRequest = "40"  
-                        />
-
-                <Label Text="User Id" FontSize="Medium" />
-                <Entry TextColor="BlueViolet" x:Name = "UserId" Text="{Binding UserId}" Placeholder = "User Id"  
-                   HeightRequest = "40"  
-                        />
-
-                <Label Text="Default Calendar Id" FontSize="Medium" />
-                <Entry TextColor="BlueViolet" x:Name = "DefaultCalendarId" Text="{Binding DefaultCalendarId}" Placeholder = "Default Calendar Id"  
-                   HeightRequest = "40"  
-                        />
-
-                <Label Text="Max Number Times to Notify For an Event" FontSize="Medium"/>
-                <Entry TextColor="BlueViolet" x:Name = "MaxNumTimesNotify" Text="{Binding MaxNumTimesNotify}" Placeholder = "Max Number Times to Notify"  
-                   HeightRequest = "40"  
-                        />
-
-                <Label Text="Default Number of Years to Repeat a Yearly Event" FontSize="Medium"/>
-                <Entry TextColor="BlueViolet" x:Name = "DefaultYearsToRepeat" Text="{Binding DefaultYearsToRepeat}" Placeholder = "Default num years to repeat"  
-                   HeightRequest = "40"  
-                        />
-
-                <Label Text="The day of the week that will be considered as the start of the week."
-                    FontSize="Medium"/>
-
-
-                <Picker Title="Select Start of Week"
-                    ItemsSource="{Binding DaysOfWeek}"
-                    SelectedItem="{Binding DefaultStartOfWeek, Mode=TwoWay}"
-                    TextColor="BlueViolet"
-                    HeightRequest="40"/>
-
-                <Button x:Name= "saveChangesBtn" Text = "Save Changes"   
-                    Command="{Binding SaveChangesCommand}"  
-                    HorizontalOptions = "FillAndExpand"/>
-            </StackLayout>
+                <Border Style="{StaticResource CardBorderStyle}">
+                    <VerticalStackLayout Spacing="8">
+                        <Label Text="Notifications and Recurrence" Style="{StaticResource SectionLabelStyle}" />
+                        <Entry x:Name="MaxNumTimesNotify" Text="{Binding MaxNumTimesNotify}" Placeholder="Max notifications per event" Keyboard="Numeric" />
+                        <Entry x:Name="DefaultYearsToRepeat" Text="{Binding DefaultYearsToRepeat}" Placeholder="Years to repeat yearly events" Keyboard="Numeric" />
+                        <Picker
+                            Title="Start of week"
+                            ItemsSource="{Binding DaysOfWeek}"
+                            SelectedItem="{Binding DefaultStartOfWeek, Mode=TwoWay}" />
+                    </VerticalStackLayout>
+                </Border>
+            </VerticalStackLayout>
         </ScrollView>
-    </Grid>
 
+        <Grid Grid.Row="1" Padding="16,10" BackgroundColor="{StaticResource SurfaceColor}">
+            <Button x:Name="saveChangesBtn" Command="{Binding SaveChangesCommand}" Text="Save Changes" />
+        </Grid>
+    </Grid>
 </ContentPage>

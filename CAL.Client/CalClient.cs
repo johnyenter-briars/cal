@@ -291,17 +291,66 @@ namespace CAL.Client
         {
             if (entityType == EntityType.Event)
             {
-                var response = await GetNotificationsForEventAsync(entityId);
+                await DeleteNotificationsForEventAsync(entityId);
+            }
 
-                foreach(var n in response.Notifications)
-                {
-                    await DeleteEntityAsync(n.Id, EntityType.Notification);
-                }
+            if (entityType == EntityType.Series)
+            {
+                await DeleteNotificationsForSeriesAsync(entityId);
             }
 
             var lowerCase = entityType.ToString().ToLower();
 
             return await CalServerRequest<DeletedEntityResponse>($"{lowerCase}/{entityId}", HttpMethod.Delete) as DeletedEntityResponse;
+        }
+
+        private async Task DeleteNotificationsForSeriesAsync(Guid seriesId)
+        {
+            var eventsResponse = await CalServerRequest<EventsResponse>("event", HttpMethod.Get);
+            var seriesEvents = eventsResponse.Events.Where(e => e.SeriesId == seriesId);
+
+            foreach (var e in seriesEvents)
+            {
+                await DeleteNotificationsForEventAsync(e.Id);
+            }
+        }
+
+        private async Task DeleteNotificationsForEventAsync(Guid eventId)
+        {
+            var response = await GetNotificationsForEventOrEmptyAsync(eventId);
+
+            foreach (var n in response.Notifications)
+            {
+                await DeleteEntityAsync(n.Id, EntityType.Notification);
+            }
+        }
+
+        private async Task<NotificationsResponse> GetNotificationsForEventOrEmptyAsync(Guid eventId)
+        {
+            var request = new HttpRequestMessage(HttpMethod.Get, $"https://{_hostName}/cal/api/notification/event/{eventId}");
+            request.Headers.Accept.Clear();
+            request.Headers.Add("x-api-key", _apiKey);
+            request.Headers.Add("x-user-id", _userId);
+
+            var clientResponse = await _httpClient.SendAsync(request, CancellationToken.None);
+
+            if (clientResponse.StatusCode == System.Net.HttpStatusCode.NotFound)
+            {
+                return new NotificationsResponse
+                {
+                    StatusCode = 404,
+                    Message = "No notifications found",
+                    Notifications = new List<Notification>(),
+                };
+            }
+
+            if (clientResponse.IsSuccessStatusCode)
+            {
+                return JsonConvert.DeserializeObject<NotificationsResponse>(await clientResponse.Content.ReadAsStringAsync()) ?? throw new NullReferenceException("JsonConvert.DeserializeObject<NotificationsResponse>");
+            }
+
+            var message = $"Failure to complete action. Reason phrase: {clientResponse.ReasonPhrase}, Raw response: {await clientResponse.Content.ReadAsStringAsync()}, Endpoint: {request.RequestUri}";
+            throw new Exception(message);
         }
 
         public async Task<UpdateEntityResponse> UpdateSeriesAsync(UpdateSeriesRequest updateEventRequest)

@@ -39,6 +39,9 @@ namespace CAL.ViewModels
         public Command AddSeriesCommand => new(OnAddSeries);
         public Command RefreshEventsCommand => new(Refresh);
         public ICommand SelectCalendarCommand => new Command<Calendar>(async (item) => await SelectCalendar(item));
+        public ICommand OpenMonthPickerCommand => new Command(OpenMonthPicker);
+        public ICommand SubmitMonthPickerCommand => new Command(SubmitMonthPicker);
+        public ICommand CloseMonthPickerCommand => new Command(CloseMonthPicker);
 
         private bool navigatingToEvent;
         public bool NavigatingToEvent
@@ -79,7 +82,73 @@ namespace CAL.ViewModels
         public Calendar CurrentlySelectedCalendar { get; set; }
         public ICommand NavigateCalendarCommand { get; set; }
         public ICommand ChangeDateSelectionCommand { get; set; }
+        public List<string> MonthOptions { get; } = new()
+        {
+            "Jan",
+            "Feb",
+            "Mar",
+            "Apr",
+            "May",
+            "Jun",
+            "Jul",
+            "Aug",
+            "Sep",
+            "Oct",
+            "Nov",
+            "Dec",
+        };
+        public List<int> YearOptions { get; } = Enumerable
+            .Range(DateTime.Now.Year - 10, 21)
+            .ToList();
+        private bool updatingMonthPicker;
+        private bool isMonthPickerOpen;
+        public bool IsMonthPickerOpen
+        {
+            get => isMonthPickerOpen;
+            set => SetProperty(ref isMonthPickerOpen, value);
+        }
+        private int selectedMonthIndex;
+        public int SelectedMonthIndex
+        {
+            get => selectedMonthIndex;
+            set
+            {
+                if (!SetProperty(ref selectedMonthIndex, value) || updatingMonthPicker)
+                {
+                    return;
+                }
+
+                NavigateToMonthPickerDate();
+            }
+        }
+        private int selectedYear;
+        public int SelectedYear
+        {
+            get => selectedYear;
+            set
+            {
+                if (!SetProperty(ref selectedYear, value) || updatingMonthPicker)
+                {
+                    return;
+                }
+
+                NavigateToMonthPickerDate();
+            }
+        }
+        private int pendingMonthIndex;
+        public int PendingMonthIndex
+        {
+            get => pendingMonthIndex;
+            set => SetProperty(ref pendingMonthIndex, value);
+        }
+        private int pendingYear;
+        public int PendingYear
+        {
+            get => pendingYear;
+            set => SetProperty(ref pendingYear, value);
+        }
         public DateTime _selectedDate;
+        public string SelectedMonthYear => _selectedDate.ToString("MMMM yyyy");
         public DateTime SelectedDate
         {
             get { return _selectedDate; }
@@ -87,6 +156,8 @@ namespace CAL.ViewModels
             {
                 var oldSelectedDate = _selectedDate;
                 SetProperty(ref _selectedDate, value);
+                OnPropertyChanged(nameof(SelectedMonthYear));
+                SyncMonthPicker(value);
                 var monthsDiff = ((_selectedDate.Year - oldSelectedDate.Year) * 12) + _selectedDate.Month - oldSelectedDate.Month;
 
                 NavigateCalendar(monthsDiff);
@@ -97,6 +168,10 @@ namespace CAL.ViewModels
             Title = "Calendar";
             CurrentlySelectedCalendar = defaultCalendar;
             _selectedDate = DateTime.Now;
+            selectedMonthIndex = _selectedDate.Month - 1;
+            selectedYear = _selectedDate.Year;
+            pendingMonthIndex = selectedMonthIndex;
+            pendingYear = selectedYear;
 
             NavigateCalendarCommand = new Command<int>(NavigateCalendar);
             ChangeDateSelectionCommand = new Command<DateTime>(ChangeDateSelection);
@@ -105,20 +180,59 @@ namespace CAL.ViewModels
 
             EventCalendar.DaysUpdated += EventCalendar_DaysUpdated;
         }
+        private void NavigateToMonthPickerDate()
+        {
+            if (selectedYear == default || selectedMonthIndex < 0)
+            {
+                return;
+            }
+
+            SelectedDate = new DateTime(selectedYear, selectedMonthIndex + 1, 1);
+        }
+        private void OpenMonthPicker()
+        {
+            PendingMonthIndex = SelectedMonthIndex;
+            PendingYear = SelectedYear;
+            IsMonthPickerOpen = true;
+        }
+        private void CloseMonthPicker()
+        {
+            IsMonthPickerOpen = false;
+        }
+        private void SubmitMonthPicker()
+        {
+            SelectedDate = new DateTime(PendingYear, PendingMonthIndex + 1, 1);
+            IsMonthPickerOpen = false;
+        }
+        private void SyncMonthPicker(DateTime date)
+        {
+            updatingMonthPicker = true;
+            SelectedMonthIndex = date.Month - 1;
+            SelectedYear = date.Year;
+            updatingMonthPicker = false;
+        }
         public async void NavigateCalendar(int Amount)
         {
             EventCalendar?.NavigateCalendar(Amount);
             var month = EventCalendar.NavigatedDate.Month;
             var year = EventCalendar.NavigatedDate.Year;
+            SyncMonthPicker(EventCalendar.NavigatedDate);
             await LoadEventCollectionAsync(year, month);
         }
         public void ChangeDateSelection(DateTime DateTime)
         {
             EventCalendar?.ChangeDateSelection(DateTime);
         }
-        private async Task LoadEventCollectionAsync(int year, int month)
+        private async Task<bool> LoadEventCollectionAsync(int year, int month)
         {
-            var eventsOfMonth = (await CalClientSingleton.GetEventsAsync(year, month));
+            var (eventsOfMonth, success) = await Fallback(
+                () => CalClientSingleton.GetEventsAsync(year, month));
+
+            if (!success)
+            {
+                return false;
+            }
+
             var events = eventsOfMonth.Events.Where(e => e.CalendarId == CurrentlySelectedCalendar?.Id).ToList();
 
             EventsBuffer.Clear();
@@ -143,6 +257,8 @@ namespace CAL.ViewModels
                 var filtered = EventsBuffer.Where(x => x.StartTime.Date == Day.DateTime.Date);
                 Day.Events.ReplaceRange(filtered);
             }
+
+            return true;
         }
 
         private async Task ExecuteLoadEventsAsync()
@@ -158,7 +274,7 @@ namespace CAL.ViewModels
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                await FailsafeService.ShowFailureAlert("Network Error", ex);
             }
             finally
             {
@@ -183,14 +299,20 @@ namespace CAL.ViewModels
             {
                 if (NavigatingToEvent)
                 {
-                    await SelectCalendar(currentlySelectedCalendarId);
+                    if (!await SelectCalendar(currentlySelectedCalendarId))
+                    {
+                        return;
+                    }
                     DateTime dateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Local).AddSeconds(openDateStartTimeUnixSeconds);
                     EventCalendar.NavigatedDate = dateTime;
                     NavigatingToEvent = false;
                     SelectedDate = dateTime;
                     var tempDay = new Calendar<EventDay>();
                     tempDay.SelectedDates.Add(dateTime);
-                    await LoadEventCollectionAsync(dateTime.Year, dateTime.Month);
+                    if (!await LoadEventCollectionAsync(dateTime.Year, dateTime.Month))
+                    {
+                        return;
+                    }
                     EventCalendar_DaysUpdated(tempDay, null);
                     SelectedDates_CollectionChanged(null, null);
                     EventCalendar.Days.Single(d =>
@@ -207,7 +329,7 @@ namespace CAL.ViewModels
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                await FailsafeService.ShowFailureAlert("Network Error", ex);
             }
         }
         private void SelectedDates_CollectionChanged(object _, NotifyCollectionChangedEventArgs __)
@@ -234,7 +356,15 @@ namespace CAL.ViewModels
 
             if (e.SeriesId != null)
             {
-                var series = (await DependencyService.Get<ICalClient>().GetSeriesAsync((Guid)e.SeriesId)).Series;
+                var (seriesResponse, success) = await Fallback(
+                    () => DependencyService.Get<ICalClient>().GetSeriesAsync((Guid)e.SeriesId));
+
+                if (!success)
+                {
+                    return;
+                }
+
+                var series = seriesResponse.Series;
                 var startUnixTimeSeconds = ((DateTimeOffset)series.StartsOn.Add(series.EventStartTime).ToUniversalTime()).ToUnixTimeSeconds();
                 var endUnixTimeSeconds = ((DateTimeOffset)series.EndsOn.Add(series.EventEndTime).ToUniversalTime()).ToUnixTimeSeconds();
 
@@ -255,22 +385,30 @@ namespace CAL.ViewModels
                 await Shell.Current.GoToAsync($@"{nameof(EditEventPage)}?{nameof(EditEventViewModel.StartTimeUnixSeconds)}={startUnixTimeSeconds}&{nameof(EditEventViewModel.EndTimeUnixSeconds)}={endUnixTimeSeconds}&{nameof(EditEventViewModel.Id)}={e.Id}&{nameof(EditEventViewModel.Name)}={e.Name}&{nameof(EditEventViewModel.Description)}={e.Description}&{nameof(EditEventViewModel.EntityType)}={e.EntityType}&{nameof(EditEventViewModel.Color)}={color}&{nameof(EditEventViewModel.ShouldNotify)}={e.ShouldNotify}&{nameof(EditEventViewModel.NumTimesNotified)}={e.NumTimesNotified}");
             }
         }
-        private async Task SelectCalendar(Calendar calendar)
+        private async Task<bool> SelectCalendar(Calendar calendar)
         {
             SelectedEvents.Clear();
             CurrentlySelectedCalendar = calendar;
             App.Current.Resources["ContentBackgroundColor"] = Color.Parse(CurrentlySelectedCalendar.Color);
             var month = EventCalendar.NavigatedDate.Month;
             var year = EventCalendar.NavigatedDate.Year;
-            await LoadEventCollectionAsync(year, month);
+            return await LoadEventCollectionAsync(year, month);
         }
-        private async Task SelectCalendar(string calendarId)
+        private async Task<bool> SelectCalendar(string calendarId)
         {
             SelectedEvents.Clear();
-            var calendars = await CalClientSingleton.GetCalendarsForUserAsync(new Guid(PreferencesManager.GetUserId()));
+            var (calendars, success) = await Fallback(
+                () => CalClientSingleton.GetCalendarsForUserAsync(new Guid(PreferencesManager.GetUserId())));
+
+            if (!success)
+            {
+                return false;
+            }
+
             var selectedCalendar = calendars.Calendars.FirstOrDefault(c => c.Id == new Guid(calendarId));
             App.Current.Resources["ContentBackgroundColor"] = Color.Parse(selectedCalendar.Color);
             CurrentlySelectedCalendar = selectedCalendar;
+            return true;
         }
     }
 }

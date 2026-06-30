@@ -1,101 +1,167 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
-<ContentPage 
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="CAL.Views.CalendarPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    x:Class="CAL.Views.CalendarPage"
-    xmlns:controls="clr-namespace:CAL.Controls"
-    xmlns:ViewModels="clr-namespace:CAL.ViewModels"
     xmlns:Models="clr-namespace:CAL.Models"
-    x:Name="This"
-    x:DataType="ViewModels:CalendarViewModel"
-    Title=""
+    xmlns:ViewModels="clr-namespace:CAL.ViewModels"
     xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
     xmlns:xc="clr-namespace:XCalendar.Maui.Views;assembly=XCalendar.Maui"
     xmlns:xcConverters="clr-namespace:XCalendar.Maui.Converters;assembly=XCalendar.Maui"
-    >
+    x:Name="This"
+    x:DataType="ViewModels:CalendarViewModel"
+    Title="Calendar">
 
     <ContentPage.Resources>
-        <!--  Limits a string to a certain amount of characters  -->
-        <xcConverters:StringCharLimitConverter x:Key="StringCharLimitConverter"/>
-        <!--  Returns true if all bindings evaluate to true  -->
-        <mct:VariableMultiValueConverter x:Key="AllTrueConverter" ConditionType="All"/>
-        <!--  Inverts a binded boolean value  -->
-        <mct:InvertedBoolConverter x:Key="InvertedBoolConverter"/>
+        <xcConverters:StringCharLimitConverter x:Key="StringCharLimitConverter" />
+        <mct:VariableMultiValueConverter x:Key="AllTrueConverter" ConditionType="All" />
+        <mct:InvertedBoolConverter x:Key="InvertedBoolConverter" />
     </ContentPage.Resources>
 
     <ContentPage.ToolbarItems>
-        <ToolbarItem Text="+Series" Command="{Binding AddSeriesCommand}" />
-        <ToolbarItem Text="+Event" Command="{Binding AddEventCommand}" />
-        <ToolbarItem IconImageSource="icons8_restart_50.png"
-                 Command="{Binding RefreshEventsCommand}"
-                 Text="" />
+        <ToolbarItem Text="Series" Command="{Binding AddSeriesCommand}" />
+        <ToolbarItem Text="Event" Command="{Binding AddEventCommand}" />
+        <ToolbarItem IconImageSource="icons8_restart_50.png" Command="{Binding RefreshEventsCommand}" />
     </ContentPage.ToolbarItems>
 
-    <Grid>
-
+    <Grid Padding="16" RowSpacing="14">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="420"/>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto" />
+            <RowDefinition x:Name="CalendarRow" Height="Auto" />
+            <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"/>
-        </Grid.ColumnDefinitions>
+        <Grid Grid.Row="0">
+            <Border
+                BackgroundColor="{StaticResource SurfaceColor}"
+                HorizontalOptions="Fill"
+                Padding="8,4"
+                Stroke="{StaticResource MutedBorderColor}"
+                StrokeThickness="1">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="12" />
+                </Border.StrokeShape>
 
-        <DatePicker
-            Grid.Row="0"
-            HorizontalOptions="Center" 
-            Date="{Binding SelectedDate}" />
+                <Grid ColumnDefinitions="*,38,38" ColumnSpacing="8" HeightRequest="38">
+                    <Border
+                        BackgroundColor="{StaticResource InputBackgroundColor}"
+                        Padding="10,0"
+                        Stroke="{StaticResource MutedBorderColor}"
+                        StrokeThickness="1">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="10" />
+                        </Border.StrokeShape>
+                        <Label
+                            FontAttributes="Bold"
+                            FontSize="15"
+                            Text="{Binding SelectedMonthYear}"
+                            TextColor="{StaticResource PrimaryTextColor}"
+                            VerticalTextAlignment="Center" />
+                    </Border>
 
-        <Border
-            Grid.Row="1"
-            Margin="10"
-            Padding="10"
-            BackgroundColor="{DynamicResource ContentBackgroundColor}">
+                    <ImageButton
+                        Grid.Column="1"
+                        BackgroundColor="{StaticResource SurfaceAltColor}"
+                        BorderColor="{StaticResource MutedBorderColor}"
+                        BorderWidth="1"
+                        Command="{Binding OpenMonthPickerCommand}"
+                        CornerRadius="10"
+                        HeightRequest="38"
+                        Padding="7"
+                        Source="icons8_calendar_50.png"
+                        WidthRequest="38" />
 
-            <Border.StrokeShape>
-                <RoundRectangle CornerRadius="15"/>
-            </Border.StrokeShape>
+                    <ImageButton
+                        x:Name="CalendarToggleButton"
+                        Grid.Column="2"
+                        BackgroundColor="{StaticResource SurfaceAltColor}"
+                        BorderColor="{StaticResource MutedBorderColor}"
+                        BorderWidth="1"
+                        Clicked="CalendarToggleButton_Clicked"
+                        CornerRadius="10"
+                        HeightRequest="38"
+                        Padding="7"
+                        Source="chevron_up.png"
+                        WidthRequest="38" />
+                </Grid>
+            </Border>
+        </Grid>
 
-            <xc:CalendarView
-                x:Name="MainCalendarView"
-                BackwardsArrowCommand="{Binding NavigateCalendarCommand}"
-                BackwardsArrowCommandParameter="{Binding EventCalendar.BackwardsNavigationAmount}"
-                Days="{Binding EventCalendar.Days}"
-                DaysOfWeek="{Binding EventCalendar.DayNamesOrder}"
-                ForwardsArrowCommand="{Binding NavigateCalendarCommand}"
-                ForwardsArrowCommandParameter="{Binding EventCalendar.ForwardsNavigationAmount}"
-                NavigatedDate="{Binding EventCalendar.NavigatedDate}"
-                Style="{StaticResource DefaultCalendarViewStyle}"
-                >
+        <Border x:Name="CalendarPanel" Grid.Row="1" Style="{StaticResource CardBorderStyle}" Padding="2,2,2,2">
+            <Grid>
+                <xc:CalendarView
+                    x:Name="MainCalendarView"
+                    BackwardsArrowCommand="{Binding NavigateCalendarCommand}"
+                    BackwardsArrowCommandParameter="{Binding EventCalendar.BackwardsNavigationAmount}"
+                    DayNamesHeightRequest="0"
+                    Days="{Binding EventCalendar.Days}"
+                    DaysOfWeek="{Binding EventCalendar.DayNamesOrder}"
+                    ForwardsArrowCommand="{Binding NavigateCalendarCommand}"
+                    ForwardsArrowCommandParameter="{Binding EventCalendar.ForwardsNavigationAmount}"
+                    HeightRequest="350"
+                    NavigatedDate="{Binding EventCalendar.NavigatedDate}"
+                    Style="{StaticResource DefaultCalendarViewStyle}">
 
                 <xc:CalendarView.NavigationViewTemplate>
                     <ControlTemplate>
-                        <xc:NavigationView
-                            ArrowColor="{StaticResource ContentTextColor}"
-                            BackgroundColor="Transparent"
-                            BackwardsArrowCommand="{Binding BackwardsArrowCommand, Source={RelativeSource TemplatedParent}}"
-                            BackwardsArrowCommandParameter="{Binding BackwardsArrowCommandParameter, Source={RelativeSource TemplatedParent}}"
-                            ForwardsArrowCommand="{Binding ForwardsArrowCommand, Source={RelativeSource TemplatedParent}}"
-                            ForwardsArrowCommandParameter="{Binding ForwardsArrowCommandParameter, Source={RelativeSource TemplatedParent}}"
-                            HeightRequest="40"
-                            Style="{StaticResource DefaultNavigationViewStyle}"
-                            Text="{Binding Text, Source={RelativeSource TemplatedParent}}"
-                            TextColor="{StaticResource ContentTextColor}"/>
+                        <Grid RowDefinitions="42,18" RowSpacing="0" Margin="0,-4,0,0">
+                            <Grid ColumnDefinitions="*,44,112,44,*" HeightRequest="42">
+                                <ImageButton
+                                    Grid.Column="1"
+                                    BackgroundColor="Transparent"
+                                    Command="{Binding BackwardsArrowCommand, Source={RelativeSource TemplatedParent}}"
+                                    CommandParameter="{Binding BackwardsArrowCommandParameter, Source={RelativeSource TemplatedParent}}"
+                                    HeightRequest="36"
+                                    Padding="6"
+                                    Source="chevron_left.png"
+                                    VerticalOptions="Center"
+                                    WidthRequest="36" />
+
+                                <Label
+                                    Grid.Column="2"
+                                    FontAttributes="Bold"
+                                    FontSize="16"
+                                    HorizontalTextAlignment="Center"
+                                    LineBreakMode="WordWrap"
+                                    MaxLines="2"
+                                    Text="{Binding Text, Source={RelativeSource TemplatedParent}}"
+                                    TextColor="{StaticResource PrimaryTextColor}"
+                                    VerticalTextAlignment="Center" />
+
+                                <ImageButton
+                                    Grid.Column="3"
+                                    BackgroundColor="Transparent"
+                                    Command="{Binding ForwardsArrowCommand, Source={RelativeSource TemplatedParent}}"
+                                    CommandParameter="{Binding ForwardsArrowCommandParameter, Source={RelativeSource TemplatedParent}}"
+                                    HeightRequest="36"
+                                    Padding="6"
+                                    Source="chevron_right.png"
+                                    VerticalOptions="Center"
+                                    WidthRequest="36" />
+                            </Grid>
+
+                            <Grid Grid.Row="1" ColumnDefinitions="*,*,*,*,*,*,*" Padding="4,0">
+                                <Label Text="Sun" TextColor="{StaticResource MutedTextColor}" FontAttributes="Bold" FontSize="12" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
+                                <Label Grid.Column="1" Text="Mon" TextColor="{StaticResource MutedTextColor}" FontAttributes="Bold" FontSize="12" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
+                                <Label Grid.Column="2" Text="Tue" TextColor="{StaticResource MutedTextColor}" FontAttributes="Bold" FontSize="12" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
+                                <Label Grid.Column="3" Text="Wed" TextColor="{StaticResource MutedTextColor}" FontAttributes="Bold" FontSize="12" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
+                                <Label Grid.Column="4" Text="Thu" TextColor="{StaticResource MutedTextColor}" FontAttributes="Bold" FontSize="12" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
+                                <Label Grid.Column="5" Text="Fri" TextColor="{StaticResource MutedTextColor}" FontAttributes="Bold" FontSize="12" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
+                                <Label Grid.Column="6" Text="Sat" TextColor="{StaticResource MutedTextColor}" FontAttributes="Bold" FontSize="12" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
+                            </Grid>
+                        </Grid>
                     </ControlTemplate>
                 </xc:CalendarView.NavigationViewTemplate>
 
                 <xc:CalendarView.DayTemplate>
                     <DataTemplate x:DataType="Models:EventDay">
                         <Border
-                            Margin="2.5"
+                            Margin="1"
                             BackgroundColor="Transparent"
-                            HeightRequest="45"
-                            WidthRequest="45">
-
+                            HeightRequest="46"
+                            WidthRequest="46">
                             <Border.StrokeShape>
-                                <Ellipse/>
+                                <RoundRectangle CornerRadius="8" />
                             </Border.StrokeShape>
 
                             <xc:DayView
@@ -106,89 +172,78 @@
                                 IsInvalid="{Binding IsInvalid}"
                                 IsSelected="{Binding IsSelected}"
                                 IsToday="{Binding IsToday}"
+                                SelectedBackgroundColor="{StaticResource DaySelectedBackgroundColor}"
                                 SelectedCommand="{Binding BindingContext.ChangeDateSelectionCommand, Source={x:Reference This}}"
                                 SelectedCommandParameter="{Binding DateTime}"
                                 Style="{StaticResource DefaultDayViewStyle}"
                                 TodayCommand="{Binding BindingContext.ChangeDateSelectionCommand, Source={x:Reference This}}"
-                                SelectedBackgroundColor="{StaticResource DaySelectedBackgroundColor}"
                                 TodayCommandParameter="{Binding DateTime}">
 
                                 <xc:DayView.ControlTemplate>
                                     <ControlTemplate>
-                                        <!--  Using a Grid to stack views on the z axis  -->
-                                        <!--  TemplatedParent refers to the view that the ControlTemplate resides in  -->
-                                        <Grid BindingContext="{Binding BindingContext, Source={RelativeSource TemplatedParent}}" RowSpacing="2">
-
+                                        <Grid BindingContext="{Binding BindingContext, Source={RelativeSource TemplatedParent}}" RowSpacing="0">
                                             <Grid.RowDefinitions>
-                                                <RowDefinition Height="1.5*"/>
-                                                <RowDefinition Height="*"/>
+                                                <RowDefinition Height="29" />
+                                                <RowDefinition Height="17" />
                                             </Grid.RowDefinitions>
 
-                                            <!--  ContentPresenter displays the default content for the control  -->
                                             <ContentPresenter
                                                 Grid.Row="0"
-                                                Grid.RowSpan="2"
-                                                VerticalOptions="Center"/>
+                                                Margin="0,2,0,0"
+                                                VerticalOptions="Start" />
 
                                             <HorizontalStackLayout
                                                 Grid.Row="1"
                                                 BindableLayout.ItemsSource="{Binding Events}"
                                                 HorizontalOptions="Center"
-                                                Spacing="2.5">
-
-                                                <!--  I want the event indicators to only be visible when the DateTime is in the currently navigated month  -->
+                                                Margin="0,-10,0,0"
+                                                Spacing="2">
                                                 <HorizontalStackLayout.IsVisible>
                                                     <MultiBinding Converter="{StaticResource AllTrueConverter}">
-                                                        <Binding Path="IsCurrentMonth"/>
-                                                        <Binding Converter="{StaticResource InvertedBoolConverter}" Path="IsInvalid"/>
+                                                        <Binding Path="IsCurrentMonth" />
+                                                        <Binding Converter="{StaticResource InvertedBoolConverter}" Path="IsInvalid" />
                                                     </MultiBinding>
                                                 </HorizontalStackLayout.IsVisible>
 
                                                 <BindableLayout.ItemTemplate>
                                                     <DataTemplate x:DataType="Models:CalendarEvent">
                                                         <BoxView
-                                                            CornerRadius="100"
-                                                            HeightRequest="7"
-                                                            HorizontalOptions="CenterAndExpand"
-                                                            VerticalOptions="Center"
-                                                            WidthRequest="7"
-                                                            Color="{Binding Color}"/>
+                                                            Color="{Binding Color}"
+                                                            CornerRadius="3"
+                                                            HeightRequest="6"
+                                                            WidthRequest="6" />
                                                     </DataTemplate>
                                                 </BindableLayout.ItemTemplate>
-
                                             </HorizontalStackLayout>
-
                                         </Grid>
                                     </ControlTemplate>
                                 </xc:DayView.ControlTemplate>
-
                             </xc:DayView>
                         </Border>
                     </DataTemplate>
                 </xc:CalendarView.DayTemplate>
-
-            </xc:CalendarView>
-
+                </xc:CalendarView>
+            </Grid>
         </Border>
 
-        <CollectionView Grid.Row="2" 
-                        ItemsSource="{Binding SelectedEvents}"
-                        SelectionMode="Single"
-                        SelectedItem="{Binding SelectedEvent}"
-                        >
+        <CollectionView
+            x:Name="EventsList"
+            Grid.Row="2"
+            ItemsSource="{Binding SelectedEvents}"
+            SelectedItem="{Binding SelectedEvent}"
+            SelectionMode="Single">
 
             <CollectionView.EmptyView>
-                <Label
-                    FontAttributes="Bold"
-                    FontSize="20"
-                    HorizontalTextAlignment="Center"
-                    Text="No Events"
-                    TextColor="{StaticResource ContentTextColor}"
-                    VerticalTextAlignment="Center"/>
+                <Border Style="{StaticResource CardBorderStyle}" Margin="0,4,0,0">
+                    <VerticalStackLayout Spacing="4" HorizontalOptions="Center" VerticalOptions="Center">
+                        <Label Text="No Events" Style="{StaticResource TitleLabelStyle}" HorizontalTextAlignment="Center" />
+                        <Label Text="This date has nothing scheduled." TextColor="{StaticResource MutedTextColor}" HorizontalTextAlignment="Center" />
+                    </VerticalStackLayout>
+                </Border>
             </CollectionView.EmptyView>
 
             <CollectionView.ItemsLayout>
-                <LinearItemsLayout Orientation="Vertical" />
+                <LinearItemsLayout Orientation="Vertical" ItemSpacing="10" />
             </CollectionView.ItemsLayout>
 
             <CollectionView.ItemSizingStrategy>
@@ -200,64 +255,18 @@
 
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="Models:CalendarEvent">
-                    <Border
-                        Margin="5"
-                        BackgroundColor="Transparent"
-                        StrokeThickness="0"
-                        VerticalOptions="Start"
-                        HorizontalOptions="Fill"
-                        >
+                    <Border Style="{StaticResource CardBorderStyle}" Padding="0" Margin="0,0,0,10">
+                        <Grid ColumnDefinitions="6,96,*" MinimumHeightRequest="92">
+                            <BoxView Grid.Column="0" Color="{Binding Color}" />
 
-                        <Border.StrokeShape>
-                            <RoundRectangle CornerRadius="10"/>
-                        </Border.StrokeShape>
+                            <VerticalStackLayout Grid.Column="1" Padding="14,12" Spacing="2">
+                                <Label Text="{Binding StartTime, StringFormat='{0:HH:mm}'}" FontAttributes="Bold" FontSize="20" TextColor="{StaticResource PrimaryTextColor}" />
+                                <Label Text="{Binding EndTime, StringFormat='{0:HH:mm}'}" FontSize="13" TextColor="{StaticResource MutedTextColor}" />
+                            </VerticalStackLayout>
 
-                        <Grid
-                            HeightRequest="90"
-                            >
-
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="20"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
-
-                            <BoxView
-                                Grid.Column="0"
-                                BackgroundColor="{Binding Color}"
-                                WidthRequest="20"/>
-
-                            <VerticalStackLayout
-                                Grid.Column="1"
-                                Padding="10"
-                                BackgroundColor="#5D3FD3"
-                                Spacing="2"
-                                VerticalOptions="Start">
-
-                                <Label
-                                    FontAttributes="Bold"
-                                    FontSize="20"
-                                    Text="{Binding StartTime, StringFormat='{0: HH:mm}'}"
-                                    TextColor="{StaticResource ContentTextColor}"
-                                    VerticalTextAlignment="Center"/>
-                                <Label
-                                    Margin="3,0,0,0"
-                                    FontSize="10"
-                                    Text="{Binding EndTime, StringFormat='{0: dd MMMM HH:mm}'}"
-                                    TextColor="{StaticResource ContentTextColor}"
-                                    VerticalTextAlignment="Center"/>
-
-                                <Line Stroke="black" X2="200" />
-
-                                <Label
-                                    Margin="5,0,0,0"
-                                    FontSize="16"
-                                    Text="{Binding Name}"
-                                    TextColor="{StaticResource ContentTextColor}"/>
-                                <Label
-                                    Margin="5,10,0,0"
-                                    FontSize="14"
-                                    Text="{Binding Description}"
-                                    TextColor="{StaticResource ContentTextColor}"/>
+                            <VerticalStackLayout Grid.Column="2" Padding="4,12,14,12" Spacing="4">
+                                <Label Text="{Binding Name}" FontAttributes="Bold" FontSize="16" TextColor="{StaticResource PrimaryTextColor}" />
+                                <Label Text="{Binding Description}" FontSize="13" TextColor="{StaticResource MutedTextColor}" LineBreakMode="TailTruncation" MaxLines="2" />
                             </VerticalStackLayout>
                         </Grid>
                     </Border>
@@ -265,7 +274,51 @@
             </CollectionView.ItemTemplate>
         </CollectionView>
 
+        <Grid
+            Grid.RowSpan="3"
+            BackgroundColor="#99000000"
+            IsVisible="{Binding IsMonthPickerOpen}">
+            <Grid.GestureRecognizers>
+                <TapGestureRecognizer Command="{Binding CloseMonthPickerCommand}" />
+            </Grid.GestureRecognizers>
 
+            <Border
+                BackgroundColor="{StaticResource SurfaceColor}"
+                HorizontalOptions="Center"
+                Padding="16"
+                VerticalOptions="Center"
+                WidthRequest="280">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="8" />
+                </Border.StrokeShape>
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer />
+                </Border.GestureRecognizers>
 
+                <VerticalStackLayout Spacing="12">
+                    <Label Text="Jump to Month" Style="{StaticResource TitleLabelStyle}" FontSize="18" />
+
+                    <Grid ColumnDefinitions="*,96" ColumnSpacing="10">
+                        <VerticalStackLayout Spacing="6">
+                            <Label Text="Month" Style="{StaticResource SectionLabelStyle}" Margin="0" />
+                            <Picker
+                                ItemsSource="{Binding MonthOptions}"
+                                SelectedIndex="{Binding PendingMonthIndex, Mode=TwoWay}"
+                                Title="Month" />
+                        </VerticalStackLayout>
+
+                        <VerticalStackLayout Grid.Column="1" Spacing="6">
+                            <Label Text="Year" Style="{StaticResource SectionLabelStyle}" Margin="0" />
+                            <Picker
+                                ItemsSource="{Binding YearOptions}"
+                                SelectedItem="{Binding PendingYear, Mode=TwoWay}"
+                                Title="Year" />
+                        </VerticalStackLayout>
+                    </Grid>
+
+                    <Button Command="{Binding SubmitMonthPickerCommand}" Text="Submit" />
+                </VerticalStackLayout>
+            </Border>
+        </Grid>
     </Grid>
 </ContentPage>

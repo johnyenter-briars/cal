@@ -147,11 +147,11 @@ namespace CAL.ViewModels
         }
         private bool ValidateSave()
         {
-            return !string.IsNullOrWhiteSpace(name);
+            return !IsBusy && !string.IsNullOrWhiteSpace(name);
         }
         private bool ValidateDelete()
         {
-            return id != default;
+            return !IsBusy && id != default;
         }
 
         public string Name
@@ -200,12 +200,33 @@ namespace CAL.ViewModels
         }
         private async void OnDelete()
         {
-            await CalClientSingleton.DeleteEntityAsync(id, _entityType);
+            if (IsBusy)
+            {
+                return;
+            }
+
+            IsBusy = true;
+
+            var (_, success) = await Fallback(() => CalClientSingleton.DeleteEntityAsync(id, _entityType));
+
+            if (!success)
+            {
+                IsBusy = false;
+                return;
+            }
+
             await Shell.Current.GoToAsync("..");
         }
 
         private async void OnSave()
         {
+            if (IsBusy)
+            {
+                return;
+            }
+
+            IsBusy = true;
+
             var startingTimeDatePart = new DateTime(StartSelectedDate.Year, StartSelectedDate.Month, StartSelectedDate.Day, 0, 0, 0, kind: DateTimeKind.Local);
             var startTime = startingTimeDatePart + StartSelectedTime;
 
@@ -228,11 +249,23 @@ namespace CAL.ViewModels
 
             if (id != Guid.Empty)
             {
-                await CalClientSingleton.UpdateEventAsync(newEvent.ToUpdateRequest());
+                var (_, success) = await Fallback(() => CalClientSingleton.UpdateEventAsync(newEvent.ToUpdateRequest()));
+
+                if (!success)
+                {
+                    IsBusy = false;
+                    return;
+                }
             }
             else
             {
-                await CalClientSingleton.CreateEventAsync(newEvent.ToRequest());
+                var (_, success) = await Fallback(() => CalClientSingleton.CreateEventAsync(newEvent.ToRequest()));
+
+                if (!success)
+                {
+                    IsBusy = false;
+                    return;
+                }
             }
 
             await Shell.Current.GoToAsync("..");

@@ -3,4 +3,5 @@ obj/
 .vs/
 .vscode/
 *.csproj.user
+.github/
 
